@@ -1,16 +1,26 @@
-import { useState } from 'react';
-import { Eye, Heart, MessageCircle, Clock, CheckCircle, XCircle, Edit, Trash2, Send } from 'lucide-react';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
-import { toast } from 'sonner';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
-import { Button } from './ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Progress } from './ui/progress';
-import { Switch } from './ui/switch';
-import { Label } from './ui/label';
-import { ViewPostModal } from './ViewPostModal';
-import { EditPostModal } from './EditPostModal';
+import { useState } from "react";
+import { Eye, Heart, MessageCircle, CheckCircle, Edit, Trash2, Send } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
+import { toast } from "sonner";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Progress } from "./ui/progress";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
+import { ViewPostModal } from "./ViewPostModal";
+import { EditPostModal } from "./EditPostModal";
 
 interface DashboardProps {
   user: any;
@@ -23,30 +33,30 @@ interface DashboardProps {
 
 export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmission, onPublishDraft, onLikeSubmission }: DashboardProps) {
   // Filter user's submissions
-  const userSubmissions = submissions.filter(submission => 
-    submission.author.name === user.name
-  ).map(submission => ({
-    ...submission,
-    views: Math.floor(Math.random() * 200) + 50, // Mock views data
-    submittedAt: submission.timestamp === "Just now" ? new Date().toISOString().split('T')[0] : "2024-08-05"
-  }));
+  const userSubmissions = submissions
+    .filter((submission) => submission.author.name === user.name)
+    .map((submission) => ({
+      ...submission,
+      views: Math.floor(Math.random() * 200) + 50, // Mock views data
+      submittedAt: submission.timestamp === "Just now" ? new Date().toISOString().split("T")[0] : "2024-08-05",
+    }));
 
   // Calculate stats from actual submissions
   const stats = {
     totalSubmissions: userSubmissions.length,
-    publishedSubmissions: userSubmissions.filter(s => s.status === 'published').length,
+    publishedSubmissions: userSubmissions.filter((s) => s.status === "published").length,
     totalLikes: userSubmissions.reduce((sum, s) => sum + (s.likes || 0), 0),
     totalComments: userSubmissions.reduce((sum, s) => sum + (s.comments || 0), 0),
     totalViews: userSubmissions.reduce((sum, s) => sum + (s.views || 0), 0),
-    ranking: 15
+    ranking: 15,
   };
   const [notifications, setNotifications] = useState({
     postLikes: true,
     postComments: true,
     statusUpdates: true,
-    weeklyDigest: false
+    weeklyDigest: false,
   });
-  
+
   const [viewingSubmission, setViewingSubmission] = useState<any>(null);
   const [editingSubmission, setEditingSubmission] = useState<any>(null);
 
@@ -66,17 +76,23 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'published': return 'bg-green-100 text-green-800';
-      case 'draft': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "published":
+        return "bg-green-100 text-green-800";
+      case "draft":
+        return "bg-gray-100 text-gray-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'published': return <CheckCircle className="h-4 w-4" />;
-      case 'draft': return <Edit className="h-4 w-4" />;
-      default: return <Edit className="h-4 w-4" />;
+      case "published":
+        return <CheckCircle className="h-4 w-4" />;
+      case "draft":
+        return <Edit className="h-4 w-4" />;
+      default:
+        return <Edit className="h-4 w-4" />;
     }
   };
 
@@ -92,9 +108,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                 {user.department} • Employee ID: {user.employeeId}
               </p>
             </div>
-            <Badge className="bg-purple-100 text-purple-800 text-lg px-4 py-2">
-              Rank #{stats.ranking}
-            </Badge>
+            <Badge className="bg-purple-100 text-purple-800 text-lg px-4 py-2">Rank #{stats.ranking}</Badge>
           </div>
         </CardHeader>
       </Card>
@@ -113,7 +127,10 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
               </div>
             </div>
             <div className="mt-2">
-              <Progress value={stats.totalSubmissions > 0 ? (stats.publishedSubmissions / stats.totalSubmissions) * 100 : 0} className="h-2" />
+              <Progress
+                value={stats.totalSubmissions > 0 ? (stats.publishedSubmissions / stats.totalSubmissions) * 100 : 0}
+                className="h-2"
+              />
               <p className="text-xs text-gray-500 mt-1">{stats.publishedSubmissions} published</p>
             </div>
           </CardContent>
@@ -183,114 +200,106 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
             </Card>
           ) : (
             userSubmissions.map((submission) => (
-            <Card key={submission.id}>
-              <CardContent className="pt-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <h3 className="font-semibold">{submission.title}</h3>
-                      <Badge className={getStatusColor(submission.status)}>
-                        {getStatusIcon(submission.status)}
-                        <span className="ml-1 capitalize">{submission.status}</span>
-                      </Badge>
-                    </div>
-                    
-                    <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
-                      <span>{submission.category}</span>
-                      <span>•</span>
-                      <span>Submitted {submission.submittedAt}</span>
-                      <span>•</span>
-                      <span className="capitalize">{submission.type}</span>
+              <Card key={submission.id}>
+                <CardContent className="pt-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <h3 className="font-semibold">{submission.title}</h3>
+                        <Badge className={getStatusColor(submission.status)}>
+                          {getStatusIcon(submission.status)}
+                          <span className="ml-1 capitalize">{submission.status}</span>
+                        </Badge>
+                      </div>
+
+                      <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+                        <span>{submission.category}</span>
+                        <span>•</span>
+                        <span>Submitted {submission.submittedAt}</span>
+                        <span>•</span>
+                        <span className="capitalize">{submission.type}</span>
+                      </div>
+
+                      <div className="flex items-center space-x-6">
+                        <div className="flex items-center space-x-1">
+                          <Heart className="h-4 w-4 text-red-500" />
+                          <span className="text-sm">{submission.likes}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <MessageCircle className="h-4 w-4 text-blue-500" />
+                          <span className="text-sm">{submission.comments}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Eye className="h-4 w-4 text-gray-500" />
+                          <span className="text-sm">{submission.views}</span>
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="flex items-center space-x-6">
-                      <div className="flex items-center space-x-1">
-                        <Heart className="h-4 w-4 text-red-500" />
-                        <span className="text-sm">{submission.likes}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <MessageCircle className="h-4 w-4 text-blue-500" />
-                        <span className="text-sm">{submission.comments}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Eye className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm">{submission.views}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setViewingSubmission(submission)}
-                    >
-                      <Eye className="h-4 w-4 mr-2" />
-                      View
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setEditingSubmission(submission)}
-                    >
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
-                    </Button>
-                    {submission.status === 'draft' && (
+                    <div className="flex items-center space-x-2">
+                      <Button variant="outline" size="sm" onClick={() => setViewingSubmission(submission)}>
+                        <Eye className="h-4 w-4 mr-2" />
+                        View
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => setEditingSubmission(submission)}>
+                        <Edit className="h-4 w-4 mr-2" />
+                        Edit
+                      </Button>
+                      {submission.status === "draft" && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white">
+                              <Send className="h-4 w-4 mr-2" />
+                              Publish
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Publish Draft</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you ready to publish "{submission.title}"? Once published, it will be visible to everyone in the
+                                community feed and cannot be unpublished.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                className="bg-green-600 hover:bg-green-700"
+                                onClick={() => handlePublishDraft(submission.id, submission.title)}>
+                                Publish Now
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white">
-                            <Send className="h-4 w-4 mr-2" />
-                            Publish
+                          <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
+                            <Trash2 className="h-4 w-4" />
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Publish Draft</AlertDialogTitle>
+                            <AlertDialogTitle>Delete Submission</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Are you ready to publish "{submission.title}"? Once published, it will be visible to everyone in the community feed and cannot be unpublished.
+                              Are you sure you want to delete "{submission.title}"? This action cannot be undone and will permanently remove
+                              your submission from the platform.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction 
-                              className="bg-green-600 hover:bg-green-700"
-                              onClick={() => handlePublishDraft(submission.id, submission.title)}
-                            >
-                              Publish Now
+                            <AlertDialogAction
+                              className="bg-red-600 hover:bg-red-700"
+                              onClick={() => handleDeleteSubmission(submission.id, submission.title)}>
+                              Delete Submission
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
-                    )}
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Submission</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Are you sure you want to delete "{submission.title}"? This action cannot be undone and will permanently remove your submission from the platform.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction 
-                            className="bg-red-600 hover:bg-red-700"
-                            onClick={() => handleDeleteSubmission(submission.id, submission.title)}
-                          >
-                            Delete Submission
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
             ))
           )}
         </TabsContent>
@@ -308,7 +317,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                 </div>
                 <Progress value={78} className="h-2" />
               </div>
-              
+
               <div>
                 <div className="flex justify-between mb-2">
                   <span className="text-sm font-medium">Publishing Rate</span>
@@ -316,7 +325,10 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                     {stats.totalSubmissions > 0 ? Math.round((stats.publishedSubmissions / stats.totalSubmissions) * 100) : 0}%
                   </span>
                 </div>
-                <Progress value={stats.totalSubmissions > 0 ? (stats.publishedSubmissions / stats.totalSubmissions) * 100 : 0} className="h-2" />
+                <Progress
+                  value={stats.totalSubmissions > 0 ? (stats.publishedSubmissions / stats.totalSubmissions) * 100 : 0}
+                  className="h-2"
+                />
               </div>
 
               <div>
@@ -343,12 +355,10 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                 <Switch
                   id="post-likes"
                   checked={notifications.postLikes}
-                  onCheckedChange={(checked) => 
-                    setNotifications({...notifications, postLikes: checked})
-                  }
+                  onCheckedChange={(checked) => setNotifications({ ...notifications, postLikes: checked })}
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <Label htmlFor="post-comments" className="text-sm font-medium">
                   Notify when posts receive comments
@@ -356,9 +366,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                 <Switch
                   id="post-comments"
                   checked={notifications.postComments}
-                  onCheckedChange={(checked) => 
-                    setNotifications({...notifications, postComments: checked})
-                  }
+                  onCheckedChange={(checked) => setNotifications({ ...notifications, postComments: checked })}
                 />
               </div>
 
@@ -369,9 +377,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                 <Switch
                   id="status-updates"
                   checked={notifications.statusUpdates}
-                  onCheckedChange={(checked) => 
-                    setNotifications({...notifications, statusUpdates: checked})
-                  }
+                  onCheckedChange={(checked) => setNotifications({ ...notifications, statusUpdates: checked })}
                 />
               </div>
 
@@ -382,9 +388,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                 <Switch
                   id="weekly-digest"
                   checked={notifications.weeklyDigest}
-                  onCheckedChange={(checked) => 
-                    setNotifications({...notifications, weeklyDigest: checked})
-                  }
+                  onCheckedChange={(checked) => setNotifications({ ...notifications, weeklyDigest: checked })}
                 />
               </div>
             </CardContent>

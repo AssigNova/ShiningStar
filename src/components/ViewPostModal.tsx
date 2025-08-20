@@ -1,14 +1,13 @@
-import { useState, useRef, useEffect } from 'react';
-import { X, Heart, MessageCircle, Share2, Eye, ZoomIn, Play, Pause, Maximize, Volume2, VolumeX } from 'lucide-react';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from './ui/dialog';
-import { Button } from './ui/button';
-import { Badge } from './ui/badge';
-import { AspectRatio } from './ui/aspect-ratio';
-import { Card, CardContent } from './ui/card';
-import { Slider } from './ui/slider';
-import { ImageWithFallback } from './figma/ImageWithFallback';
-import { CommentsModal } from './CommentsModal';
-import { ShareModal } from './ShareModal';
+import { useState, useRef, useEffect } from "react";
+import { X, Heart, MessageCircle, Share2, Eye, ZoomIn, Play, Pause, Maximize, Volume2, VolumeX } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "./ui/dialog";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
+import { AspectRatio } from "./ui/aspect-ratio";
+import { Slider } from "./ui/slider";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { CommentsModal } from "./CommentsModal";
+import { ShareModal } from "./ShareModal";
 
 interface ViewPostModalProps {
   isOpen: boolean;
@@ -41,7 +40,7 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
 
   const handlePlayPause = (videoElement: HTMLVideoElement | null, setPlayingState: (playing: boolean) => void) => {
     if (!videoElement) return;
-    
+
     if (videoElement.paused) {
       videoElement.play();
       setPlayingState(true);
@@ -53,22 +52,22 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
 
   const handleFullscreen = (videoElement: HTMLVideoElement | null) => {
     if (!videoElement) return;
-    
+
     if (videoElement.requestFullscreen) {
       videoElement.requestFullscreen();
     }
   };
 
   const formatTime = (time: number) => {
-    if (isNaN(time)) return '0:00';
+    if (isNaN(time)) return "0:00";
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const handleSeek = (videoElement: HTMLVideoElement | null, value: number[]) => {
     if (!videoElement || !value.length || isNaN(value[0])) return;
-    
+
     const seekTime = Math.max(0, Math.min(value[0], videoElement.duration || 0));
     videoElement.currentTime = seekTime;
   };
@@ -91,10 +90,10 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
 
   const handleVolumeChange = (videoElement: HTMLVideoElement | null, value: number[], isFullscreenMode: boolean = false) => {
     if (!videoElement || !value.length) return;
-    
+
     const newVolume = value[0];
     videoElement.volume = newVolume / 100;
-    
+
     if (isFullscreenMode) {
       setVolumeFullscreen(newVolume);
       if (newVolume === 0) {
@@ -114,12 +113,12 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
 
   const handleMuteToggle = (videoElement: HTMLVideoElement | null, isFullscreenMode: boolean = false) => {
     if (!videoElement) return;
-    
+
     if (isFullscreenMode) {
       const newMutedState = !isMutedFullscreen;
       setIsMutedFullscreen(newMutedState);
       videoElement.muted = newMutedState;
-      
+
       if (newMutedState) {
         videoElement.volume = 0;
       } else {
@@ -129,7 +128,7 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
       const newMutedState = !isMuted;
       setIsMuted(newMutedState);
       videoElement.muted = newMutedState;
-      
+
       if (newMutedState) {
         videoElement.volume = 0;
       } else {
@@ -139,14 +138,14 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
   };
 
   const handleLike = () => {
-    if (submission.status !== 'published') return; // Only allow likes on published posts
-    
+    if (submission.status !== "published") return; // Only allow likes on published posts
+
     const newIsLiked = !isLiked;
     const newLikeCount = newIsLiked ? likeCount + 1 : likeCount - 1;
-    
+
     setIsLiked(newIsLiked);
     setLikeCount(newLikeCount);
-    
+
     // Call the parent handler to update the submission in the main state
     if (onLike) {
       onLike(submission.id, newLikeCount);
@@ -183,20 +182,20 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
       setCurrentTime(videoElement.currentTime || 0);
     };
 
-    videoElement.addEventListener('play', handlePlay);
-    videoElement.addEventListener('pause', handlePause);
-    videoElement.addEventListener('ended', handleEnded);
-    videoElement.addEventListener('timeupdate', handleTimeUpdate);
-    videoElement.addEventListener('loadedmetadata', handleLoadedMetadata);
-    videoElement.addEventListener('seeked', handleSeeked);
+    videoElement.addEventListener("play", handlePlay);
+    videoElement.addEventListener("pause", handlePause);
+    videoElement.addEventListener("ended", handleEnded);
+    videoElement.addEventListener("timeupdate", handleTimeUpdate);
+    videoElement.addEventListener("loadedmetadata", handleLoadedMetadata);
+    videoElement.addEventListener("seeked", handleSeeked);
 
     return () => {
-      videoElement.removeEventListener('play', handlePlay);
-      videoElement.removeEventListener('pause', handlePause);
-      videoElement.removeEventListener('ended', handleEnded);
-      videoElement.removeEventListener('timeupdate', handleTimeUpdate);
-      videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      videoElement.removeEventListener('seeked', handleSeeked);
+      videoElement.removeEventListener("play", handlePlay);
+      videoElement.removeEventListener("pause", handlePause);
+      videoElement.removeEventListener("ended", handleEnded);
+      videoElement.removeEventListener("timeupdate", handleTimeUpdate);
+      videoElement.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      videoElement.removeEventListener("seeked", handleSeeked);
     };
   }, [submission, isSeeking]);
 
@@ -230,20 +229,20 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
       setCurrentTimeFullscreen(videoElement.currentTime || 0);
     };
 
-    videoElement.addEventListener('play', handlePlay);
-    videoElement.addEventListener('pause', handlePause);
-    videoElement.addEventListener('ended', handleEnded);
-    videoElement.addEventListener('timeupdate', handleTimeUpdate);
-    videoElement.addEventListener('loadedmetadata', handleLoadedMetadata);
-    videoElement.addEventListener('seeked', handleSeeked);
+    videoElement.addEventListener("play", handlePlay);
+    videoElement.addEventListener("pause", handlePause);
+    videoElement.addEventListener("ended", handleEnded);
+    videoElement.addEventListener("timeupdate", handleTimeUpdate);
+    videoElement.addEventListener("loadedmetadata", handleLoadedMetadata);
+    videoElement.addEventListener("seeked", handleSeeked);
 
     return () => {
-      videoElement.removeEventListener('play', handlePlay);
-      videoElement.removeEventListener('pause', handlePause);
-      videoElement.removeEventListener('ended', handleEnded);
-      videoElement.removeEventListener('timeupdate', handleTimeUpdate);
-      videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      videoElement.removeEventListener('seeked', handleSeeked);
+      videoElement.removeEventListener("play", handlePlay);
+      videoElement.removeEventListener("pause", handlePause);
+      videoElement.removeEventListener("ended", handleEnded);
+      videoElement.removeEventListener("timeupdate", handleTimeUpdate);
+      videoElement.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      videoElement.removeEventListener("seeked", handleSeeked);
     };
   }, [submission, isSeekingFullscreen]);
 
@@ -262,45 +261,43 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
       setIsLiked(false); // Reset to not liked when modal opens
     }
   }, [submission]);
-  
+
   if (!submission) return null;
 
-  const isVideo = submission.type === 'video';
+  const isVideo = submission.type === "video";
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-7xl p-0 h-auto w-[90vw]">
-        <DialogTitle className="sr-only">
-          {submission.title} - Submission Details
-        </DialogTitle>
+        <DialogTitle className="sr-only">{submission.title} - Submission Details</DialogTitle>
         <DialogDescription className="sr-only">
           View full details of the submission including media, engagement stats, and author information.
         </DialogDescription>
-        
+
         <AspectRatio ratio={16 / 9} className="bg-white rounded-lg overflow-hidden">
           <div className="h-full flex">
             {/* Left side - Media */}
             <div className="flex-1 relative">
               {isVideo ? (
                 <div className="relative w-full h-full">
-                  <video 
+                  <video
                     ref={videoRef}
                     src={submission.content}
                     className="w-full h-full object-cover"
                     poster={submission.content}
-                    onClick={() => handlePlayPause(videoRef.current, setIsPlaying)}
-                  >
+                    onClick={() => handlePlayPause(videoRef.current, setIsPlaying)}>
                     Your browser does not support the video tag.
                   </video>
-                  
+
                   {/* Video Controls Overlay - Only show when playing */}
-                  <div className={`absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-sm rounded-lg p-3 transition-opacity duration-200 ${isPlaying ? 'opacity-0 hover:opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                  <div
+                    className={`absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-sm rounded-lg p-3 transition-opacity duration-200 ${
+                      isPlaying ? "opacity-0 hover:opacity-100" : "opacity-0 pointer-events-none"
+                    }`}>
                     <div className="space-y-3">
                       {/* Timeline Slider */}
                       <div className="flex items-center space-x-3">
-                        <span className="text-white font-mono text-sm min-w-[40px]">
-                          {formatTime(currentTime)}
-                        </span>
+                        <span className="text-white font-mono text-sm min-w-[40px]">{formatTime(currentTime)}</span>
                         <Slider
                           value={[currentTime]}
                           max={duration || 0}
@@ -310,11 +307,9 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                           onValueCommit={() => handleSeekEnd(false)}
                           onPointerDown={() => handleSeekStart(false)}
                         />
-                        <span className="text-white font-mono text-sm min-w-[40px]">
-                          {formatTime(duration)}
-                        </span>
+                        <span className="text-white font-mono text-sm min-w-[40px]">{formatTime(duration)}</span>
                       </div>
-                      
+
                       {/* Control Buttons */}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
@@ -322,28 +317,18 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                             variant="ghost"
                             size="sm"
                             className="text-white hover:bg-white/20 p-2"
-                            onClick={() => handlePlayPause(videoRef.current, setIsPlaying)}
-                          >
-                            {isPlaying ? (
-                              <Pause className="h-4 w-4" />
-                            ) : (
-                              <Play className="h-4 w-4" />
-                            )}
+                            onClick={() => handlePlayPause(videoRef.current, setIsPlaying)}>
+                            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                           </Button>
-                          
+
                           <Button
                             variant="ghost"
                             size="sm"
                             className="text-white hover:bg-white/20 p-2"
-                            onClick={() => handleMuteToggle(videoRef.current, false)}
-                          >
-                            {isMuted ? (
-                              <VolumeX className="h-4 w-4" />
-                            ) : (
-                              <Volume2 className="h-4 w-4" />
-                            )}
+                            onClick={() => handleMuteToggle(videoRef.current, false)}>
+                            {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                           </Button>
-                          
+
                           <div className="flex items-center space-x-2 w-20">
                             <Slider
                               value={[isMuted ? 0 : volume]}
@@ -354,26 +339,20 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                             />
                           </div>
                         </div>
-                        
+
                         <Button
                           variant="ghost"
                           size="sm"
                           className="text-white hover:bg-white/20 p-2"
-                          onClick={() => setIsFullSizeOpen(true)}
-                        >
+                          onClick={() => setIsFullSizeOpen(true)}>
                           <Maximize className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
                   </div>
-
                 </div>
               ) : (
-                <ImageWithFallback
-                  src={submission.content}
-                  alt={submission.title}
-                  className="w-full h-full object-cover"
-                />
+                <ImageWithFallback src={submission.content} alt={submission.title} className="w-full h-full object-cover" />
               )}
             </div>
 
@@ -395,7 +374,9 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                   </div>
                   <div>
                     <p className="font-semibold">{submission.author.name}</p>
-                    <p className="text-sm text-gray-600">{submission.author.department} • {submission.timestamp}</p>
+                    <p className="text-sm text-gray-600">
+                      {submission.author.department} • {submission.timestamp}
+                    </p>
                     <div className="flex items-center space-x-2 mt-1">
                       <Badge variant="outline" className="text-xs">
                         {submission.participantType}
@@ -411,25 +392,28 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                 <div>
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="font-semibold text-lg leading-tight pr-4">{submission.title}</h3>
-                    <Badge variant="secondary" className="flex-shrink-0">{submission.category}</Badge>
+                    <Badge variant="secondary" className="flex-shrink-0">
+                      {submission.category}
+                    </Badge>
                   </div>
                   <p className="text-gray-700 leading-relaxed mb-4">{submission.description}</p>
-                  
+
                   {/* Post Image Preview */}
                   <div className="mb-4">
                     <p className="text-sm font-medium text-gray-600 mb-2">Posted Content:</p>
                     <div className="rounded-lg overflow-hidden border border-gray-200">
                       {isVideo ? (
                         <div className="relative group">
-                          <video 
+                          <video
                             src={submission.content}
                             className="w-full h-32 object-cover cursor-pointer"
                             poster={submission.content}
-                            onClick={() => setIsFullSizeOpen(true)}
-                          >
+                            onClick={() => setIsFullSizeOpen(true)}>
                             Your browser does not support the video tag.
                           </video>
-                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center cursor-pointer pointer-events-none group-hover:pointer-events-auto" onClick={() => setIsFullSizeOpen(true)}>
+                          <div
+                            className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center cursor-pointer pointer-events-none group-hover:pointer-events-auto"
+                            onClick={() => setIsFullSizeOpen(true)}>
                             <ZoomIn className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
                         </div>
@@ -441,7 +425,9 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                             className="w-full h-32 object-cover hover:scale-105 transition-transform cursor-pointer"
                             onClick={() => setIsFullSizeOpen(true)}
                           />
-                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center cursor-pointer" onClick={() => setIsFullSizeOpen(true)}>
+                          <div
+                            className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center cursor-pointer"
+                            onClick={() => setIsFullSizeOpen(true)}>
                             <ZoomIn className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
                         </div>
@@ -451,26 +437,20 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                 </div>
 
                 {/* Engagement Stats - Only show for published posts */}
-                {submission.status === 'published' && (
+                {submission.status === "published" && (
                   <div className="flex items-center space-x-6 py-4 border-t border-b">
-                    <button 
-                      className="flex items-center space-x-2 hover:bg-gray-100 rounded-lg p-2 transition-colors"
-                      onClick={handleLike}
-                    >
-                      <Heart 
+                    <button className="flex items-center space-x-2 hover:bg-gray-100 rounded-lg p-2 transition-colors" onClick={handleLike}>
+                      <Heart
                         className={`h-5 w-5 transition-all duration-200 ${
-                          isLiked 
-                            ? 'text-red-500 fill-red-500' 
-                            : 'text-red-500 fill-transparent hover:fill-red-100'
-                        }`} 
+                          isLiked ? "text-red-500 fill-red-500" : "text-red-500 fill-transparent hover:fill-red-100"
+                        }`}
                       />
                       <span className="font-medium">{likeCount}</span>
                       <span className="text-gray-600">likes</span>
                     </button>
-                    <button 
+                    <button
                       className="flex items-center space-x-2 hover:bg-gray-100 rounded-lg p-2 transition-colors"
-                      onClick={() => setIsCommentsModalOpen(true)}
-                    >
+                      onClick={() => setIsCommentsModalOpen(true)}>
                       <MessageCircle className="h-5 w-5 text-blue-500" />
                       <span className="font-medium">{submission.comments}</span>
                       <span className="text-gray-600">comments</span>
@@ -484,26 +464,24 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                 )}
 
                 {/* Draft Notice - Only show for draft posts */}
-                {submission.status === 'draft' && (
+                {submission.status === "draft" && (
                   <div className="py-4 border-t border-b">
                     <div className="flex items-center space-x-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                       <div className="h-2 w-2 bg-yellow-500 rounded-full"></div>
                       <div className="flex-1">
                         <p className="font-medium text-yellow-800">Draft Post</p>
-                        <p className="text-sm text-yellow-700">This post is saved as a draft and only visible to you. Publish it from your dashboard to share with the community.</p>
+                        <p className="text-sm text-yellow-700">
+                          This post is saved as a draft and only visible to you. Publish it from your dashboard to share with the community.
+                        </p>
                       </div>
                     </div>
                   </div>
                 )}
 
                 {/* Action Buttons - Only show for published posts */}
-                {submission.status === 'published' && (
+                {submission.status === "published" && (
                   <div className="flex items-center space-x-3">
-                    <Button 
-                      variant="outline" 
-                      size="default"
-                      onClick={() => setIsShareModalOpen(true)}
-                    >
+                    <Button variant="outline" size="default" onClick={() => setIsShareModalOpen(true)}>
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
                     </Button>
@@ -530,13 +508,7 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-1">Status</p>
-                      <Badge 
-                        className={
-                          submission.status === 'published' 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-gray-100 text-gray-800'
-                        }
-                      >
+                      <Badge className={submission.status === "published" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
                         {submission.status}
                       </Badge>
                     </div>
@@ -565,21 +537,16 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
       {/* Full Size Media Viewer */}
       <Dialog open={isFullSizeOpen} onOpenChange={setIsFullSizeOpen}>
         <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 bg-black/95 border-none">
-          <DialogTitle className="sr-only">
-            Full Size View - {submission.title}
-          </DialogTitle>
-          <DialogDescription className="sr-only">
-            Full size view of the submission content
-          </DialogDescription>
-          
+          <DialogTitle className="sr-only">Full Size View - {submission.title}</DialogTitle>
+          <DialogDescription className="sr-only">Full size view of the submission content</DialogDescription>
+
           <div className="relative w-full h-full flex items-center justify-center">
             {/* Close Button */}
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
               className="absolute top-4 right-4 z-10 text-white hover:bg-white/20"
-              onClick={() => setIsFullSizeOpen(false)}
-            >
+              onClick={() => setIsFullSizeOpen(false)}>
               <X className="h-6 w-6" />
             </Button>
 
@@ -587,25 +554,25 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
             <div className="w-full h-full flex items-center justify-center p-8">
               {isVideo ? (
                 <div className="relative w-full h-full flex items-center justify-center">
-                  <video 
+                  <video
                     ref={fullscreenVideoRef}
                     src={submission.content}
                     className="max-w-full max-h-full object-contain"
                     autoPlay
                     poster={submission.content}
-                    onClick={() => handlePlayPause(fullscreenVideoRef.current, setIsPlayingFullscreen)}
-                  >
+                    onClick={() => handlePlayPause(fullscreenVideoRef.current, setIsPlayingFullscreen)}>
                     Your browser does not support the video tag.
                   </video>
-                  
+
                   {/* Custom Video Controls for Fullscreen */}
-                  <div className={`absolute bottom-20 left-8 right-8 bg-black/60 backdrop-blur-sm rounded-lg p-4 transition-opacity duration-200 ${isPlayingFullscreen ? 'opacity-0 hover:opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                  <div
+                    className={`absolute bottom-20 left-8 right-8 bg-black/60 backdrop-blur-sm rounded-lg p-4 transition-opacity duration-200 ${
+                      isPlayingFullscreen ? "opacity-0 hover:opacity-100" : "opacity-0 pointer-events-none"
+                    }`}>
                     <div className="space-y-4">
                       {/* Timeline Slider */}
                       <div className="flex items-center space-x-4">
-                        <span className="text-white font-mono min-w-[50px]">
-                          {formatTime(currentTimeFullscreen)}
-                        </span>
+                        <span className="text-white font-mono min-w-[50px]">{formatTime(currentTimeFullscreen)}</span>
                         <Slider
                           value={[currentTimeFullscreen]}
                           max={durationFullscreen || 0}
@@ -615,11 +582,9 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                           onValueCommit={() => handleSeekEnd(true)}
                           onPointerDown={() => handleSeekStart(true)}
                         />
-                        <span className="text-white font-mono min-w-[50px]">
-                          {formatTime(durationFullscreen)}
-                        </span>
+                        <span className="text-white font-mono min-w-[50px]">{formatTime(durationFullscreen)}</span>
                       </div>
-                      
+
                       {/* Control Buttons */}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
@@ -627,28 +592,18 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                             variant="ghost"
                             size="sm"
                             className="text-white hover:bg-white/20 p-3"
-                            onClick={() => handlePlayPause(fullscreenVideoRef.current, setIsPlayingFullscreen)}
-                          >
-                            {isPlayingFullscreen ? (
-                              <Pause className="h-6 w-6" />
-                            ) : (
-                              <Play className="h-6 w-6" />
-                            )}
+                            onClick={() => handlePlayPause(fullscreenVideoRef.current, setIsPlayingFullscreen)}>
+                            {isPlayingFullscreen ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
                           </Button>
-                          
+
                           <Button
                             variant="ghost"
                             size="sm"
                             className="text-white hover:bg-white/20 p-3"
-                            onClick={() => handleMuteToggle(fullscreenVideoRef.current, true)}
-                          >
-                            {isMutedFullscreen ? (
-                              <VolumeX className="h-5 w-5" />
-                            ) : (
-                              <Volume2 className="h-5 w-5" />
-                            )}
+                            onClick={() => handleMuteToggle(fullscreenVideoRef.current, true)}>
+                            {isMutedFullscreen ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
                           </Button>
-                          
+
                           <div className="flex items-center space-x-3 w-32">
                             <Slider
                               value={[isMutedFullscreen ? 0 : volumeFullscreen]}
@@ -658,7 +613,7 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                               onValueChange={(value) => handleVolumeChange(fullscreenVideoRef.current, value, true)}
                             />
                             <span className="text-white text-sm font-mono min-w-[35px]">
-                              {isMutedFullscreen ? '0%' : `${Math.round(volumeFullscreen)}%`}
+                              {isMutedFullscreen ? "0%" : `${Math.round(volumeFullscreen)}%`}
                             </span>
                           </div>
                         </div>
@@ -666,8 +621,7 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                           variant="ghost"
                           size="sm"
                           className="text-white hover:bg-white/20 p-3"
-                          onClick={() => handleFullscreen(fullscreenVideoRef.current)}
-                        >
+                          onClick={() => handleFullscreen(fullscreenVideoRef.current)}>
                           <Maximize className="h-6 w-6" />
                         </Button>
                       </div>
@@ -675,11 +629,7 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                   </div>
                 </div>
               ) : (
-                <ImageWithFallback
-                  src={submission.content}
-                  alt={submission.title}
-                  className="max-w-full max-h-full object-contain"
-                />
+                <ImageWithFallback src={submission.content} alt={submission.title} className="max-w-full max-h-full object-contain" />
               )}
             </div>
 
@@ -688,7 +638,9 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
               <div className="flex items-center justify-between text-white">
                 <div>
                   <h3 className="font-semibold text-lg">{submission.title}</h3>
-                  <p className="text-sm text-gray-300">by {submission.author.name} • {submission.timestamp}</p>
+                  <p className="text-sm text-gray-300">
+                    by {submission.author.name} • {submission.timestamp}
+                  </p>
                 </div>
                 <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
                   {submission.category}
@@ -700,22 +652,13 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
       </Dialog>
 
       {/* Comments Modal - Only for published posts */}
-      {submission.status === 'published' && (
-        <CommentsModal
-          isOpen={isCommentsModalOpen}
-          onClose={() => setIsCommentsModalOpen(false)}
-          submission={submission}
-          user={user}
-        />
+      {submission.status === "published" && (
+        <CommentsModal isOpen={isCommentsModalOpen} onClose={() => setIsCommentsModalOpen(false)} submission={submission} user={user} />
       )}
 
       {/* Share Modal - Only for published posts */}
-      {submission.status === 'published' && (
-        <ShareModal
-          isOpen={isShareModalOpen}
-          onClose={() => setIsShareModalOpen(false)}
-          submission={submission}
-        />
+      {submission.status === "published" && (
+        <ShareModal isOpen={isShareModalOpen} onClose={() => setIsShareModalOpen(false)} submission={submission} />
       )}
     </Dialog>
   );

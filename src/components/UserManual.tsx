@@ -1,9 +1,9 @@
-import { Book, FileText, MessageCircle, HelpCircle, Download, Video, Image, Upload, Users, Trophy, Bell } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Button } from './ui/button';
-import { Badge } from './ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
+import { Book, FileText, HelpCircle, Download, Video, Image, Upload, Users, Trophy, Bell } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 
 export function UserManual() {
   return (
@@ -15,22 +15,20 @@ export function UserManual() {
             <Book className="h-6 w-6 mr-2" />
             User Manual & Handbook
           </CardTitle>
-          <p className="text-blue-100">
-            Everything you need to know about Shining Stars Season 3
-          </p>
+          <p className="text-blue-100">Everything you need to know about Shining Stars Season 3</p>
         </CardHeader>
       </Card>
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-
-
         <Card className="cursor-pointer hover:shadow-md transition-shadow">
           <CardContent className="pt-6 text-center">
             <Download className="h-12 w-12 mx-auto mb-4 text-green-500" />
             <h3 className="font-semibold mb-2">Download PDF Guide</h3>
             <p className="text-sm text-gray-600 mb-4">Complete handbook in PDF format</p>
-            <Button size="sm" variant="outline">Download</Button>
+            <Button size="sm" variant="outline">
+              Download
+            </Button>
           </CardContent>
         </Card>
 
@@ -39,7 +37,9 @@ export function UserManual() {
             <Video className="h-12 w-12 mx-auto mb-4 text-purple-500" />
             <h3 className="font-semibold mb-2">Video Tutorials</h3>
             <p className="text-sm text-gray-600 mb-4">Step-by-step video guides</p>
-            <Button size="sm" variant="outline">Watch Now</Button>
+            <Button size="sm" variant="outline">
+              Watch Now
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -62,9 +62,9 @@ export function UserManual() {
               <div>
                 <h3 className="font-semibold mb-3">Platform Overview</h3>
                 <p className="text-gray-700 mb-4">
-                  Shining Stars is ITC's premier employee engagement platform where teams and individuals 
-                  showcase their achievements, innovations, and collaborative efforts. Season 3 brings 
-                  enhanced features for better community interaction and recognition.
+                  Shining Stars is ITC's premier employee engagement platform where teams and individuals showcase their achievements,
+                  innovations, and collaborative efforts. Season 3 brings enhanced features for better community interaction and
+                  recognition.
                 </p>
               </div>
 
@@ -177,7 +177,7 @@ export function UserManual() {
                     { name: "Family & Community", desc: "Community engagement and family activities" },
                     { name: "Sustainability", desc: "Environmental and social responsibility" },
                     { name: "Customer Excellence", desc: "Exceptional customer service stories" },
-                    { name: "Leadership", desc: "Leadership excellence and mentorship" }
+                    { name: "Leadership", desc: "Leadership excellence and mentorship" },
                   ].map((category) => (
                     <div key={category.name} className="p-3 border rounded-lg">
                       <h4 className="font-medium">{category.name}</h4>

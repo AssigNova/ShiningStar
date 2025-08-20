@@ -13,15 +13,14 @@ import { Toaster } from "./components/ui/sonner";
 import newLogo from "./assets/shiningStar.png";
 // import backgroundImage from "figma:asset/c8fe8aa003d8613000580c8d8851b32ef93680a1.png";
 
-import './styles/globals.css';
+import "./styles/globals.css";
 
 // Initial mock submissions
 const initialSubmissions = [
   {
     id: 1,
     title: "Team Building Innovation",
-    description:
-      "Our department's creative approach to remote team building during challenging times.",
+    description: "Our department's creative approach to remote team building during challenging times.",
     category: "Team Collaboration",
     author: {
       name: "Sarah Johnson",
@@ -34,14 +33,12 @@ const initialSubmissions = [
     timestamp: "2 hours ago",
     status: "published",
     type: "image",
-    content:
-      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop",
+    content: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop",
   },
   {
     id: 2,
     title: "Sustainable Office Practices",
-    description:
-      "Implementing eco-friendly solutions in our workspace.",
+    description: "Implementing eco-friendly solutions in our workspace.",
     category: "Innovation",
     author: {
       name: "Michael Chen",
@@ -54,14 +51,12 @@ const initialSubmissions = [
     timestamp: "4 hours ago",
     status: "published",
     type: "video",
-    content:
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop",
+    content: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop",
   },
   {
     id: 3,
     title: "Family Day Celebration",
-    description:
-      "Bringing families together for a memorable day at the office.",
+    description: "Bringing families together for a memorable day at the office.",
     category: "Family & Community",
     author: {
       name: "Lisa Brown",
@@ -74,37 +69,23 @@ const initialSubmissions = [
     timestamp: "6 hours ago",
     status: "published",
     type: "image",
-    content:
-      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&h=400&fit=crop",
+    content: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&h=400&fit=crop",
   },
 ];
 
 export default function App() {
-  const [activeView, setActiveView] = useState<
-    "feed" | "dashboard" | "leaderboard" | "manual"
-  >("feed");
-  const [isUploadModalOpen, setIsUploadModalOpen] =
-    useState(false);
+  const [activeView, setActiveView] = useState<"feed" | "dashboard" | "leaderboard" | "manual">("feed");
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
-  const [isNotificationModalOpen, setIsNotificationModalOpen] =
-    useState(false);
-  const [isHighlightsModalOpen, setIsHighlightsModalOpen] =
-    useState(false);
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
+  const [isHighlightsModalOpen, setIsHighlightsModalOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [submissions, setSubmissions] = useState(
-    initialSubmissions,
-  );
+  const [submissions, setSubmissions] = useState(initialSubmissions);
   const [isFirstLogin, setIsFirstLogin] = useState(false);
 
   // Mock user login
-  const handleLogin = (credentials: {
-    email: string;
-    password: string;
-  }) => {
-    if (
-      credentials.email.includes("@itc") ||
-      credentials.email.includes("@")
-    ) {
+  const handleLogin = (credentials: { email: string; password: string }) => {
+    if (credentials.email.includes("@itc") || credentials.email.includes("@")) {
       setUser({
         id: 1,
         name: "John Doe",
@@ -148,29 +129,20 @@ export default function App() {
   };
 
   const handleDeleteSubmission = (submissionId: number) => {
-    setSubmissions((prev) =>
-      prev.filter(
-        (submission) => submission.id !== submissionId,
-      ),
-    );
+    setSubmissions((prev) => prev.filter((submission) => submission.id !== submissionId));
   };
 
-  const handleUpdateSubmission = (
-    submissionId: number,
-    updatedData: any,
-  ) => {
+  const handleUpdateSubmission = (submissionId: number, updatedData: any) => {
     setSubmissions((prev) =>
       prev.map((submission) =>
         submission.id === submissionId
           ? {
               ...submission,
               ...updatedData,
-              timestamp: updatedData.lastModified
-                ? "Just now"
-                : submission.timestamp,
+              timestamp: updatedData.lastModified ? "Just now" : submission.timestamp,
             }
-          : submission,
-      ),
+          : submission
+      )
     );
   };
 
@@ -183,21 +155,14 @@ export default function App() {
               status: "published",
               timestamp: "Just now",
             }
-          : submission,
-      ),
+          : submission
+      )
     );
   };
 
-  const handleLikeSubmission = (
-    submissionId: number,
-    newLikeCount: number,
-  ) => {
+  const handleLikeSubmission = (submissionId: number, newLikeCount: number) => {
     setSubmissions((prev) =>
-      prev.map((submission) =>
-        submission.id === submissionId
-          ? { ...submission, likes: newLikeCount }
-          : submission,
-      ),
+      prev.map((submission) => (submission.id === submissionId ? { ...submission, likes: newLikeCount } : submission))
     );
   };
 
@@ -211,8 +176,7 @@ export default function App() {
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
-          }}
-        >
+          }}>
           {/* Blur overlay */}
           <div className="absolute inset-0 backdrop-blur-sm bg-black/20" />
 
@@ -220,40 +184,26 @@ export default function App() {
           <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-sm sm:max-w-md relative z-10 border border-white/20">
             <div className="text-center mb-6 sm:mb-8">
               <div className="flex justify-center mb-6 sm:mb-8">
-                <img
-                  src={newLogo}
-                  alt="Shining Stars Logo"
-                  className="h-16 sm:h-20 w-auto object-contain"
-                />
+                <img src={newLogo} alt="Shining Stars Logo" className="h-16 sm:h-20 w-auto object-contain" />
               </div>
               <div className="space-y-2">
-                <h1 className="text-xl sm:text-2xl font-medium text-gray-900">
-                  Welcome Back
-                </h1>
-                <p className="text-sm text-gray-600">
-                  Sign in to your Shining Stars account
-                </p>
+                <h1 className="text-xl sm:text-2xl font-medium text-gray-900">Welcome Back</h1>
+                <p className="text-sm text-gray-600">Sign in to your Shining Stars account</p>
               </div>
             </div>
 
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                const formData = new FormData(
-                  e.target as HTMLFormElement,
-                );
+                const formData = new FormData(e.target as HTMLFormElement);
                 handleLogin({
                   email: formData.get("email") as string,
                   password: formData.get("password") as string,
                 });
               }}
-              className="space-y-4 sm:space-y-6"
-            >
+              className="space-y-4 sm:space-y-6">
               <div className="space-y-2">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                   ITC Email Address
                 </label>
                 <input
@@ -267,10 +217,7 @@ export default function App() {
               </div>
 
               <div className="space-y-2">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Password
                 </label>
                 <input
@@ -285,16 +232,13 @@ export default function App() {
 
               <button
                 type="submit"
-                className="w-full bg-purple-600 text-white py-2 sm:py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-transform"
-              >
+                className="w-full bg-purple-600 text-white py-2 sm:py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-transform">
                 Secure Login
               </button>
             </form>
 
             <div className="mt-4 sm:mt-6 text-center">
-              <p className="text-xs text-gray-500">
-                Secure access to Shining Stars Season 3 Platform
-              </p>
+              <p className="text-xs text-gray-500">Secure access to Shining Stars Season 3 Platform</p>
             </div>
           </div>
         </div>
@@ -312,9 +256,7 @@ export default function App() {
           setActiveView={setActiveView}
           onUpload={() => setIsUploadModalOpen(true)}
           onOpenChat={() => setIsChatModalOpen(true)}
-          onOpenNotifications={() =>
-            setIsNotificationModalOpen(true)
-          }
+          onOpenNotifications={() => setIsNotificationModalOpen(true)}
           onLogout={handleLogout}
         />
       </div>
@@ -327,9 +269,7 @@ export default function App() {
             {activeView === "feed" && (
               <div className="w-full">
                 <MainFeed
-                  onOpenHighlights={() =>
-                    setIsHighlightsModalOpen(true)
-                  }
+                  onOpenHighlights={() => setIsHighlightsModalOpen(true)}
                   user={user}
                   submissions={submissions}
                   onLikeSubmission={handleLikeSubmission}
@@ -378,29 +318,13 @@ export default function App() {
 
       {/* Modals - Proper z-indexing */}
       <div className="relative z-50">
-        <UploadModal
-          isOpen={isUploadModalOpen}
-          onClose={() => setIsUploadModalOpen(false)}
-          user={user}
-          onSubmit={handleNewSubmission}
-        />
+        <UploadModal isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} user={user} onSubmit={handleNewSubmission} />
 
-        <ChatModal
-          isOpen={isChatModalOpen}
-          onClose={() => setIsChatModalOpen(false)}
-          user={user}
-        />
+        <ChatModal isOpen={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} user={user} />
 
-        <NotificationModal
-          isOpen={isNotificationModalOpen}
-          onClose={() => setIsNotificationModalOpen(false)}
-          user={user}
-        />
+        <NotificationModal isOpen={isNotificationModalOpen} onClose={() => setIsNotificationModalOpen(false)} />
 
-        <HighlightsModal
-          isOpen={isHighlightsModalOpen}
-          onClose={() => setIsHighlightsModalOpen(false)}
-        />
+        <HighlightsModal isOpen={isHighlightsModalOpen} onClose={() => setIsHighlightsModalOpen(false)} />
       </div>
 
       {/* Toast Notifications - Highest z-index */}

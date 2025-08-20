@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { Heart, MessageCircle, Share2, Filter, TrendingUp, Clock, Sparkles } from 'lucide-react';
-import { Button } from './ui/button';
-import { Card, CardContent, CardHeader } from './ui/card';
-import { Badge } from './ui/badge';
-import { Avatar, AvatarFallback } from './ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { AspectRatio } from './ui/aspect-ratio';
-import { ImageWithFallback } from './figma/ImageWithFallback';
-import { CommentsModal } from './CommentsModal';
-import { ShareModal } from './ShareModal';
-import { ViewPostModal } from './ViewPostModal';
+import { useState } from "react";
+import { Heart, MessageCircle, Share2, Filter, TrendingUp, Clock, Sparkles } from "lucide-react";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader } from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
+import { AspectRatio } from "./ui/aspect-ratio";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { CommentsModal } from "./CommentsModal";
+import { ShareModal } from "./ShareModal";
+import { ViewPostModal } from "./ViewPostModal";
 
 interface MainFeedProps {
   onOpenHighlights: () => void;
@@ -19,47 +19,49 @@ interface MainFeedProps {
 }
 
 export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission }: MainFeedProps) {
-  const [filter, setFilter] = useState<'mostLoved' | 'new' | 'all'>('mostLoved');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [filter, setFilter] = useState<"mostLoved" | "new" | "all">("mostLoved");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [isCommentsModalOpen, setIsCommentsModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState<any>(null);
   const [likedSubmissions, setLikedSubmissions] = useState<Set<number>>(new Set());
-  const [submissionLikes, setSubmissionLikes] = useState<{[key: number]: number}>(() => {
-    const likes: {[key: number]: number} = {};
-    submissions.forEach(submission => {
+  const [submissionLikes, setSubmissionLikes] = useState<{ [key: number]: number }>(() => {
+    const likes: { [key: number]: number } = {};
+    submissions.forEach((submission) => {
       likes[submission.id] = submission.likes;
     });
     return likes;
   });
 
   const categories = [
-    'All Categories',
-    'Innovation', 
-    'Team Collaboration', 
-    'Family & Community', 
-    'Sustainability',
-    'Customer Excellence',
-    'Leadership'
+    "All Categories",
+    "Innovation",
+    "Team Collaboration",
+    "Family & Community",
+    "Sustainability",
+    "Customer Excellence",
+    "Leadership",
   ];
 
-  const filteredSubmissions = submissions.filter(submission => {
-    // Only show published submissions in the main feed
-    if (submission.status !== 'published') return false;
-    if (selectedCategory !== 'all' && submission.category !== selectedCategory) return false;
-    return true;
-  }).sort((a, b) => {
-    if (filter === 'mostLoved') return (submissionLikes[b.id] || b.likes) - (submissionLikes[a.id] || a.likes);
-    if (filter === 'new') {
-      // For "Just now" entries, prioritize them
-      if (a.timestamp === "Just now" && b.timestamp !== "Just now") return -1;
-      if (b.timestamp === "Just now" && a.timestamp !== "Just now") return 1;
-      if (a.timestamp === "Just now" && b.timestamp === "Just now") return b.id - a.id;
-      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
-    }
-    return 0;
-  });
+  const filteredSubmissions = submissions
+    .filter((submission) => {
+      // Only show published submissions in the main feed
+      if (submission.status !== "published") return false;
+      if (selectedCategory !== "all" && submission.category !== selectedCategory) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      if (filter === "mostLoved") return (submissionLikes[b.id] || b.likes) - (submissionLikes[a.id] || a.likes);
+      if (filter === "new") {
+        // For "Just now" entries, prioritize them
+        if (a.timestamp === "Just now" && b.timestamp !== "Just now") return -1;
+        if (b.timestamp === "Just now" && a.timestamp !== "Just now") return 1;
+        if (a.timestamp === "Just now" && b.timestamp === "Just now") return b.id - a.id;
+        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+      }
+      return 0;
+    });
 
   const handleOpenComments = (submission: any) => {
     setSelectedSubmission(submission);
@@ -72,28 +74,26 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
   };
 
   const handleToggleLike = (submissionId: number) => {
-    setLikedSubmissions(prev => {
+    setLikedSubmissions((prev) => {
       const newLiked = new Set(prev);
-      const newLikeCount = newLiked.has(submissionId) 
-        ? submissionLikes[submissionId] - 1 
-        : submissionLikes[submissionId] + 1;
-      
+      const newLikeCount = newLiked.has(submissionId) ? submissionLikes[submissionId] - 1 : submissionLikes[submissionId] + 1;
+
       if (newLiked.has(submissionId)) {
         newLiked.delete(submissionId);
       } else {
         newLiked.add(submissionId);
       }
-      
-      setSubmissionLikes(prevLikes => ({
+
+      setSubmissionLikes((prevLikes) => ({
         ...prevLikes,
-        [submissionId]: newLikeCount
+        [submissionId]: newLikeCount,
       }));
-      
+
       // Notify parent component
       if (onLikeSubmission) {
         onLikeSubmission(submissionId, newLikeCount);
       }
-      
+
       return newLiked;
     });
   };
@@ -104,13 +104,13 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
   };
 
   const handleModalLike = (submissionId: number, newLikeCount: number) => {
-    setSubmissionLikes(prevLikes => ({
+    setSubmissionLikes((prevLikes) => ({
       ...prevLikes,
-      [submissionId]: newLikeCount
+      [submissionId]: newLikeCount,
     }));
-    
+
     // Update liked submissions set
-    setLikedSubmissions(prev => {
+    setLikedSubmissions((prev) => {
       const newLiked = new Set(prev);
       const currentLikeCount = submissionLikes[submissionId];
       if (newLikeCount > currentLikeCount) {
@@ -120,7 +120,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
       }
       return newLiked;
     });
-    
+
     // Notify parent component
     if (onLikeSubmission) {
       onLikeSubmission(submissionId, newLikeCount);
@@ -152,16 +152,15 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                 </Tabs>
               </div>
             </div>
-            
+
             {/* Category Filter */}
             <div className="flex flex-wrap gap-2 pt-2">
               {categories.map((category) => (
                 <Button
                   key={category}
-                  variant={selectedCategory === (category === 'All Categories' ? 'all' : category) ? 'default' : 'outline'}
+                  variant={selectedCategory === (category === "All Categories" ? "all" : category) ? "default" : "outline"}
                   size="sm"
-                  onClick={() => setSelectedCategory(category === 'All Categories' ? 'all' : category)}
-                >
+                  onClick={() => setSelectedCategory(category === "All Categories" ? "all" : category)}>
                   {category}
                 </Button>
               ))}
@@ -178,7 +177,10 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                   <div className="flex items-center space-x-3">
                     <Avatar>
                       <AvatarFallback>
-                        {submission.author.name.split(' ').map(n => n[0]).join('')}
+                        {submission.author.name
+                          .split(" ")
+                          .map((n: string) => n[0])
+                          .join("")}
                       </AvatarFallback>
                     </Avatar>
                     <div>
@@ -198,10 +200,10 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                   </div>
                 </div>
               </CardHeader>
-              
+
               <CardContent className="space-y-4">
                 <p className="text-gray-700">{submission.description}</p>
-                
+
                 {/* Media Content */}
                 <div className="rounded-lg overflow-hidden cursor-pointer" onClick={() => handleViewPost(submission)}>
                   <AspectRatio ratio={16 / 9}>
@@ -212,47 +214,42 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                     />
                   </AspectRatio>
                 </div>
-                
+
                 {/* Actions */}
                 <div className="flex items-center justify-between pt-4">
                   <div className="flex items-center space-x-4">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className={`transition-colors ${
-                        likedSubmissions.has(submission.id)
-                          ? 'text-red-500 hover:text-red-600' 
-                          : 'text-gray-500 hover:text-red-500'
+                        likedSubmissions.has(submission.id) ? "text-red-500 hover:text-red-600" : "text-gray-500 hover:text-red-500"
                       }`}
-                      onClick={() => handleToggleLike(submission.id)}
-                    >
-                      <Heart 
+                      onClick={() => handleToggleLike(submission.id)}>
+                      <Heart
                         className={`h-4 w-4 mr-2 transition-all ${
-                          likedSubmissions.has(submission.id) ? 'fill-current' : 'fill-transparent'
+                          likedSubmissions.has(submission.id) ? "fill-current" : "fill-transparent"
                         }`}
                       />
                       {submissionLikes[submission.id] || submission.likes}
                     </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="text-gray-500 hover:text-blue-500"
-                      onClick={() => handleOpenComments(submission)}
-                    >
+                      onClick={() => handleOpenComments(submission)}>
                       <MessageCircle className="h-4 w-4 mr-2" />
                       {submission.comments}
                     </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="text-gray-500 hover:text-green-500"
-                      onClick={() => handleOpenShare(submission)}
-                    >
+                      onClick={() => handleOpenShare(submission)}>
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
                     </Button>
                   </div>
-                  
+
                   <Button variant="ghost" size="sm" className="text-purple-600">
                     <TrendingUp className="h-4 w-4 mr-2" />
                     Internal Shoutout
@@ -275,17 +272,14 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
             </h3>
           </CardHeader>
           <CardContent>
-            <Button 
+            <Button
               onClick={onOpenHighlights}
-              variant="outline" 
-              className="w-full justify-center hover:bg-purple-50 hover:text-purple-600 hover:border-purple-200 transition-colors"
-            >
+              variant="outline"
+              className="w-full justify-center hover:bg-purple-50 hover:text-purple-600 hover:border-purple-200 transition-colors">
               <Sparkles className="h-4 w-4 mr-2" />
               View All Highlights
             </Button>
-            <p className="text-sm text-gray-500 mt-2 text-center">
-              Discover the amazing submissions from Season 2
-            </p>
+            <p className="text-sm text-gray-500 mt-2 text-center">Discover the amazing submissions from Season 2</p>
           </CardContent>
         </Card>
 
@@ -316,7 +310,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
       </div>
 
       {/* Comments Modal */}
-      <CommentsModal 
+      <CommentsModal
         isOpen={isCommentsModalOpen}
         onClose={() => setIsCommentsModalOpen(false)}
         submission={selectedSubmission}
@@ -324,11 +318,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
       />
 
       {/* Share Modal */}
-      <ShareModal
-        isOpen={isShareModalOpen}
-        onClose={() => setIsShareModalOpen(false)}
-        submission={selectedSubmission}
-      />
+      <ShareModal isOpen={isShareModalOpen} onClose={() => setIsShareModalOpen(false)} submission={selectedSubmission} />
 
       {/* View Post Modal */}
       <ViewPostModal
