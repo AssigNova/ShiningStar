@@ -15,64 +15,7 @@ import newLogo from "./assets/shiningStar.png";
 
 import "./styles/globals.css";
 
-// Initial mock submissions
-// const initialSubmissions = [
-//   {
-//     id: 1,
-//     title: "Building Innovation",
-//     description:
-//       "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rem dolore magnam earum voluptates illo inventore similique iste, nostrum quaerat autem velit in ratione pariatur nisi dolor accusantium, excepturi ducimus asperiores? Eius alias odio assumenda ullam veritatis",
-//     category: "Collaboration",
-//     author: {
-//       name: "Sarah",
-//       department: "HR",
-//     },
-//     department: "HR",
-//     participantType: "Employee",
-//     likes: 35,
-//     comments: 10,
-//     timestamp: "1 hours ago",
-//     status: "published",
-//     type: "image",
-//     // content: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop",
-//   },
-//   {
-//     id: 2,
-//     title: "Sustainable Practices",
-//     description: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rem dolore magnam earum voluptates illo inventore similique iste, nostrum quaerat autem velit in ratione pariatur nisi dolor accusantium, excepturi ducimus asperiores? Eius alias odio assumenda ullam veritatis",
-//     category: "Innovation",
-//     author: {
-//       name: "Chen",
-//       department: "Operations",
-//     },
-//     department: "Operations",
-//     participantType: "Employee",
-//     likes: 28,
-//     comments: 10,
-//     timestamp: "6 hours ago",
-//     status: "published",
-//     type: "video",
-//     // content: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop",
-//   },
-//   {
-//     id: 3,
-//     title: "Family Celebration",
-//     description: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rem dolore magnam earum voluptates illo inventore similique iste, nostrum quaerat autem velit in ratione pariatur nisi dolor accusantium, excepturi ducimus asperiores? Eius alias odio assumenda ullam veritatis",
-//     category: "Family & Community",
-//     author: {
-//       name: "Lisa Brown",
-//       department: "Marketing",
-//     },
-//     department: "Marketing",
-//     participantType: "Spouse",
-//     likes: 67,
-//     comments: 23,
-//     timestamp: "6 hours ago",
-//     status: "published",
-//     type: "image",
-//     content: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&h=400&fit=crop",
-//   },
-// ];
+
 const initialSubmissions = [
   {
     id: 4,
