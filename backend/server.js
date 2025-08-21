@@ -8,8 +8,15 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Middleware to log requests
+app.use((req, res, next) => {
+  const now = new Date();
+  console.log(`[${now.toISOString()}] ${req.method} ${req.url}`);
+  next(); // pass control to next middleware/route handler
+});
+
 // Serve static files from uploads folder
-app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
+app.use("/public/uploads", express.static(path.join(__dirname, "/public/uploads")));
 
 // Routes
 app.use("/api/auth", require("./routes/auth"));

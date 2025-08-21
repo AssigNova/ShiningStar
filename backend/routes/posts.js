@@ -21,7 +21,7 @@ router.post("/", upload.single("media"), createPost);
 router.get("/", getPosts);
 router.get("/category/:category", getPostsByCategory);
 router.get("/user/:userId", getPostsByUser);
-router.put("/:id", updatePost);
+router.put("/:id", upload.single("media"), updatePost);
 router.delete("/:id", deletePost);
 
 // Like/Unlike/Comment routes

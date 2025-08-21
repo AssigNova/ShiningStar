@@ -145,20 +145,20 @@ export default function App() {
   const [isFirstLogin, setIsFirstLogin] = useState(false);
 
   // Fetch posts from backend on mount
-  // useEffect(() => {
-  //   const fetchPosts = async () => {
-  //     try {
-  //       const res = await fetch("http://localhost:5000/api/posts");
-  //       const posts = await res.json();
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await fetch("/api/posts");
+        const posts = await res.json();
 
-  //       setSubmissions(posts);
-  //       console.log("Submissions Set");
-  //     } catch {
-  //       // Optionally show error
-  //     }
-  //   };
-  //   fetchPosts();
-  // }, []);
+        setSubmissions(posts);
+        console.log("Submissions Set");
+      } catch {
+        // Optionally show error
+      }
+    };
+    fetchPosts();
+  }, []);
 
   useEffect(() => {
     setSubmissions(initialSubmissions);
@@ -166,7 +166,7 @@ export default function App() {
 
   // Real user login with backend
   const handleLogin = async (credentials: { email: string; password: string }) => {
-    const res = await fetch("http://localhost:5000/api/auth/login", {
+    const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(credentials),
@@ -189,7 +189,7 @@ export default function App() {
       const token = localStorage.getItem("token");
       if (token) {
         try {
-          const res = await fetch("http://localhost:5000/api/auth/me", {
+          const res = await fetch("/api/auth/me", {
             headers: { Authorization: `Bearer ${token}` },
           });
           const data = await res.json();
@@ -244,7 +244,7 @@ export default function App() {
     if (submissionData.file) {
       formData.append("media", submissionData.file);
     }
-    const res = await fetch("http://localhost:5000/api/posts", {
+    const res = await fetch("/api/posts", {
       method: "POST",
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),

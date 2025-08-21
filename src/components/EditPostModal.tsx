@@ -133,27 +133,50 @@ export function EditPostModal({ isOpen, onClose, submission, onUpdate }: EditPos
     });
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (!formData.title || !formData.description || !formData.category) {
       toast.error("Please fill in all required fields (Title, Description, Category).");
       return;
     }
 
-    const updatedData = {
-      ...formData,
-      // If new file uploaded, update content and type
-      ...(uploadedFile && {
-        content: URL.createObjectURL(uploadedFile),
-        type: uploadedFile.type.startsWith("image/") ? "image" : "video",
-        file: uploadedFile,
-      }),
-      // Update timestamp to show it was recently modified
-      lastModified: new Date().toISOString(),
-    };
+    const token = localStorage.getItem("token");
+    const formDataToSend = new FormData();
+    formDataToSend.append("title", formData.title);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("category", formData.category);
+    formDataToSend.append("participantType", formData.participantType);
+    formDataToSend.append("department", formData.department);
+    formDataToSend.append("tags", formData.tags || "");
+    formDataToSend.append("status", submission.status || "published");
+    formDataToSend.append("type", uploadedFile ? (uploadedFile.type.startsWith("image/") ? "image" : "video") : submission.type);
+    formDataToSend.append("timestamp", new Date().toISOString());
+    formDataToSend.append("author", JSON.stringify(submission.author));
+    formDataToSend.append("likes", String(submission.likes || 0));
+    formDataToSend.append("comments", String(submission.comments || 0));
+    formDataToSend.append("content", submission.content);
+    if (uploadedFile) {
+      formDataToSend.append("media", uploadedFile);
+    }
 
-    onUpdate(submission.id, updatedData);
-    toast.success("Post updated successfully!");
-    onClose();
+    try {
+      const res = await fetch(`/api/posts/${submission._id}`, {
+        method: "PUT",
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formDataToSend,
+      });
+      const updatedPost = await res.json();
+      if (res.ok) {
+        onUpdate(submission.id, updatedPost);
+        toast.success("Post updated successfully!");
+        onClose();
+      } else {
+        toast.error(updatedPost.message || "Failed to update post");
+      }
+    } catch {
+      toast.error("Server error");
+    }
   };
 
   const getFileIcon = (file: File) => {

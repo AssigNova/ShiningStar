@@ -75,7 +75,21 @@ exports.getPostsByUser = async (req, res) => {
 exports.updatePost = async (req, res) => {
   try {
     const { id } = req.params;
-    const post = await Post.findByIdAndUpdate(id, req.body, { new: true });
+    let updateData = { ...req.body };
+    // If author is a stringified object, parse it
+    if (typeof updateData.author === "string") {
+      try {
+        updateData.author = JSON.parse(updateData.author);
+      } catch {
+        updateData.author = { name: updateData.author, department: updateData.department };
+      }
+    }
+    // If file uploaded, update image/content
+    if (req.file) {
+      updateData.image = `/uploads/${req.file.filename}`;
+      updateData.content = `/uploads/${req.file.filename}`;
+    }
+    const post = await Post.findByIdAndUpdate(id, updateData, { new: true });
     res.json(post);
   } catch (err) {
     res.status(500).json({ message: "Server error" });
