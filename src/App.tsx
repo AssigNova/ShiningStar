@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "./components/Header";
 import { MainFeed } from "./components/MainFeed";
 import { UploadModal } from "./components/UploadModal";
@@ -16,60 +16,120 @@ import newLogo from "./assets/shiningStar.png";
 import "./styles/globals.css";
 
 // Initial mock submissions
+// const initialSubmissions = [
+//   {
+//     id: 1,
+//     title: "Building Innovation",
+//     description:
+//       "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rem dolore magnam earum voluptates illo inventore similique iste, nostrum quaerat autem velit in ratione pariatur nisi dolor accusantium, excepturi ducimus asperiores? Eius alias odio assumenda ullam veritatis",
+//     category: "Collaboration",
+//     author: {
+//       name: "Sarah",
+//       department: "HR",
+//     },
+//     department: "HR",
+//     participantType: "Employee",
+//     likes: 35,
+//     comments: 10,
+//     timestamp: "1 hours ago",
+//     status: "published",
+//     type: "image",
+//     // content: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop",
+//   },
+//   {
+//     id: 2,
+//     title: "Sustainable Practices",
+//     description: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rem dolore magnam earum voluptates illo inventore similique iste, nostrum quaerat autem velit in ratione pariatur nisi dolor accusantium, excepturi ducimus asperiores? Eius alias odio assumenda ullam veritatis",
+//     category: "Innovation",
+//     author: {
+//       name: "Chen",
+//       department: "Operations",
+//     },
+//     department: "Operations",
+//     participantType: "Employee",
+//     likes: 28,
+//     comments: 10,
+//     timestamp: "6 hours ago",
+//     status: "published",
+//     type: "video",
+//     // content: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop",
+//   },
+//   {
+//     id: 3,
+//     title: "Family Celebration",
+//     description: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rem dolore magnam earum voluptates illo inventore similique iste, nostrum quaerat autem velit in ratione pariatur nisi dolor accusantium, excepturi ducimus asperiores? Eius alias odio assumenda ullam veritatis",
+//     category: "Family & Community",
+//     author: {
+//       name: "Lisa Brown",
+//       department: "Marketing",
+//     },
+//     department: "Marketing",
+//     participantType: "Spouse",
+//     likes: 67,
+//     comments: 23,
+//     timestamp: "6 hours ago",
+//     status: "published",
+//     type: "image",
+//     content: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&h=400&fit=crop",
+//   },
+// ];
 const initialSubmissions = [
   {
-    id: 1,
-    title: "Team Building Innovation",
-    description: "Our department's creative approach to remote team building during challenging times.",
-    category: "Team Collaboration",
+    id: 4,
+    title: "Green Energy Drive",
+    description:
+      "Promoting the adoption of renewable energy within the organization to reduce carbon footprint and encourage sustainable growth. This initiative focuses on solar panels, energy-efficient systems, and green workshops for employees.",
+    category: "Sustainability",
     author: {
-      name: "Sarah Johnson",
-      department: "HR",
+      name: "Ravi Kumar",
+      department: "Engineering",
     },
-    department: "HR",
+    department: "Engineering",
     participantType: "Employee",
-    likes: 45,
+    likes: 42,
     comments: 12,
     timestamp: "2 hours ago",
     status: "published",
     type: "image",
-    content: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop",
+    content: "https://images.unsplash.com/photo-1509395062183-67c5ad6faff9?w=600&h=400&fit=crop",
   },
   {
-    id: 2,
-    title: "Sustainable Office Practices",
-    description: "Implementing eco-friendly solutions in our workspace.",
+    id: 5,
+    title: "Tech for Tomorrow",
+    description:
+      "Introducing AI-driven automation to streamline workflows, reduce human error, and increase overall efficiency. The project aims to integrate cutting-edge tools into daily operations.",
     category: "Innovation",
     author: {
-      name: "Michael Chen",
-      department: "Operations",
+      name: "Maria Lopez",
+      department: "IT",
     },
-    department: "Operations",
+    department: "IT",
     participantType: "Employee",
-    likes: 38,
-    comments: 8,
+    likes: 55,
+    comments: 18,
     timestamp: "4 hours ago",
     status: "published",
     type: "video",
-    content: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop",
+    content: "https://videos.pexels.com/video-files/856872/856872-hd_1920_1080_25fps.mp4",
   },
   {
-    id: 3,
-    title: "Family Day Celebration",
-    description: "Bringing families together for a memorable day at the office.",
+    id: 6,
+    title: "Cultural Fusion Fest",
+    description:
+      "An annual event that celebrates diversity by showcasing traditional dances, music, food stalls, and cultural activities, bringing employees and their families together.",
     category: "Family & Community",
     author: {
-      name: "Lisa Brown",
-      department: "Marketing",
+      name: "Ahmed Ali",
+      department: "Finance",
     },
-    department: "Marketing",
+    department: "Finance",
     participantType: "Spouse",
-    likes: 67,
-    comments: 23,
-    timestamp: "6 hours ago",
+    likes: 73,
+    comments: 29,
+    timestamp: "1 day ago",
     status: "published",
     type: "image",
-    content: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&h=400&fit=crop",
+    content: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&h=400&fit=crop",
   },
 ];
 
@@ -80,52 +140,127 @@ export default function App() {
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isHighlightsModalOpen, setIsHighlightsModalOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [submissions, setSubmissions] = useState(initialSubmissions);
+  const [submissions, setSubmissions] = useState<any>([]);
+  const [loading, setLoading] = useState(true);
   const [isFirstLogin, setIsFirstLogin] = useState(false);
 
-  // Mock user login
-  const handleLogin = (credentials: { email: string; password: string }) => {
-    if (credentials.email.includes("@itc") || credentials.email.includes("@")) {
-      setUser({
-        id: 1,
-        name: "John Doe",
-        email: credentials.email,
-        department: "Marketing",
-        employeeId: "ITC001",
-      });
-      setIsFirstLogin(true); // Mark as first login to trigger AI welcome popup
+  // Fetch posts from backend on mount
+  // useEffect(() => {
+  //   const fetchPosts = async () => {
+  //     try {
+  //       const res = await fetch("http://localhost:5000/api/posts");
+  //       const posts = await res.json();
 
-      // Reset first login flag after a delay
-      setTimeout(() => {
-        setIsFirstLogin(false);
-      }, 6000);
+  //       setSubmissions(posts);
+  //       console.log("Submissions Set");
+  //     } catch {
+  //       // Optionally show error
+  //     }
+  //   };
+  //   fetchPosts();
+  // }, []);
+
+  useEffect(() => {
+    setSubmissions(initialSubmissions);
+  }, []);
+
+  // Real user login with backend
+  const handleLogin = async (credentials: { email: string; password: string }) => {
+    const res = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(credentials),
+    });
+    const data = await res.json();
+    if (res.ok && data.token) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      setUser(data.user);
+      setIsFirstLogin(true);
+      setTimeout(() => setIsFirstLogin(false), 6000);
+    } else {
+      alert(data.message || "Login failed");
     }
   };
 
+  // Persist user session on reload using localStorage and validate with backend
+  useEffect(() => {
+    const checkUserSession = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const res = await fetch("http://localhost:5000/api/auth/me", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          if (res.ok && data.user) {
+            setUser(data.user);
+          } else {
+            setUser(null);
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+          }
+        } catch {
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    };
+    checkUserSession();
+  }, []);
+
   const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setUser(null);
     setActiveView("feed");
     setIsFirstLogin(false);
   };
 
-  const handleNewSubmission = (submissionData: any) => {
-    const newSubmission = {
-      id: Date.now(), // Simple ID generation
-      ...submissionData,
-      author: {
-        name: user.name,
-        department: user.department,
+  const handleNewSubmission = async (submissionData: any) => {
+    // try {
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
+    formData.append("title", submissionData.title);
+    formData.append("description", submissionData.description);
+    formData.append("category", submissionData.category);
+    formData.append(
+      "author",
+      JSON.stringify({
+        name: user?.username || user?.name || "Unknown",
+        department: user?.department || submissionData.department || "Unknown",
+      })
+    );
+    formData.append("department", submissionData.department);
+    formData.append("participantType", submissionData.participantType);
+    formData.append("likes", String(submissionData.likes || 0));
+    formData.append("comments", String(submissionData.comments || 0));
+    formData.append("timestamp", submissionData.timestamp || submissionData.submittedAt || new Date().toISOString());
+    formData.append("status", submissionData.status);
+    formData.append("type", submissionData.type);
+    formData.append("content", submissionData.content);
+    if (submissionData.file) {
+      formData.append("media", submissionData.file);
+    }
+    const res = await fetch("http://localhost:5000/api/posts", {
+      method: "POST",
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      department: user.department,
-      likes: 0,
-      comments: 0,
-      timestamp: "Just now",
-      // Keep the original status from the submission (draft or published)
-      status: submissionData.status,
-    };
-
-    setSubmissions((prev) => [newSubmission, ...prev]);
-    setIsUploadModalOpen(false);
+      body: formData,
+    });
+    const newPost = await res.json();
+    if (res.ok) {
+      setSubmissions((prev) => [newPost, ...prev]);
+      setIsUploadModalOpen(false);
+    } else {
+      alert(newPost.message || "Failed to create post");
+    }
+    // } catch {
+    //   alert("Server error");
+    // }
   };
 
   const handleDeleteSubmission = (submissionId: number) => {
@@ -165,6 +300,20 @@ export default function App() {
       prev.map((submission) => (submission.id === submissionId ? { ...submission, likes: newLikeCount } : submission))
     );
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center">
+        <div className="flex flex-col items-center">
+          <svg className="animate-spin h-10 w-10 text-purple-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+          </svg>
+          <span className="text-lg text-gray-700">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   if (!user) {
     return (
@@ -322,7 +471,7 @@ export default function App() {
 
         <ChatModal isOpen={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} user={user} />
 
-        <NotificationModal isOpen={isNotificationModalOpen} onClose={() => setIsNotificationModalOpen(false)} />
+        <NotificationModal isOpen={isNotificationModalOpen} onClose={() => setIsNotificationModalOpen(false)} user={user} />
 
         <HighlightsModal isOpen={isHighlightsModalOpen} onClose={() => setIsHighlightsModalOpen(false)} />
       </div>
