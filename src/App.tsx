@@ -15,7 +15,6 @@ import newLogo from "./assets/shiningStar.png";
 
 import "./styles/globals.css";
 
-
 const initialSubmissions = [
   {
     id: 4,
@@ -196,7 +195,7 @@ export default function App() {
     });
     const newPost = await res.json();
     if (res.ok) {
-      setSubmissions((prev) => [newPost, ...prev]);
+      setSubmissions((prev: any) => [newPost, ...prev]);
       setIsUploadModalOpen(false);
     } else {
       alert(newPost.message || "Failed to create post");
@@ -207,12 +206,12 @@ export default function App() {
   };
 
   const handleDeleteSubmission = (submissionId: number) => {
-    setSubmissions((prev) => prev.filter((submission) => submission.id !== submissionId));
+    setSubmissions((prev: any) => prev.filter((submission: any) => submission.id !== submissionId));
   };
 
   const handleUpdateSubmission = (submissionId: number, updatedData: any) => {
-    setSubmissions((prev) =>
-      prev.map((submission) =>
+    setSubmissions((prev: any) =>
+      prev.map((submission: any) =>
         submission.id === submissionId
           ? {
               ...submission,
@@ -225,8 +224,8 @@ export default function App() {
   };
 
   const handlePublishDraft = (submissionId: number) => {
-    setSubmissions((prev) =>
-      prev.map((submission) =>
+    setSubmissions((prev: any) =>
+      prev.map((submission: any) =>
         submission.id === submissionId
           ? {
               ...submission,
@@ -239,8 +238,8 @@ export default function App() {
   };
 
   const handleLikeSubmission = (submissionId: number, newLikeCount: number) => {
-    setSubmissions((prev) =>
-      prev.map((submission) => (submission.id === submissionId ? { ...submission, likes: newLikeCount } : submission))
+    setSubmissions((prev: any) =>
+      prev.map((submission: any) => (submission.id === submissionId ? { ...submission, likes: newLikeCount } : submission))
     );
   };
 
