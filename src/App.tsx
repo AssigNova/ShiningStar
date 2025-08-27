@@ -15,70 +15,11 @@ import newLogo from "./assets/shiningStar.png";
 
 import "./styles/globals.css";
 
-const initialSubmissions = [
-  {
-    id: 4,
-    title: "Green Energy Drive",
-    description:
-      "Promoting the adoption of renewable energy within the organization to reduce carbon footprint and encourage sustainable growth. This initiative focuses on solar panels, energy-efficient systems, and green workshops for employees.",
-    category: "Sustainability",
-    author: {
-      name: "Ravi Kumar",
-      department: "Engineering",
-    },
-    department: "Engineering",
-    participantType: "Employee",
-    likes: 42,
-    comments: 12,
-    timestamp: "2 hours ago",
-    status: "published",
-    type: "image",
-    content: "https://images.unsplash.com/photo-1509395062183-67c5ad6faff9?w=600&h=400&fit=crop",
-  },
-  {
-    id: 5,
-    title: "Tech for Tomorrow",
-    description:
-      "Introducing AI-driven automation to streamline workflows, reduce human error, and increase overall efficiency. The project aims to integrate cutting-edge tools into daily operations.",
-    category: "Innovation",
-    author: {
-      name: "Maria Lopez",
-      department: "IT",
-    },
-    department: "IT",
-    participantType: "Employee",
-    likes: 55,
-    comments: 18,
-    timestamp: "4 hours ago",
-    status: "published",
-    type: "video",
-    content: "https://videos.pexels.com/video-files/856872/856872-hd_1920_1080_25fps.mp4",
-  },
-  {
-    id: 6,
-    title: "Cultural Fusion Fest",
-    description:
-      "An annual event that celebrates diversity by showcasing traditional dances, music, food stalls, and cultural activities, bringing employees and their families together.",
-    category: "Family & Community",
-    author: {
-      name: "Ahmed Ali",
-      department: "Finance",
-    },
-    department: "Finance",
-    participantType: "Spouse",
-    likes: 73,
-    comments: 29,
-    timestamp: "1 day ago",
-    status: "published",
-    type: "image",
-    content: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&h=400&fit=crop",
-  },
-];
-
 export default function App() {
   // Check for post id in URL and filter feed if present
   const [singlePost, setSinglePost] = useState<any | null>(null);
   useEffect(() => {
+    console.log("in UseEffect");
     const match = window.location.pathname.match(/\/post\/(\w+)/);
     if (match && match[1]) {
       fetch(`/api/posts/${match[1]}`)
@@ -117,9 +58,9 @@ export default function App() {
     fetchPosts();
   }, []);
 
-  useEffect(() => {
-    setSubmissions(initialSubmissions);
-  }, []);
+  // useEffect(() => {
+  //   setSubmissions(initialSubmissions);
+  // }, []);
 
   const handleSearch = (term: string) => {
     if (!term.trim()) {
@@ -130,7 +71,11 @@ export default function App() {
     const results = submissions.filter((submission: any) => {
       const nameMatch = submission.author?.name?.toLowerCase().includes(lowerTerm);
       const empMatch = submission.author?.employeeId?.toString().includes(lowerTerm);
-      return nameMatch || empMatch;
+      const titleMatch = submission.title?.toLowerCase().includes(lowerTerm);
+      const descMatch = submission.description?.toLowerCase().includes(lowerTerm);
+      const categoryMatch = submission.category?.toLowerCase().includes(lowerTerm);
+      const deptMatch = submission.department?.toLowerCase().includes(lowerTerm);
+      return nameMatch || empMatch || titleMatch || descMatch || categoryMatch || deptMatch;
     });
     setSearchResults(results);
   };
@@ -403,7 +348,8 @@ export default function App() {
                 <MainFeed
                   onOpenHighlights={() => setIsHighlightsModalOpen(true)}
                   user={user}
-                  submissions={singlePost ? [singlePost] : searchResults.length > 0 ? searchResults : submissions}
+                  submissions={singlePost ? [singlePost] : submissions}
+                  searchResults={searchResults}
                   onLikeSubmission={handleLikeSubmission}
                 />
               </div>

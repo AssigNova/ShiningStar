@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, Heart, MessageCircle, CheckCircle, Edit, Trash2, Send } from "lucide-react";
 import {
   AlertDialog,
@@ -32,15 +32,25 @@ interface DashboardProps {
 }
 
 export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmission, onPublishDraft, onLikeSubmission }: DashboardProps) {
+  const [leaderboardRank, setLeaderboardRank] = useState<number | null>(null);
   // Filter user's submissions
   const userSubmissions = submissions
     .filter((submission) => submission.author.name === user.name)
     .map((submission) => ({
       ...submission,
-      // Use real views data if available, else default to 0
       views: typeof submission.views === "number" ? submission.views : 0,
       submittedAt: submission.timestamp === "Just now" ? new Date().toISOString().split("T")[0] : "2024-08-05",
     }));
+
+  // Fetch leaderboard rank for current user
+  useEffect(() => {
+    fetch("/api/leaderboard/individuals")
+      .then((res) => res.json())
+      .then((data) => {
+        const person = data.find((p: any) => p.name === user.name);
+        setLeaderboardRank(person ? person.rank : null);
+      });
+  }, [user.name]);
 
   // Calculate stats from actual submissions
   const stats = {
@@ -75,7 +85,39 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
       const now = new Date();
       return s.status === "published" && now.getTime() - created.getTime() < 7 * 24 * 60 * 60 * 1000;
     }).length,
-    ranking: 15,
+    ranking: leaderboardRank,
+    engagementRate:
+      userSubmissions.length > 0
+        ? Math.min(
+            Math.round(
+              (userSubmissions.reduce(
+                (sum, s) => sum + (Array.isArray(s.likes) ? s.likes.length : 0) + (Array.isArray(s.comments) ? s.comments.length : 0),
+                0
+              ) /
+                (userSubmissions.length * 10)) *
+                100
+            ),
+            100
+          )
+        : 0,
+    communityImpact:
+      userSubmissions.length > 0
+        ? Math.min(
+            Math.round(
+              (userSubmissions.reduce(
+                (sum, s) =>
+                  sum +
+                  (s.views || 0) +
+                  (Array.isArray(s.likes) ? s.likes.length : 0) +
+                  (Array.isArray(s.comments) ? s.comments.length : 0),
+                0
+              ) /
+                (userSubmissions.length * 10)) *
+                100
+            ),
+            100
+          )
+        : 0,
   };
   const [notifications, setNotifications] = useState({
     postLikes: true,
@@ -340,9 +382,9 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
               <div>
                 <div className="flex justify-between mb-2">
                   <span className="text-sm font-medium">Engagement Rate</span>
-                  <span className="text-sm text-gray-600">78%</span>
+                  <span className="text-sm text-gray-600">{stats.engagementRate}%</span>
                 </div>
-                <Progress value={78} className="h-2" />
+                <Progress value={stats.engagementRate} className="h-2" />
               </div>
 
               <div>
@@ -361,9 +403,9 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
               <div>
                 <div className="flex justify-between mb-2">
                   <span className="text-sm font-medium">Community Impact</span>
-                  <span className="text-sm text-gray-600">92%</span>
+                  <span className="text-sm text-gray-600">{stats.communityImpact}%</span>
                 </div>
-                <Progress value={92} className="h-2" />
+                <Progress value={stats.communityImpact} className="h-2" />
               </div>
             </CardContent>
           </Card>

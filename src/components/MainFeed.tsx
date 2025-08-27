@@ -16,9 +16,10 @@ interface MainFeedProps {
   user: any;
   submissions: any[];
   onLikeSubmission?: (submissionId: string, newLikeCount: number) => void;
+  searchResults: any[];
 }
 
-export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission }: MainFeedProps) {
+export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission, searchResults }: MainFeedProps) {
   const [filter, setFilter] = useState<"mostLoved" | "new" | "all">("mostLoved");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [isCommentsModalOpen, setIsCommentsModalOpen] = useState(false);
@@ -67,7 +68,26 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
     "Leadership",
   ];
 
-  const filteredSubmissions = submissions
+  // const filteredSubmissions = submissions
+  //   .filter((submission) => {
+  //     // Only show published submissions in the main feed
+  //     if (submission.status !== "published") return false;
+  //     if (selectedCategory !== "all" && submission.category !== selectedCategory) return false;
+  //     return true;
+  //   })
+  //   .sort((a, b) => {
+  //     if (filter === "mostLoved") return (submissionLikes[b._id] || 0) - (submissionLikes[a._id] || 0);
+  //     if (filter === "new") {
+  //       // For "Just now" entries, prioritize them
+  //       if (a.timestamp === "Just now" && b.timestamp !== "Just now") return -1;
+  //       if (b.timestamp === "Just now" && a.timestamp !== "Just now") return 1;
+  //       if (a.timestamp === "Just now" && b.timestamp === "Just now") return b._id.localeCompare(a._id);
+  //       return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+  //     }
+  //     return 0;
+  //   });
+
+  const filteredSubmissions = (searchResults.length > 0 ? searchResults : submissions)
     .filter((submission) => {
       // Only show published submissions in the main feed
       if (submission.status !== "published") return false;
