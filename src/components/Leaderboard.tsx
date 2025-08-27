@@ -7,6 +7,14 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 
 import { useEffect, useState } from "react";
 
+// Define types for the data structures
+interface DepartmentStats {
+  participants?: number;
+  submissions?: number;
+  engagement?: number;
+  [key: string]: unknown; // For other properties we might not use
+}
+
 export function Leaderboard() {
   const [stats, setStats] = useState({
     participants: 0,
@@ -26,9 +34,9 @@ export function Leaderboard() {
         setStats((prev) => ({
           ...prev,
           departments: data.length,
-          participants: data.reduce((sum, d) => sum + (d.participants || 0), 0),
-          submissions: data.reduce((sum, d) => sum + (d.submissions || 0), 0),
-          engagement: Math.round(data.reduce((sum, d) => sum + (d.engagement || 0), 0) / (data.length || 1)),
+          participants: data.reduce((sum: number, d: DepartmentStats) => sum + (d.participants || 0), 0),
+          submissions: data.reduce((sum: number, d: DepartmentStats) => sum + (d.submissions || 0), 0),
+          engagement: Math.round(data.reduce((sum: number, d: DepartmentStats) => sum + (d.engagement || 0), 0) / (data.length || 1)),
         }));
       });
     fetch("/api/leaderboard/submissionsThisWeek")
@@ -198,7 +206,7 @@ export function Leaderboard() {
                         <AvatarFallback>
                           {person.name
                             .split(" ")
-                            .map((n) => n[0])
+                            .map((n: any[]) => n[0])
                             .join("")}
                         </AvatarFallback>
                       </Avatar>

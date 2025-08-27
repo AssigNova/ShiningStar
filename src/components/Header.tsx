@@ -1,7 +1,6 @@
-import { Search, Upload, Home, User, Trophy, Book, Bell, Menu, X } from "lucide-react";
+import { Search, Upload, Home, User, Trophy, Book, Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import newLogo from "../assets/shiningStar.png";
@@ -18,7 +17,7 @@ interface HeaderProps {
   onSearch?: (term: string) => void;
 }
 
-export function Header({ user, activeView, setActiveView, onUpload, onLogout, onOpenChat, onOpenNotifications, onSearch }: HeaderProps) {
+export function Header({ user, activeView, setActiveView, onUpload, onLogout, onOpenChat, onSearch }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");

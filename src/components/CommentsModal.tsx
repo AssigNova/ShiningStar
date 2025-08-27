@@ -56,7 +56,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
 
   const handleLikeComment = (commentId: number) => {
     if (!user?._id) return toast.error("Login required");
-    const comment = comments.find((c) => c._id === commentId);
+    const comment = comments.find((c: any) => c._id === commentId);
     const liked = comment?.likes?.includes(user._id);
     fetch(`/api/posts/${submission._id}/comments/${commentId}/${liked ? "unlike" : "like"}`, {
       method: "POST",
@@ -67,7 +67,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
       .then((data) => {
         if (data.likes !== undefined) {
           setComments(
-            comments.map((c) =>
+            comments.map((c: any) =>
               c._id === commentId
                 ? { ...c, likes: liked ? c.likes.filter((id: string) => id !== user._id) : [...(c.likes || []), user._id] }
                 : c
@@ -81,7 +81,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
   };
 
   const handleDeleteComment = (commentId: number) => {
-    setComments(comments.filter((comment) => comment._id !== commentId));
+    setComments(comments.filter((comment: any) => comment._id !== commentId));
     toast.success("Comment deleted successfully");
   };
 
@@ -96,7 +96,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
       return;
     }
 
-    setComments(comments.map((comment) => (comment._id === commentId ? { ...comment, content: editingText.trim() } : comment)));
+    setComments(comments.map((comment: any) => (comment._id === commentId ? { ...comment, content: editingText.trim() } : comment)));
 
     setEditingCommentId(null);
     setEditingText("");
@@ -131,7 +131,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
       .then((res) => res.json())
       .then((data) => {
         if (data.replies) {
-          setComments(comments.map((comment) => (comment._id === parentCommentId ? { ...comment, replies: data.replies } : comment)));
+          setComments(comments.map((comment: any) => (comment._id === parentCommentId ? { ...comment, replies: data.replies } : comment)));
           setReplyingToId(null);
           setReplyText("");
           toast.success("Reply added successfully!");
@@ -149,8 +149,8 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
 
   const handleLikeReply = (parentCommentId: number, replyId: number) => {
     if (!user?._id) return toast.error("Login required");
-    const parentComment = comments.find((c) => c._id === parentCommentId);
-    const reply = parentComment?.replies?.find((r) => r._id === replyId);
+    const parentComment = comments.find((c: any) => c._id === parentCommentId);
+    const reply = parentComment?.replies?.find((r: any) => r._id === replyId);
     const liked = Array.isArray(reply?.likes) && reply.likes.includes(user._id);
     fetch(`/api/posts/${submission._id}/comments/${parentCommentId}/replies/${replyId}/${liked ? "unlike" : "like"}`, {
       method: "POST",
@@ -161,12 +161,12 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
       .then((data) => {
         if (data.likes !== undefined) {
           setComments(
-            comments.map((comment) =>
+            comments.map((comment: any) =>
               comment._id === parentCommentId
                 ? {
                     ...comment,
                     replies:
-                      comment.replies?.map((r) =>
+                      comment.replies?.map((r: any) =>
                         r._id === replyId
                           ? { ...r, likes: liked ? r.likes.filter((id: string) => id !== user._id) : [...(r.likes || []), user._id] }
                           : r
@@ -194,12 +194,13 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
     }
 
     setComments(
-      comments.map((comment) =>
+      comments.map((comment: any) =>
         comment._id === parentCommentId
           ? {
               ...comment,
               replies:
-                comment.replies?.map((reply) => (reply._id === replyId ? { ...reply, content: editingReplyText.trim() } : reply)) || [],
+                comment.replies?.map((reply: any) => (reply._id === replyId ? { ...reply, content: editingReplyText.trim() } : reply)) ||
+                [],
             }
           : comment
       )
@@ -217,11 +218,11 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
 
   const handleDeleteReply = (parentCommentId: number, replyId: number) => {
     setComments(
-      comments.map((comment) =>
+      comments.map((comment: any) =>
         comment._id === parentCommentId
           ? {
               ...comment,
-              replies: comment.replies?.filter((reply) => reply._id !== replyId) || [],
+              replies: comment.replies?.filter((reply: any) => reply._id !== replyId) || [],
             }
           : comment
       )
@@ -301,7 +302,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                     <p>No comments yet. Be the first to comment!</p>
                   </div>
                 ) : (
-                  comments.map((comment) => (
+                  comments.map((comment: any) => (
                     <div key={comment._id || comment._id} className="flex items-start space-x-3 p-3 bg-white border rounded-lg">
                       <Avatar className="h-8 w-8">
                         <AvatarFallback className="bg-blue-100 text-blue-600">{getInitials(comment.user?.name)}</AvatarFallback>
@@ -428,7 +429,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                         {/* Replies */}
                         {comment.replies && comment.replies.length > 0 && (
                           <div className="mt-3 ml-8 space-y-3">
-                            {comment.replies.map((reply) => (
+                            {comment.replies.map((reply: any) => (
                               <div key={reply._id} className="flex items-start space-x-3 p-2 bg-gray-50 rounded-lg">
                                 <Avatar className="h-6 w-6">
                                   <AvatarFallback className="bg-green-100 text-green-600 text-xs">

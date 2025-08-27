@@ -14,7 +14,7 @@ interface ViewPostModalProps {
   onClose: () => void;
   submission: any;
   user: any;
-  onLike?: (submissionId: number, newLikeCount: number) => void;
+  onLike: (submissionId: string, userId: string) => void; // <— make it string,string
 }
 
 export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: ViewPostModalProps) {
@@ -154,7 +154,7 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
 
     // Call the parent handler to update the submission in the main state
     if (onLike) {
-      onLike(submission.id, newLikeCount);
+      onLike(submission._id, user._id);
     }
   };
 

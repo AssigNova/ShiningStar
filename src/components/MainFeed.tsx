@@ -15,7 +15,7 @@ interface MainFeedProps {
   onOpenHighlights: () => void;
   user: any;
   submissions: any[];
-  onLikeSubmission?: (submissionId: string, newLikeCount: number) => void;
+  onLikeSubmission?: (submissionId: string, userId: string) => void;
   searchResults: any[];
 }
 
@@ -171,7 +171,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
         if (!res.ok) throw new Error("Failed to update like status");
         return res.json();
       })
-      .then((data) => {
+      .then(() => {
         if (onLikeSubmission) {
           onLikeSubmission(submissionId, user._id);
         }
@@ -203,17 +203,11 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
     setIsViewModalOpen(true);
   };
 
-  const handleModalLike = (submissionId: number, newLikeCount: number) => {
-    setSubmissionLikes((prevLikes) => ({
-      ...prevLikes,
-      [submissionId]: newLikeCount,
-    }));
-
+  const handleModalLike = (submissionId: string, userId: string) => {
     // Update liked submissions set
     setLikedSubmissions((prev) => {
       const newLiked = new Set(prev);
-      const currentLikeCount = submissionLikes[submissionId];
-      if (newLikeCount > currentLikeCount) {
+      if (userId) {
         newLiked.add(submissionId);
       } else {
         newLiked.delete(submissionId);
@@ -223,7 +217,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
 
     // Notify parent component
     if (onLikeSubmission) {
-      onLikeSubmission(submissionId, newLikeCount);
+      onLikeSubmission(submissionId, userId);
     }
   };
 

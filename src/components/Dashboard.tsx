@@ -28,7 +28,7 @@ interface DashboardProps {
   onDeleteSubmission?: (submissionId: number) => void;
   onUpdateSubmission?: (submissionId: number, updatedData: any) => void;
   onPublishDraft?: (submissionId: number) => void;
-  onLikeSubmission?: (submissionId: number, newLikeCount: number) => void;
+  onLikeSubmission?: (submissionId: string, userId: string) => void;
 }
 
 export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmission, onPublishDraft, onLikeSubmission }: DashboardProps) {
@@ -471,7 +471,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
         onClose={() => setViewingSubmission(null)}
         submission={viewingSubmission}
         user={user}
-        onLike={onLikeSubmission}
+        onLike={(submissionId, userId) => onLikeSubmission && onLikeSubmission(submissionId, userId)}
       />
 
       {/* Edit Post Modal */}
