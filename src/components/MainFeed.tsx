@@ -307,11 +307,20 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                 {/* Media Content */}
                 <div className="rounded-lg overflow-hidden cursor-pointer" onClick={() => handleViewPost(submission)}>
                   <AspectRatio ratio={16 / 9}>
-                    <ImageWithFallback
-                      src={submission.content}
-                      alt={submission.title}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                    />
+                    {submission.mediaType === "video" || (submission.content && submission.content.match(/\.(mp4|webm|ogg)$/i)) ? (
+                      <video
+                        src={submission.content}
+                        controls
+                        poster={submission.thumbnail || undefined}
+                        className="w-full h-full object-cover bg-black"
+                      />
+                    ) : (
+                      <ImageWithFallback
+                        src={submission.content}
+                        alt={submission.title}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                    )}
                   </AspectRatio>
                 </div>
 
