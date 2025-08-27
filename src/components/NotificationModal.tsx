@@ -87,7 +87,6 @@ const getNotificationIcon = (type: string) => {
 
 export function NotificationModal({ user, isOpen, onClose }: NotificationModalProps) {
   const unreadCount = mockNotifications.filter((n) => !n.isRead).length;
-  console.log(user);
   const markAllAsRead = () => {
     // In a real app, this would make an API call
     console.log("Marking all notifications as read");

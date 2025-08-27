@@ -18,6 +18,12 @@ interface ViewPostModalProps {
 }
 
 export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: ViewPostModalProps) {
+  // Increment post views when modal opens and submission changes
+  useEffect(() => {
+    if (isOpen && submission && submission._id) {
+      fetch(`/api/posts/${submission._id}/view`, { method: "POST" });
+    }
+  }, [isOpen, submission]);
   const [isFullSizeOpen, setIsFullSizeOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPlayingFullscreen, setIsPlayingFullscreen] = useState(false);
@@ -452,7 +458,7 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                       className="flex items-center space-x-2 hover:bg-gray-100 rounded-lg p-2 transition-colors"
                       onClick={() => setIsCommentsModalOpen(true)}>
                       <MessageCircle className="h-5 w-5 text-blue-500" />
-                      <span className="font-medium">{submission.comments}</span>
+                      <span className="font-medium">{Array.isArray(submission.comments) ? submission.comments.length : 0}</span>
                       <span className="text-gray-600">comments</span>
                     </button>
                     <div className="flex items-center space-x-2">

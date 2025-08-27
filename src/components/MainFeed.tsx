@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Heart, MessageCircle, Share2, Filter, TrendingUp, Clock, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
@@ -15,7 +15,7 @@ interface MainFeedProps {
   onOpenHighlights: () => void;
   user: any;
   submissions: any[];
-  onLikeSubmission?: (submissionId: number, newLikeCount: number) => void;
+  onLikeSubmission?: (submissionId: string, newLikeCount: number) => void;
 }
 
 export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission }: MainFeedProps) {
@@ -25,14 +25,37 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState<any>(null);
-  const [likedSubmissions, setLikedSubmissions] = useState<Set<number>>(new Set());
-  const [submissionLikes, setSubmissionLikes] = useState<{ [key: number]: number }>(() => {
-    const likes: { [key: number]: number } = {};
+  const [likedSubmissions, setLikedSubmissions] = useState<Set<string>>(() => {
+    const liked = new Set<string>();
     submissions.forEach((submission) => {
-      likes[submission.id] = submission.likes;
+      if (Array.isArray(submission.likes) && submission.likes.includes(user._id)) {
+        liked.add(submission._id);
+      }
+    });
+    return liked;
+  });
+  const [submissionLikes, setSubmissionLikes] = useState<{ [key: string]: number }>(() => {
+    const likes: { [key: string]: number } = {};
+    submissions.forEach((submission) => {
+      likes[submission._id] = Array.isArray(submission.likes) ? submission.likes.length : 0;
     });
     return likes;
   });
+
+  useEffect(() => {
+    const newLiked = new Set<string>();
+    const newLikesCount: { [key: string]: number } = {};
+
+    submissions.forEach((submission) => {
+      newLikesCount[submission._id] = Array.isArray(submission.likes) ? submission.likes.length : 0;
+      if (Array.isArray(submission.likes) && submission.likes.includes(user._id)) {
+        newLiked.add(submission._id);
+      }
+    });
+
+    setLikedSubmissions(newLiked);
+    setSubmissionLikes(newLikesCount);
+  }, [submissions, user._id]);
 
   const categories = [
     "All Categories",
@@ -52,12 +75,12 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
       return true;
     })
     .sort((a, b) => {
-      if (filter === "mostLoved") return (submissionLikes[b.id] || b.likes) - (submissionLikes[a.id] || a.likes);
+      if (filter === "mostLoved") return (submissionLikes[b._id] || 0) - (submissionLikes[a._id] || 0);
       if (filter === "new") {
         // For "Just now" entries, prioritize them
         if (a.timestamp === "Just now" && b.timestamp !== "Just now") return -1;
         if (b.timestamp === "Just now" && a.timestamp !== "Just now") return 1;
-        if (a.timestamp === "Just now" && b.timestamp === "Just now") return b.id - a.id;
+        if (a.timestamp === "Just now" && b.timestamp === "Just now") return b._id.localeCompare(a._id);
         return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
       }
       return 0;
@@ -73,29 +96,86 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
     setIsShareModalOpen(true);
   };
 
-  const handleToggleLike = (submissionId: number) => {
-    setLikedSubmissions((prev) => {
-      const newLiked = new Set(prev);
-      const newLikeCount = newLiked.has(submissionId) ? submissionLikes[submissionId] - 1 : submissionLikes[submissionId] + 1;
+  // const handleToggleLike = (submissionId: string) => {
+  //   const isLiked = likedSubmissions.has(submissionId);
+  //   const url = `/api/posts/${submissionId}/${isLiked ? "unlike" : "like"}`;
+  //   fetch(url, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ userId: user._id }),
+  //   })
+  //     .then((res) => {
+  //       if (!res.ok) throw new Error("Failed to update like status");
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       // Assume backend returns updated like count
+  //       const newLikeCount = data.likes;
+  //       setLikedSubmissions((prev) => {
+  //         const newLiked = new Set(prev);
+  //         if (isLiked) {
+  //           newLiked.delete(submissionId);
+  //         } else {
+  //           newLiked.add(submissionId);
+  //         }
+  //         return newLiked;
+  //       });
+  //       setSubmissionLikes((prevLikes) => ({
+  //         ...prevLikes,
+  //         [submissionId]: newLikeCount,
+  //       }));
+  //       if (onLikeSubmission) {
+  //         onLikeSubmission(submissionId, newLikeCount);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       // Optionally show error to user
+  //       console.error(err);
+  //     });
+  // };
 
-      if (newLiked.has(submissionId)) {
-        newLiked.delete(submissionId);
-      } else {
-        newLiked.add(submissionId);
-      }
+  const handleToggleLike = (submissionId: string) => {
+    const isLiked = likedSubmissions.has(submissionId);
+    const url = `/api/posts/${submissionId}/${isLiked ? "unlike" : "like"}`;
 
-      setSubmissionLikes((prevLikes) => ({
-        ...prevLikes,
-        [submissionId]: newLikeCount,
-      }));
-
-      // Notify parent component
-      if (onLikeSubmission) {
-        onLikeSubmission(submissionId, newLikeCount);
-      }
-
-      return newLiked;
-    });
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId: user._id }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to update like status");
+        return res.json();
+      })
+      .then((data) => {
+        if (onLikeSubmission) {
+          onLikeSubmission(submissionId, user._id);
+        }
+        // const newLikeCount = data.likes;
+        // setSubmissionLikes((prevLikes) => ({
+        //   ...prevLikes,
+        //   [submissionId]: newLikeCount,
+        // }));
+        // setLikedSubmissions((prev) => {
+        //   const newLiked = new Set(prev);
+        //   if (isLiked) {
+        //     newLiked.delete(submissionId);
+        //   } else {
+        //     newLiked.add(submissionId);
+        //   }
+        //   return newLiked;
+        // });
+        // if (onLikeSubmission) {
+        //   onLikeSubmission(submissionId, newLikeCount);
+        // }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   const handleViewPost = (submission: any) => {
@@ -171,7 +251,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
         {/* Submissions */}
         <div className="space-y-6">
           {filteredSubmissions.map((submission) => (
-            <Card key={submission.id} className="overflow-hidden">
+            <Card key={submission._id} className="overflow-hidden">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-3">
@@ -222,15 +302,15 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                       variant="ghost"
                       size="sm"
                       className={`transition-colors ${
-                        likedSubmissions.has(submission.id) ? "text-red-500 hover:text-red-600" : "text-gray-500 hover:text-red-500"
+                        likedSubmissions.has(submission._id) ? "text-red-500 hover:text-red-600" : "text-gray-500 hover:text-red-500"
                       }`}
-                      onClick={() => handleToggleLike(submission.id)}>
+                      onClick={() => handleToggleLike(submission._id)}>
                       <Heart
                         className={`h-4 w-4 mr-2 transition-all ${
-                          likedSubmissions.has(submission.id) ? "fill-current" : "fill-transparent"
+                          likedSubmissions.has(submission._id) ? "fill-current" : "fill-transparent"
                         }`}
                       />
-                      {submissionLikes[submission.id] || submission.likes}
+                      {submissionLikes[submission._id] ?? (Array.isArray(submission.likes) ? submission.likes.length : 0)}
                     </Button>
                     <Button
                       variant="ghost"
@@ -238,7 +318,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                       className="text-gray-500 hover:text-blue-500"
                       onClick={() => handleOpenComments(submission)}>
                       <MessageCircle className="h-4 w-4 mr-2" />
-                      {submission.comments}
+                      {Array.isArray(submission.comments) ? submission.comments.length : 0}
                     </Button>
                     <Button
                       variant="ghost"
@@ -283,7 +363,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
           </CardContent>
         </Card>
 
-        {/* Quick Stats */}
+        {/* Quick Stats (Dynamic) */}
         <Card>
           <CardHeader>
             <h3 className="font-semibold">Season 3 Stats</h3>
@@ -291,19 +371,27 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
           <CardContent className="space-y-3">
             <div className="flex justify-between">
               <span className="text-sm text-gray-600">Total Submissions</span>
-              <span className="font-medium">127</span>
+              <span className="font-medium">{submissions.filter((s) => s.status === "published").length}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-sm text-gray-600">Active Participants</span>
-              <span className="font-medium">89</span>
+              <span className="font-medium">
+                {new Set(submissions.filter((s) => s.status === "published").map((s) => s.author?.name)).size}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-sm text-gray-600">Categories</span>
-              <span className="font-medium">6</span>
+              <span className="font-medium">
+                {new Set(submissions.filter((s) => s.status === "published").map((s) => s.category)).size}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-sm text-gray-600">Total Likes</span>
-              <span className="font-medium">1,234</span>
+              <span className="font-medium">
+                {submissions
+                  .filter((s) => s.status === "published")
+                  .reduce((sum, s) => sum + (Array.isArray(s.likes) ? s.likes.length : 0), 0)}
+              </span>
             </div>
           </CardContent>
         </Card>

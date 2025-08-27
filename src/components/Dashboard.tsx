@@ -37,7 +37,8 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
     .filter((submission) => submission.author.name === user.name)
     .map((submission) => ({
       ...submission,
-      views: Math.floor(Math.random() * 200) + 50, // Mock views data
+      // Use real views data if available, else default to 0
+      views: typeof submission.views === "number" ? submission.views : 0,
       submittedAt: submission.timestamp === "Just now" ? new Date().toISOString().split("T")[0] : "2024-08-05",
     }));
 
@@ -45,9 +46,35 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
   const stats = {
     totalSubmissions: userSubmissions.length,
     publishedSubmissions: userSubmissions.filter((s) => s.status === "published").length,
-    totalLikes: userSubmissions.reduce((sum, s) => sum + (s.likes || 0), 0),
-    totalComments: userSubmissions.reduce((sum, s) => sum + (s.comments || 0), 0),
+    totalLikes: userSubmissions.reduce((sum, s) => sum + (Array.isArray(s.likes) ? s.likes.length : 0), 0),
+    totalComments: userSubmissions.reduce((sum, s) => sum + (Array.isArray(s.comments) ? s.comments.length : 0), 0),
     totalViews: userSubmissions.reduce((sum, s) => sum + (s.views || 0), 0),
+    likesThisWeek: userSubmissions
+      .filter((s) => {
+        const created = new Date(s.createdAt);
+        const now = new Date();
+        return now.getTime() - created.getTime() < 7 * 24 * 60 * 60 * 1000;
+      })
+      .reduce((sum, s) => sum + (Array.isArray(s.likes) ? s.likes.length : 0), 0),
+    commentsThisWeek: userSubmissions
+      .filter((s) => {
+        const created = new Date(s.createdAt);
+        const now = new Date();
+        return now.getTime() - created.getTime() < 7 * 24 * 60 * 60 * 1000;
+      })
+      .reduce((sum, s) => sum + (Array.isArray(s.comments) ? s.comments.length : 0), 0),
+    viewsThisWeek: userSubmissions
+      .filter((s) => {
+        const created = new Date(s.createdAt);
+        const now = new Date();
+        return now.getTime() - created.getTime() < 7 * 24 * 60 * 60 * 1000;
+      })
+      .reduce((sum, s) => sum + (s.views || 0), 0),
+    publishedThisWeek: userSubmissions.filter((s) => {
+      const created = new Date(s.createdAt);
+      const now = new Date();
+      return s.status === "published" && now.getTime() - created.getTime() < 7 * 24 * 60 * 60 * 1000;
+    }).length,
     ranking: 15,
   };
   const [notifications, setNotifications] = useState({
@@ -131,7 +158,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                 value={stats.totalSubmissions > 0 ? (stats.publishedSubmissions / stats.totalSubmissions) * 100 : 0}
                 className="h-2"
               />
-              <p className="text-xs text-gray-500 mt-1">{stats.publishedSubmissions} published</p>
+              <p className="text-xs text-gray-500 mt-1">{stats.publishedThisWeek} published this week</p>
             </div>
           </CardContent>
         </Card>
@@ -147,7 +174,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                 <Heart className="h-4 w-4 text-red-600" />
               </div>
             </div>
-            <p className="text-xs text-gray-500 mt-2">+12 this week</p>
+            <p className="text-xs text-gray-500 mt-2">+{stats.likesThisWeek} this week</p>
           </CardContent>
         </Card>
 
@@ -162,7 +189,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                 <MessageCircle className="h-4 w-4 text-green-600" />
               </div>
             </div>
-            <p className="text-xs text-gray-500 mt-2">+3 new</p>
+            <p className="text-xs text-gray-500 mt-2">+{stats.commentsThisWeek} new</p>
           </CardContent>
         </Card>
 
@@ -177,7 +204,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                 <Eye className="h-4 w-4 text-purple-600" />
               </div>
             </div>
-            <p className="text-xs text-gray-500 mt-2">+18 this week</p>
+            <p className="text-xs text-gray-500 mt-2">+{stats.viewsThisWeek} this week</p>
           </CardContent>
         </Card>
       </div>
@@ -223,11 +250,11 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                       <div className="flex items-center space-x-6">
                         <div className="flex items-center space-x-1">
                           <Heart className="h-4 w-4 text-red-500" />
-                          <span className="text-sm">{submission.likes}</span>
+                          <span>{Array.isArray(submission.likes) ? submission.likes.length : 0}</span>
                         </div>
                         <div className="flex items-center space-x-1">
                           <MessageCircle className="h-4 w-4 text-blue-500" />
-                          <span className="text-sm">{submission.comments}</span>
+                          <span className="text-sm">{Array.isArray(submission.comments) ? submission.comments.length : 0}</span>
                         </div>
                         <div className="flex items-center space-x-1">
                           <Eye className="h-4 w-4 text-gray-500" />

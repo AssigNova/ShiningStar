@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
@@ -9,105 +9,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { MessageCircle, Send, Heart, Reply, MoreHorizontal, Trash2, Edit3, Check, X } from "lucide-react";
 import { toast } from "sonner";
 
-// Mock comments data with replies
-const mockComments = {
-  1: [
-    {
-      id: 1,
-      author: "Sarah Wilson",
-      department: "HR",
-      content: "This is absolutely fantastic! Love the creativity and attention to detail.",
-      timestamp: "2 hours ago",
-      likes: 12,
-      isLiked: false,
-      replies: [
-        {
-          id: 101,
-          author: "John Doe",
-          department: "Marketing",
-          content: "I completely agree! The detail work is impressive.",
-          timestamp: "1 hour ago",
-          likes: 3,
-          isLiked: false,
-        },
-      ],
-    },
-    {
-      id: 2,
-      author: "Mike Chen",
-      department: "IT",
-      content: "Great work! This really shows the innovation we strive for at ITC.",
-      timestamp: "4 hours ago",
-      likes: 8,
-      isLiked: true,
-      replies: [],
-    },
-    {
-      id: 3,
-      author: "Priya Sharma",
-      department: "Marketing",
-      content: "Wow! This is exactly what we need to showcase our team spirit. Well done!",
-      timestamp: "6 hours ago",
-      likes: 15,
-      isLiked: false,
-      replies: [
-        {
-          id: 102,
-          author: "John Doe",
-          department: "Marketing",
-          content: "Thanks Priya! Team spirit was exactly what we were going for.",
-          timestamp: "5 hours ago",
-          likes: 5,
-          isLiked: true,
-        },
-        {
-          id: 103,
-          author: "David Kumar",
-          department: "Operations",
-          content: "Absolutely! This captures our culture perfectly.",
-          timestamp: "4 hours ago",
-          likes: 2,
-          isLiked: false,
-        },
-      ],
-    },
-  ],
-  2: [
-    {
-      id: 4,
-      author: "David Kumar",
-      department: "Operations",
-      content: "Beautiful work! The colors and composition are perfect.",
-      timestamp: "1 hour ago",
-      likes: 6,
-      isLiked: true,
-      replies: [],
-    },
-    {
-      id: 5,
-      author: "Lisa Anderson",
-      department: "Finance",
-      content: "This made my day! Such positive energy captured in this submission.",
-      timestamp: "3 hours ago",
-      likes: 9,
-      isLiked: false,
-      replies: [],
-    },
-  ],
-  3: [
-    {
-      id: 6,
-      author: "Raj Patel",
-      department: "Sales",
-      content: "Outstanding! This really represents what our company is all about.",
-      timestamp: "30 minutes ago",
-      likes: 4,
-      isLiked: false,
-      replies: [],
-    },
-  ],
-};
-
 interface CommentsModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -117,7 +18,7 @@ interface CommentsModalProps {
 
 export function CommentsModal({ isOpen, onClose, submission, user }: CommentsModalProps) {
   const [newComment, setNewComment] = useState("");
-  const [comments, setComments] = useState(mockComments[submission?.id as keyof typeof mockComments] || []);
+  const [comments, setComments] = useState(submission?.comments || []);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editingText, setEditingText] = useState("");
   const [replyingToId, setReplyingToId] = useState<number | null>(null);
@@ -125,50 +26,68 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
   const [editingReplyId, setEditingReplyId] = useState<number | null>(null);
   const [editingReplyText, setEditingReplyText] = useState("");
 
-  const handleSubmitComment = () => {
+  useEffect(() => {
+    setComments(submission?.comments || []);
+  }, [submission?.comments]);
+
+  const handleSubmitComment = async () => {
     if (!newComment.trim()) {
       toast.error("Please enter a comment");
       return;
     }
-
-    const comment = {
-      id: Date.now(),
-      author: user.name,
-      department: user.department,
-      content: newComment,
-      timestamp: "Just now",
-      likes: 0,
-      isLiked: false,
-      replies: [],
-    };
-
-    setComments([comment, ...comments]);
-    setNewComment("");
-    toast.success("Comment added successfully!");
+    try {
+      const res = await fetch(`/api/posts/${submission._id}/comment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user._id, text: newComment }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setComments(data.comments || []);
+        setNewComment("");
+        toast.success("Comment added successfully!");
+      } else {
+        toast.error(data.message || "Failed to add comment");
+      }
+    } catch {
+      toast.error("Failed to add comment");
+    }
   };
 
   const handleLikeComment = (commentId: number) => {
-    setComments(
-      comments.map((comment) =>
-        comment.id === commentId
-          ? {
-              ...comment,
-              isLiked: !comment.isLiked,
-              likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1,
-            }
-          : comment
-      )
-    );
+    if (!user?._id) return toast.error("Login required");
+    const comment = comments.find((c) => c._id === commentId);
+    const liked = comment?.likes?.includes(user._id);
+    fetch(`/api/posts/${submission._id}/comments/${commentId}/${liked ? "unlike" : "like"}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: user._id }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.likes !== undefined) {
+          setComments(
+            comments.map((c) =>
+              c._id === commentId
+                ? { ...c, likes: liked ? c.likes.filter((id: string) => id !== user._id) : [...(c.likes || []), user._id] }
+                : c
+            )
+          );
+        } else {
+          toast.error(data.message || "Failed to update like");
+        }
+      })
+      .catch(() => toast.error("Failed to update like"));
   };
 
   const handleDeleteComment = (commentId: number) => {
-    setComments(comments.filter((comment) => comment.id !== commentId));
+    setComments(comments.filter((comment) => comment._id !== commentId));
     toast.success("Comment deleted successfully");
   };
 
   const handleEditComment = (comment: any) => {
-    setEditingCommentId(comment.id);
-    setEditingText(comment.content);
+    setEditingCommentId(comment._id);
+    setEditingText(comment.text);
   };
 
   const handleSaveEdit = (commentId: number) => {
@@ -177,7 +96,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
       return;
     }
 
-    setComments(comments.map((comment) => (comment.id === commentId ? { ...comment, content: editingText.trim() } : comment)));
+    setComments(comments.map((comment) => (comment._id === commentId ? { ...comment, content: editingText.trim() } : comment)));
 
     setEditingCommentId(null);
     setEditingText("");
@@ -199,24 +118,28 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
       toast.error("Please enter a reply");
       return;
     }
-
-    const reply = {
-      id: Date.now(),
-      author: user.name,
-      department: user.department,
-      content: replyText,
-      timestamp: "Just now",
-      likes: 0,
-      isLiked: false,
-    };
-
-    setComments(
-      comments.map((comment) => (comment.id === parentCommentId ? { ...comment, replies: [...(comment.replies || []), reply] } : comment))
-    );
-
-    setReplyingToId(null);
-    setReplyText("");
-    toast.success("Reply added successfully!");
+    fetch(`/api/posts/${submission._id}/comments/${parentCommentId}/reply`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: user._id,
+        author: user.name,
+        department: user.department,
+        content: replyText,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.replies) {
+          setComments(comments.map((comment) => (comment._id === parentCommentId ? { ...comment, replies: data.replies } : comment)));
+          setReplyingToId(null);
+          setReplyText("");
+          toast.success("Reply added successfully!");
+        } else {
+          toast.error(data.message || "Failed to add reply");
+        }
+      })
+      .catch(() => toast.error("Failed to add reply"));
   };
 
   const handleCancelReply = () => {
@@ -225,29 +148,42 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
   };
 
   const handleLikeReply = (parentCommentId: number, replyId: number) => {
-    setComments(
-      comments.map((comment) =>
-        comment.id === parentCommentId
-          ? {
-              ...comment,
-              replies:
-                comment.replies?.map((reply) =>
-                  reply.id === replyId
-                    ? {
-                        ...reply,
-                        isLiked: !reply.isLiked,
-                        likes: reply.isLiked ? reply.likes - 1 : reply.likes + 1,
-                      }
-                    : reply
-                ) || [],
-            }
-          : comment
-      )
-    );
+    if (!user?._id) return toast.error("Login required");
+    const parentComment = comments.find((c) => c._id === parentCommentId);
+    const reply = parentComment?.replies?.find((r) => r._id === replyId);
+    const liked = Array.isArray(reply?.likes) && reply.likes.includes(user._id);
+    fetch(`/api/posts/${submission._id}/comments/${parentCommentId}/replies/${replyId}/${liked ? "unlike" : "like"}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: user._id }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.likes !== undefined) {
+          setComments(
+            comments.map((comment) =>
+              comment._id === parentCommentId
+                ? {
+                    ...comment,
+                    replies:
+                      comment.replies?.map((r) =>
+                        r._id === replyId
+                          ? { ...r, likes: liked ? r.likes.filter((id: string) => id !== user._id) : [...(r.likes || []), user._id] }
+                          : r
+                      ) || [],
+                  }
+                : comment
+            )
+          );
+        } else {
+          toast.error(data.message || "Failed to update like");
+        }
+      })
+      .catch(() => toast.error("Failed to update like"));
   };
 
   const handleEditReply = (reply: any) => {
-    setEditingReplyId(reply.id);
+    setEditingReplyId(reply._id);
     setEditingReplyText(reply.content);
   };
 
@@ -259,11 +195,11 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
 
     setComments(
       comments.map((comment) =>
-        comment.id === parentCommentId
+        comment._id === parentCommentId
           ? {
               ...comment,
               replies:
-                comment.replies?.map((reply) => (reply.id === replyId ? { ...reply, content: editingReplyText.trim() } : reply)) || [],
+                comment.replies?.map((reply) => (reply._id === replyId ? { ...reply, content: editingReplyText.trim() } : reply)) || [],
             }
           : comment
       )
@@ -282,10 +218,10 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
   const handleDeleteReply = (parentCommentId: number, replyId: number) => {
     setComments(
       comments.map((comment) =>
-        comment.id === parentCommentId
+        comment._id === parentCommentId
           ? {
               ...comment,
-              replies: comment.replies?.filter((reply) => reply.id !== replyId) || [],
+              replies: comment.replies?.filter((reply) => reply._id !== replyId) || [],
             }
           : comment
       )
@@ -293,7 +229,8 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
     toast.success("Reply deleted successfully");
   };
 
-  const getInitials = (name: string) => {
+  const getInitials = (name: string | undefined | null) => {
+    if (!name) return "?";
     return name
       .split(" ")
       .map((n) => n[0])
@@ -365,23 +302,25 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                   </div>
                 ) : (
                   comments.map((comment) => (
-                    <div key={comment.id} className="flex items-start space-x-3 p-3 bg-white border rounded-lg">
+                    <div key={comment._id || comment._id} className="flex items-start space-x-3 p-3 bg-white border rounded-lg">
                       <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-blue-100 text-blue-600">{getInitials(comment.author)}</AvatarFallback>
+                        <AvatarFallback className="bg-blue-100 text-blue-600">{getInitials(comment.user?.name)}</AvatarFallback>
                       </Avatar>
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
                           <div className="flex items-center space-x-2">
-                            <span className="font-medium text-gray-900">{comment.author}</span>
+                            <span className="font-medium text-gray-900">{comment.user?.name || "Unknown"}</span>
                             <Badge variant="outline" className="text-xs">
-                              {comment.department}
+                              {comment.user?.department || ""}
                             </Badge>
-                            <span className="text-xs text-gray-500">{comment.timestamp}</span>
+                            <span className="text-xs text-gray-500">
+                              {comment.createdAt ? new Date(comment.createdAt).toLocaleString() : ""}
+                            </span>
                           </div>
 
                           {/* Three dot menu - only show for current user's comments and not in edit mode */}
-                          {comment.author === user.name && editingCommentId !== comment.id && (
+                          {comment.author === user.name && editingCommentId !== comment._id && (
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600">
@@ -394,7 +333,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                                   Edit
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                  onClick={() => handleDeleteComment(comment.id)}
+                                  onClick={() => handleDeleteComment(comment._id)}
                                   className="text-red-600 hover:text-red-700 hover:bg-red-50 cursor-pointer">
                                   <Trash2 className="h-3 w-3 mr-2" />
                                   Delete
@@ -404,7 +343,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                           )}
                         </div>
 
-                        {editingCommentId === comment.id ? (
+                        {editingCommentId === comment._id ? (
                           <div className="space-y-2 mb-2">
                             <Textarea
                               value={editingText}
@@ -414,7 +353,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                               autoFocus
                             />
                             <div className="flex items-center space-x-2">
-                              <Button size="sm" onClick={() => handleSaveEdit(comment.id)} className="h-7 px-2 text-xs">
+                              <Button size="sm" onClick={() => handleSaveEdit(comment._id)} className="h-7 px-2 text-xs">
                                 <Check className="h-3 w-3 mr-1" />
                                 Save
                               </Button>
@@ -425,33 +364,39 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                             </div>
                           </div>
                         ) : (
-                          <p className="text-gray-700 text-sm leading-relaxed mb-2">{comment.content}</p>
+                          <p className="text-gray-700 text-sm leading-relaxed mb-2">{comment.text}</p>
                         )}
 
                         <div className="flex items-center space-x-4">
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleLikeComment(comment.id)}
+                            onClick={() => handleLikeComment(comment._id)}
                             className={`text-xs ${
-                              comment.isLiked ? "text-red-500 hover:text-red-600" : "text-gray-500 hover:text-red-500"
+                              Array.isArray(comment.likes) && comment.likes.includes(user._id)
+                                ? "text-red-500 hover:text-red-600"
+                                : "text-gray-500 hover:text-red-500"
                             }`}>
-                            <Heart className={`h-3 w-3 mr-1 ${comment.isLiked ? "fill-current" : ""}`} />
-                            {comment.likes}
+                            <Heart
+                              className={`h-3 w-3 mr-1 ${
+                                Array.isArray(comment.likes) && comment.likes.includes(user._id) ? "fill-current" : ""
+                              }`}
+                            />
+                            {Array.isArray(comment.likes) ? comment.likes.length : 0}
                           </Button>
 
                           <Button
                             variant="ghost"
                             size="sm"
                             className="text-xs text-gray-500 hover:text-blue-500"
-                            onClick={() => handleReply(comment.id)}>
+                            onClick={() => handleReply(comment._id)}>
                             <Reply className="h-3 w-3 mr-1" />
                             Reply
                           </Button>
                         </div>
 
                         {/* Reply Interface */}
-                        {replyingToId === comment.id && (
+                        {replyingToId === comment._id && (
                           <div className="mt-3 ml-8 bg-gray-50 rounded-lg p-3">
                             <div className="flex items-start space-x-2 mb-2">
                               <Avatar className="h-6 w-6">
@@ -472,7 +417,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                               <Button variant="outline" size="sm" onClick={handleCancelReply} className="h-7 px-2 text-xs">
                                 Cancel
                               </Button>
-                              <Button size="sm" onClick={() => handleSubmitReply(comment.id)} className="h-7 px-2 text-xs">
+                              <Button size="sm" onClick={() => handleSubmitReply(comment._id)} className="h-7 px-2 text-xs">
                                 <Send className="h-3 w-3 mr-1" />
                                 Reply
                               </Button>
@@ -484,7 +429,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                         {comment.replies && comment.replies.length > 0 && (
                           <div className="mt-3 ml-8 space-y-3">
                             {comment.replies.map((reply) => (
-                              <div key={reply.id} className="flex items-start space-x-3 p-2 bg-gray-50 rounded-lg">
+                              <div key={reply._id} className="flex items-start space-x-3 p-2 bg-gray-50 rounded-lg">
                                 <Avatar className="h-6 w-6">
                                   <AvatarFallback className="bg-green-100 text-green-600 text-xs">
                                     {getInitials(reply.author)}
@@ -502,7 +447,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                                     </div>
 
                                     {/* Three dot menu for replies - only show for current user's replies and not in edit mode */}
-                                    {reply.author === user.name && editingReplyId !== reply.id && (
+                                    {reply.author === user.name && editingReplyId !== reply._id && (
                                       <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                           <Button variant="ghost" size="sm" className="h-5 w-5 p-0 text-gray-400 hover:text-gray-600">
@@ -515,7 +460,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                                             Edit
                                           </DropdownMenuItem>
                                           <DropdownMenuItem
-                                            onClick={() => handleDeleteReply(comment.id, reply.id)}
+                                            onClick={() => handleDeleteReply(comment._id, reply._id)}
                                             className="text-red-600 hover:text-red-700 hover:bg-red-50 cursor-pointer">
                                             <Trash2 className="h-3 w-3 mr-2" />
                                             Delete
@@ -525,7 +470,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                                     )}
                                   </div>
 
-                                  {editingReplyId === reply.id ? (
+                                  {editingReplyId === reply._id ? (
                                     <div className="space-y-2 mb-2">
                                       <Textarea
                                         value={editingReplyText}
@@ -537,7 +482,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                                       <div className="flex items-center space-x-2">
                                         <Button
                                           size="sm"
-                                          onClick={() => handleSaveReplyEdit(comment.id, reply.id)}
+                                          onClick={() => handleSaveReplyEdit(comment._id, reply._id)}
                                           className="h-6 px-2 text-xs">
                                           <Check className="h-3 w-3 mr-1" />
                                           Save
@@ -552,17 +497,23 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                                     <p className="text-gray-700 text-sm leading-relaxed mb-2">{reply.content}</p>
                                   )}
 
-                                  {editingReplyId !== reply.id && (
+                                  {editingReplyId !== reply._id && (
                                     <div className="flex items-center space-x-3">
                                       <Button
                                         variant="ghost"
                                         size="sm"
-                                        onClick={() => handleLikeReply(comment.id, reply.id)}
+                                        onClick={() => handleLikeReply(comment._id, reply._id)}
                                         className={`text-xs ${
-                                          reply.isLiked ? "text-red-500 hover:text-red-600" : "text-gray-500 hover:text-red-500"
+                                          Array.isArray(reply.likes) && reply.likes.includes(user._id)
+                                            ? "text-red-500 hover:text-red-600"
+                                            : "text-gray-500 hover:text-red-500"
                                         }`}>
-                                        <Heart className={`h-3 w-3 mr-1 ${reply.isLiked ? "fill-current" : ""}`} />
-                                        {reply.likes}
+                                        <Heart
+                                          className={`h-3 w-3 mr-1 ${
+                                            Array.isArray(reply.likes) && reply.likes.includes(user._id) ? "fill-current" : ""
+                                          }`}
+                                        />
+                                        {Array.isArray(reply.likes) ? reply.likes.length : 0}
                                       </Button>
                                     </div>
                                   )}

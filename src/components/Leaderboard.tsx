@@ -1,139 +1,77 @@
-import { Trophy, Medal, Award, TrendingUp, Users, Target } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
-import { Progress } from './ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Avatar, AvatarFallback } from './ui/avatar';
+import { Trophy, Medal, Award, TrendingUp, Users, Target } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Progress } from "./ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
-const departmentLeaderboard = [
-  {
-    rank: 1,
-    department: "Marketing",
-    participants: 15,
-    submissions: 23,
-    likes: 456,
-    engagement: 92
-  },
-  {
-    rank: 2,
-    department: "HR",
-    participants: 12,
-    submissions: 19,
-    likes: 387,
-    engagement: 88
-  },
-  {
-    rank: 3,
-    department: "Operations",
-    participants: 18,
-    submissions: 22,
-    likes: 341,
-    engagement: 85
-  },
-  {
-    rank: 4,
-    department: "IT",
-    participants: 14,
-    submissions: 16,
-    likes: 298,
-    engagement: 82
-  },
-  {
-    rank: 5,
-    department: "Finance",
-    participants: 10,
-    submissions: 13,
-    likes: 234,
-    engagement: 78
-  }
-];
-
-const individualLeaderboard = [
-  {
-    rank: 1,
-    name: "Sarah Johnson",
-    department: "HR",
-    submissions: 5,
-    likes: 234,
-    badge: "Top Contributor"
-  },
-  {
-    rank: 2,
-    name: "Michael Chen",
-    department: "Operations",
-    submissions: 4,
-    likes: 198,
-    badge: "Rising Star"
-  },
-  {
-    rank: 3,
-    name: "Lisa Brown",
-    department: "Marketing",
-    submissions: 3,
-    likes: 176,
-    badge: "Creative Mind"
-  },
-  {
-    rank: 4,
-    name: "David Wilson",
-    department: "IT",
-    submissions: 4,
-    likes: 165,
-    badge: "Innovation Leader"
-  },
-  {
-    rank: 5,
-    name: "Emma Davis",
-    department: "Finance",
-    submissions: 3,
-    likes: 142,
-    badge: "Community Builder"
-  }
-];
-
-const categoryLeaders = [
-  {
-    category: "Innovation",
-    leader: "Tech Team Alpha",
-    submissions: 8,
-    likes: 298
-  },
-  {
-    category: "Team Collaboration",
-    leader: "HR Champions",
-    submissions: 6,
-    likes: 256
-  },
-  {
-    category: "Sustainability",
-    leader: "Green Initiative",
-    submissions: 5,
-    likes: 234
-  },
-  {
-    category: "Customer Excellence",
-    leader: "Service Stars",
-    submissions: 7,
-    likes: 198
-  }
-];
+import { useEffect, useState } from "react";
 
 export function Leaderboard() {
+  const [stats, setStats] = useState({
+    participants: 0,
+    departments: 0,
+    submissions: 0,
+    submissionsThisWeek: 0,
+    engagement: 0,
+  });
+  const [departmentLeaderboard, setDepartmentLeaderboard] = useState<any[]>([]);
+  const [individualLeaderboard, setIndividualLeaderboard] = useState<any[]>([]);
+  const [categoryLeaders, setCategoryLeaders] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/leaderboard/departments")
+      .then((res) => res.json())
+      .then((data) => {
+        setStats((prev) => ({
+          ...prev,
+          departments: data.length,
+          participants: data.reduce((sum, d) => sum + (d.participants || 0), 0),
+          submissions: data.reduce((sum, d) => sum + (d.submissions || 0), 0),
+          engagement: Math.round(data.reduce((sum, d) => sum + (d.engagement || 0), 0) / (data.length || 1)),
+        }));
+      });
+    fetch("/api/leaderboard/submissionsThisWeek")
+      .then((res) => res.json())
+      .then((data) => setStats((prev) => ({ ...prev, submissionsThisWeek: data.count })));
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/leaderboard/departments")
+      .then((res) => res.json())
+      .then((data) => setDepartmentLeaderboard(data));
+    fetch("/api/leaderboard/individuals")
+      .then((res) => res.json())
+      .then((data) => setIndividualLeaderboard(data));
+    fetch("/api/leaderboard/categories")
+      .then((res) => res.json())
+      .then((data) => setCategoryLeaders(data));
+  }, []);
+
+  // export function Leaderboard() {
   const getRankIcon = (rank: number) => {
     switch (rank) {
-      case 1: return <Trophy className="h-5 w-5 text-yellow-500" />;
-      case 2: return <Medal className="h-5 w-5 text-gray-400" />;
-      case 3: return <Award className="h-5 w-5 text-amber-600" />;
-      default: return <div className="h-5 w-5 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold">{rank}</div>;
+      case 1:
+        return <Trophy className="h-5 w-5 text-yellow-500" />;
+      case 2:
+        return <Medal className="h-5 w-5 text-gray-400" />;
+      case 3:
+        return <Award className="h-5 w-5 text-amber-600" />;
+      default:
+        return <div className="h-5 w-5 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold">{rank}</div>;
     }
   };
 
   const getRankBadge = (rank: number) => {
     switch (rank) {
-      case 1: return "bg-yellow-100 text-yellow-800";
-      case 2: return "bg-gray-100 text-gray-800";
-      case 3: return "bg-amber-100 text-amber-800";
-      default: return "bg-blue-100 text-blue-800";
+      case 1:
+        return "bg-yellow-100 text-yellow-800";
+      case 2:
+        return "bg-gray-100 text-gray-800";
+      case 3:
+        return "bg-amber-100 text-amber-800";
+      default:
+        return "bg-blue-100 text-blue-800";
     }
   };
 
@@ -146,9 +84,7 @@ export function Leaderboard() {
             <Trophy className="h-6 w-6 mr-2" />
             Season 3 Leaderboard
           </CardTitle>
-          <p className="text-purple-100">
-            Celebrating participation, creativity, and community engagement
-          </p>
+          <p className="text-purple-100">Celebrating participation, creativity, and community engagement</p>
         </CardHeader>
       </Card>
 
@@ -159,11 +95,11 @@ export function Leaderboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Participants</p>
-                <p className="text-2xl font-bold">89</p>
+                <p className="text-2xl font-bold">{stats.participants}</p>
               </div>
               <Users className="h-8 w-8 text-blue-500" />
             </div>
-            <p className="text-xs text-gray-500 mt-2">Across 8 departments</p>
+            <p className="text-xs text-gray-500 mt-2">Across {stats.departments} departments</p>
           </CardContent>
         </Card>
 
@@ -172,11 +108,11 @@ export function Leaderboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Submissions</p>
-                <p className="text-2xl font-bold">127</p>
+                <p className="text-2xl font-bold">{stats.submissions}</p>
               </div>
               <Target className="h-8 w-8 text-green-500" />
             </div>
-            <p className="text-xs text-gray-500 mt-2">+18 this week</p>
+            <p className="text-xs text-gray-500 mt-2">+{stats.submissionsThisWeek} this week</p>
           </CardContent>
         </Card>
 
@@ -185,7 +121,7 @@ export function Leaderboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Engagement Rate</p>
-                <p className="text-2xl font-bold">85%</p>
+                <p className="text-2xl font-bold">{stats.engagement}%</p>
               </div>
               <TrendingUp className="h-8 w-8 text-purple-500" />
             </div>
@@ -214,11 +150,9 @@ export function Leaderboard() {
                     <div className="flex items-center space-x-4">
                       <div className="flex items-center space-x-2">
                         {getRankIcon(dept.rank)}
-                        <Badge className={getRankBadge(dept.rank)}>
-                          #{dept.rank}
-                        </Badge>
+                        <Badge className={getRankBadge(dept.rank)}>#{dept.rank}</Badge>
                       </div>
-                      
+
                       <div>
                         <h3 className="font-semibold">{dept.department}</h3>
                         <div className="flex items-center space-x-4 text-sm text-gray-600">
@@ -257,17 +191,18 @@ export function Leaderboard() {
                     <div className="flex items-center space-x-4">
                       <div className="flex items-center space-x-2">
                         {getRankIcon(person.rank)}
-                        <Badge className={getRankBadge(person.rank)}>
-                          #{person.rank}
-                        </Badge>
+                        <Badge className={getRankBadge(person.rank)}>#{person.rank}</Badge>
                       </div>
-                      
+
                       <Avatar>
                         <AvatarFallback>
-                          {person.name.split(' ').map(n => n[0]).join('')}
+                          {person.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
-                      
+
                       <div>
                         <h3 className="font-semibold">{person.name}</h3>
                         <div className="flex items-center space-x-4 text-sm text-gray-600">
@@ -303,9 +238,9 @@ export function Leaderboard() {
                       <h3 className="font-semibold">{category.category}</h3>
                       <Trophy className="h-4 w-4 text-yellow-500" />
                     </div>
-                    
+
                     <p className="text-sm text-gray-600 mb-2">Leading Team: {category.leader}</p>
-                    
+
                     <div className="flex items-center justify-between text-sm">
                       <span>{category.submissions} submissions</span>
                       <span className="font-medium">{category.likes} likes</span>

@@ -15,11 +15,24 @@ interface HeaderProps {
   onLogout: () => void;
   onOpenChat: () => void;
   onOpenNotifications: () => void;
+  onSearch?: (term: string) => void;
 }
 
-export function Header({ user, activeView, setActiveView, onUpload, onLogout, onOpenChat, onOpenNotifications }: HeaderProps) {
+export function Header({ user, activeView, setActiveView, onUpload, onLogout, onOpenChat, onOpenNotifications, onSearch }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Example: Call this function in parent to filter submissions
+  // You may need to lift this up and pass a prop like onSearch(term)
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (onSearch) {
+      onSearch(searchTerm);
+    } else {
+      console.log("Search for:", searchTerm);
+    }
+  };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -42,12 +55,23 @@ export function Header({ user, activeView, setActiveView, onUpload, onLogout, on
             </div>
 
             {/* Search Bar - Desktop */}
-            <div className="hidden md:flex flex-1 max-w-md mx-4 lg:mx-8">
-              <div className="relative w-full">
+            <form className="hidden md:flex flex-1 max-w-md mx-4 lg:mx-8" onSubmit={handleSearch}>
+              <div className="relative w-full flex items-center">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input placeholder="Search by employee number, name..." className="pl-10 bg-gray-50 border-gray-200 py-2 text-sm" />
+                <Input
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search by employee number, name..."
+                  className="pl-10 bg-gray-50 border-gray-200 py-2 text-sm"
+                />
+                <Button
+                  type="submit"
+                  size="icon"
+                  className="ml-2 bg-purple-600 hover:bg-purple-700 text-white w-8 h-8 flex items-center justify-center">
+                  <Search className="h-4 w-4" />
+                </Button>
               </div>
-            </div>
+            </form>
 
             {/* Right: Actions */}
             <div className="flex items-center space-x-2 sm:space-x-4">
@@ -71,10 +95,10 @@ export function Header({ user, activeView, setActiveView, onUpload, onLogout, on
               </Button>
 
               {/* Notifications */}
-              <Button variant="ghost" size="icon" className="relative" onClick={onOpenNotifications}>
+              {/* <Button variant="ghost" size="icon" className="relative" onClick={onOpenNotifications}>
                 <Bell className="h-5 w-5" />
                 <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center bg-red-500 text-xs">3</Badge>
-              </Button>
+              </Button> */}
 
               {/* User Menu */}
               <DropdownMenu>
@@ -145,10 +169,20 @@ export function Header({ user, activeView, setActiveView, onUpload, onLogout, on
       {showMobileSearch && (
         <div className="md:hidden bg-white border-t py-3 px-4">
           <div className="container mx-auto">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input placeholder="Search by employee number, name..." className="pl-10 bg-gray-50 border-gray-200 py-2 text-sm w-full" />
-            </div>
+            <form onSubmit={handleSearch} className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search by employee number, name..."
+                  className="pl-10 bg-gray-50 border-gray-200 py-2 text-sm w-full"
+                />
+              </div>
+              <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 text-sm">
+                Search
+              </Button>
+            </form>
           </div>
         </div>
       )}

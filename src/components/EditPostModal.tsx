@@ -152,7 +152,7 @@ export function EditPostModal({ isOpen, onClose, submission, onUpdate }: EditPos
     formDataToSend.append("timestamp", new Date().toISOString());
     formDataToSend.append("author", JSON.stringify(submission.author));
     formDataToSend.append("likes", String(submission.likes || 0));
-    formDataToSend.append("comments", String(submission.comments || 0));
+    formDataToSend.append("comments", String(submission.comments || []));
     formDataToSend.append("content", submission.content);
     if (uploadedFile) {
       formDataToSend.append("media", uploadedFile);

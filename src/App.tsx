@@ -76,6 +76,21 @@ const initialSubmissions = [
 ];
 
 export default function App() {
+  // Check for post id in URL and filter feed if present
+  const [singlePost, setSinglePost] = useState<any | null>(null);
+  useEffect(() => {
+    const match = window.location.pathname.match(/\/post\/(\w+)/);
+    if (match && match[1]) {
+      fetch(`/api/posts/${match[1]}`)
+        .then((res) => res.json())
+        .then((post) => setSinglePost(post))
+        .catch(() => setSinglePost(null));
+    } else {
+      setSinglePost(null);
+    }
+  }, [window.location.pathname]);
+  // Search handler for posts by employee number or name
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const [activeView, setActiveView] = useState<"feed" | "dashboard" | "leaderboard" | "manual">("feed");
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
@@ -106,8 +121,23 @@ export default function App() {
     setSubmissions(initialSubmissions);
   }, []);
 
+  const handleSearch = (term: string) => {
+    if (!term.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    const lowerTerm = term.toLowerCase();
+    const results = submissions.filter((submission: any) => {
+      const nameMatch = submission.author?.name?.toLowerCase().includes(lowerTerm);
+      const empMatch = submission.author?.employeeId?.toString().includes(lowerTerm);
+      return nameMatch || empMatch;
+    });
+    setSearchResults(results);
+  };
+
   // Real user login with backend
   const handleLogin = async (credentials: { email: string; password: string }) => {
+    setLoading(true);
     const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -123,6 +153,7 @@ export default function App() {
     } else {
       alert(data.message || "Login failed");
     }
+    setLoading(false);
   };
 
   // Persist user session on reload using localStorage and validate with backend
@@ -162,47 +193,47 @@ export default function App() {
   };
 
   const handleNewSubmission = async (submissionData: any) => {
-    // try {
-    const token = localStorage.getItem("token");
-    const formData = new FormData();
-    formData.append("title", submissionData.title);
-    formData.append("description", submissionData.description);
-    formData.append("category", submissionData.category);
-    formData.append(
-      "author",
-      JSON.stringify({
-        name: user?.username || user?.name || "Unknown",
-        department: user?.department || submissionData.department || "Unknown",
-      })
-    );
-    formData.append("department", submissionData.department);
-    formData.append("participantType", submissionData.participantType);
-    formData.append("likes", String(submissionData.likes || 0));
-    formData.append("comments", String(submissionData.comments || 0));
-    formData.append("timestamp", submissionData.timestamp || submissionData.submittedAt || new Date().toISOString());
-    formData.append("status", submissionData.status);
-    formData.append("type", submissionData.type);
-    formData.append("content", submissionData.content);
-    if (submissionData.file) {
-      formData.append("media", submissionData.file);
+    try {
+      const token = localStorage.getItem("token");
+      const formData = new FormData();
+      formData.append("title", submissionData.title);
+      formData.append("description", submissionData.description);
+      formData.append("category", submissionData.category);
+      formData.append(
+        "author",
+        JSON.stringify({
+          name: user?.username || user?.name || "Unknown",
+          department: user?.department || submissionData.department || "Unknown",
+        })
+      );
+      formData.append("department", submissionData.department);
+      formData.append("participantType", submissionData.participantType);
+      formData.append("likes", String(submissionData.likes || 0));
+      formData.append("comments", String(submissionData.comments || []));
+      formData.append("timestamp", submissionData.timestamp || submissionData.submittedAt || new Date().toISOString());
+      formData.append("status", submissionData.status);
+      formData.append("type", submissionData.type);
+      formData.append("content", submissionData.content);
+      if (submissionData.file) {
+        formData.append("media", submissionData.file);
+      }
+      const res = await fetch("/api/posts", {
+        method: "POST",
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formData,
+      });
+      const newPost = await res.json();
+      if (res.ok) {
+        setSubmissions((prev: any) => [newPost, ...prev]);
+        setIsUploadModalOpen(false);
+      } else {
+        alert(newPost.message || "Failed to create post");
+      }
+    } catch {
+      alert("Server error");
     }
-    const res = await fetch("/api/posts", {
-      method: "POST",
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formData,
-    });
-    const newPost = await res.json();
-    if (res.ok) {
-      setSubmissions((prev: any) => [newPost, ...prev]);
-      setIsUploadModalOpen(false);
-    } else {
-      alert(newPost.message || "Failed to create post");
-    }
-    // } catch {
-    //   alert("Server error");
-    // }
   };
 
   const handleDeleteSubmission = (submissionId: number) => {
@@ -237,9 +268,18 @@ export default function App() {
     );
   };
 
-  const handleLikeSubmission = (submissionId: number, newLikeCount: number) => {
+  const handleLikeSubmission = (submissionId: string, userId: string) => {
     setSubmissions((prev: any) =>
-      prev.map((submission: any) => (submission.id === submissionId ? { ...submission, likes: newLikeCount } : submission))
+      prev.map((submission: any) => {
+        if (submission._id === submissionId) {
+          const hasLiked = submission.likes.includes(userId);
+          return {
+            ...submission,
+            likes: hasLiked ? submission.likes.filter((id: string) => id !== userId) : [...submission.likes, userId],
+          };
+        }
+        return submission;
+      })
     );
   };
 
@@ -349,6 +389,7 @@ export default function App() {
           onOpenChat={() => setIsChatModalOpen(true)}
           onOpenNotifications={() => setIsNotificationModalOpen(true)}
           onLogout={handleLogout}
+          onSearch={handleSearch}
         />
       </div>
 
@@ -357,12 +398,12 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
           <div className="w-full">
             {/* Content Views with consistent spacing and responsive behavior */}
-            {activeView === "feed" && (
+            {activeView === "feed" && !loading && (
               <div className="w-full">
                 <MainFeed
                   onOpenHighlights={() => setIsHighlightsModalOpen(true)}
                   user={user}
-                  submissions={submissions}
+                  submissions={singlePost ? [singlePost] : searchResults.length > 0 ? searchResults : submissions}
                   onLikeSubmission={handleLikeSubmission}
                 />
               </div>
