@@ -179,7 +179,7 @@ export default function App() {
       setSubmissions((prev: any) => [newPost, ...prev]);
       setIsUploadModalOpen(false);
     } catch {
-      alert(err.message || "Server error during upload");
+      alert("Server error during upload");
     } finally {
       setUploading(false);
     }
