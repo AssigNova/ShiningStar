@@ -31,7 +31,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const categories = ["Voice of ITC", "Dance ITC Dance", "Stroked of a Genius", "Generations in Harmony", "Reel Stars"];
+  const categories = ["Voice of ITC", "Dance ITC Dance", "Strokes of a Genius", "Generations in Harmony", "Reel Stars"];
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
