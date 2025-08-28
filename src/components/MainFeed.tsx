@@ -58,15 +58,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
     setSubmissionLikes(newLikesCount);
   }, [submissions, user._id]);
 
-  const categories = [
-    "All Categories",
-    "Innovation",
-    "Team Collaboration",
-    "Family & Community",
-    "Sustainability",
-    "Customer Excellence",
-    "Leadership",
-  ];
+  const categories = ["All Categories", "Voice of ITC", "Dance ITC Dance", "Stroked of a Genius", "Generations in Harmony", "Reel Stars"];
 
   // const filteredSubmissions = submissions
   //   .filter((submission) => {

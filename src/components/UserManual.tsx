@@ -35,10 +35,10 @@ export function UserManual() {
         <Card className="cursor-pointer hover:shadow-md transition-shadow">
           <CardContent className="pt-6 text-center">
             <Video className="h-12 w-12 mx-auto mb-4 text-purple-500" />
-            <h3 className="font-semibold mb-2">Video Tutorials</h3>
-            <p className="text-sm text-gray-600 mb-4">Step-by-step video guides</p>
+            <h3 className="font-semibold mb-2">Prize</h3>
+            <p className="text-sm text-gray-600 mb-4">Prizes guides</p>
             <Button size="sm" variant="outline">
-              Watch Now
+              Coming Soon
             </Button>
           </CardContent>
         </Card>
@@ -172,12 +172,11 @@ export function UserManual() {
                 <h3 className="font-semibold mb-3">Submission Categories</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {[
-                    { name: "Innovation", desc: "Breakthrough ideas and creative solutions" },
-                    { name: "Team Collaboration", desc: "Outstanding teamwork and partnerships" },
-                    { name: "Family & Community", desc: "Community engagement and family activities" },
-                    { name: "Sustainability", desc: "Environmental and social responsibility" },
-                    { name: "Customer Excellence", desc: "Exceptional customer service stories" },
-                    { name: "Leadership", desc: "Leadership excellence and mentorship" },
+                    { name: "Voice of ITC", desc: "Celebrating soulful voices and musical talent" },
+                    { name: "Dance ITC Dance", desc: "Showcasing energy, rhythm, and graceful moves" },
+                    { name: "Strokes of a Genius", desc: "Artistic brilliance through painting and creativity" },
+                    { name: "Generations in Harmony", desc: "Bridging generations with unity and collaboration" },
+                    { name: "Reel Stars", desc: "Capturing stories and creativity through short films" },
                   ].map((category) => (
                     <div key={category.name} className="p-3 border rounded-lg">
                       <h4 className="font-medium">{category.name}</h4>

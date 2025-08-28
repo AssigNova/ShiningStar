@@ -41,6 +41,7 @@ export default function App() {
   const [submissions, setSubmissions] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const [isFirstLogin, setIsFirstLogin] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   // Fetch posts from backend on mount
   useEffect(() => {
@@ -138,6 +139,7 @@ export default function App() {
   };
 
   const handleNewSubmission = async (submissionData: any) => {
+    setUploading(true);
     try {
       const token = localStorage.getItem("token");
       const formData = new FormData();
@@ -169,15 +171,17 @@ export default function App() {
         },
         body: formData,
       });
-      const newPost = await res.json();
-      if (res.ok) {
-        setSubmissions((prev: any) => [newPost, ...prev]);
-        setIsUploadModalOpen(false);
-      } else {
-        alert(newPost.message || "Failed to create post");
+      if (!res.ok) {
+        throw new Error("Upload failed");
       }
+      const newPost = await res.json();
+      // ✅ Only update UI after backend confirms
+      setSubmissions((prev: any) => [newPost, ...prev]);
+      setIsUploadModalOpen(false);
     } catch {
-      alert("Server error");
+      alert(err.message || "Server error during upload");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -396,7 +400,13 @@ export default function App() {
 
       {/* Modals - Proper z-indexing */}
       <div className="relative z-50">
-        <UploadModal isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} user={user} onSubmit={handleNewSubmission} />
+        <UploadModal
+          isOpen={isUploadModalOpen}
+          onClose={() => setIsUploadModalOpen(false)}
+          user={user}
+          onSubmit={handleNewSubmission}
+          uploading={uploading}
+        />
 
         <ChatModal isOpen={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} user={user} />
 

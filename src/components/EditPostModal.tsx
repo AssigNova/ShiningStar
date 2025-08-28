@@ -32,16 +32,7 @@ export function EditPostModal({ isOpen, onClose, submission, onUpdate }: EditPos
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const categories = [
-    "Innovation",
-    "Team Collaboration",
-    "Family & Community",
-    "Sustainability",
-    "Customer Excellence",
-    "Leadership",
-    "Digital Transformation",
-    "Health & Wellness",
-  ];
+  const categories = ["Voice of ITC", "Dance ITC Dance", "Stroked of a Genius", "Generations in Harmony", "Reel Stars"];
 
   // Pre-populate form data when submission changes
   useEffect(() => {

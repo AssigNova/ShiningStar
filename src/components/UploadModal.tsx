@@ -14,9 +14,10 @@ interface UploadModalProps {
   onClose: () => void;
   user: any;
   onSubmit: (submissionData: any) => void;
+  uploading: boolean; // ✅ add this
 }
 
-export function UploadModal({ isOpen, onClose, user, onSubmit }: UploadModalProps) {
+export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: UploadModalProps) {
   const [dragActive, setDragActive] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
@@ -30,16 +31,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit }: UploadModalProp
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const categories = [
-    "Innovation",
-    "Team Collaboration",
-    "Family & Community",
-    "Sustainability",
-    "Customer Excellence",
-    "Leadership",
-    "Digital Transformation",
-    "Health & Wellness",
-  ];
+  const categories = ["Voice of ITC", "Dance ITC Dance", "Stroked of a Genius", "Generations in Harmony", "Reel Stars"];
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -111,7 +103,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit }: UploadModalProp
       ? `${(file.size / 1024 / 1024 / 1024).toFixed(2)}GB`
       : `${(file.size / 1024 / 1024).toFixed(2)}MB`;
 
-    toast.success(`${fileType} uploaded successfully! (${fileSize})`, {
+    toast.success(`${fileType} is ready for upload! click post to start uploading (${fileSize})`, {
       duration: 3000,
     });
   };
@@ -172,7 +164,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit }: UploadModalProp
     } else {
       console.log("Submission:", submissionData);
       onSubmit(submissionData);
-      toast.success("Post published successfully! It's now live in the community feed.");
+      toast.success("Upload Started successfully! It will be live on the feed once uploaded.");
     }
 
     // Reset form and close modal
@@ -185,7 +177,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit }: UploadModalProp
       tags: "",
     });
     setUploadedFile(null);
-    onClose();
+    // onClose();
   };
 
   const getFileIcon = (file: File) => {
@@ -366,7 +358,16 @@ export function UploadModal({ isOpen, onClose, user, onSubmit }: UploadModalProp
               <Button variant="ghost" onClick={onClose}>
                 Cancel
               </Button>
-              <Button onClick={() => handleSubmit(false)}>Post</Button>
+              {/* <Button onClick={() => handleSubmit(false)}>Post</Button> */}
+              <button
+                type="button"
+                onClick={() => handleSubmit(false)}
+                disabled={uploading}
+                className={`px-4 py-2 rounded-lg font-medium shadow-lg ${
+                  uploading ? "bg-gray-400 cursor-not-allowed text-white" : "bg-purple-600 hover:bg-purple-700 text-white"
+                }`}>
+                {uploading ? "Uploading..." : "Post"}
+              </button>
             </div>
           </div>
         </div>
