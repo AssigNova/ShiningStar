@@ -199,7 +199,7 @@ export default function App() {
         return res.json();
       })
       .then(() => {
-        setSubmissions((prev) => prev.filter((submission) => String(submission._id) !== String(submissionId)));
+        setSubmissions((prev: any) => prev.filter((submission: any) => String(submission._id) !== String(submissionId)));
         toast.success("Post deleted successfully.");
       })
       .catch((err) => {
