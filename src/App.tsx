@@ -10,16 +10,18 @@ import { Leaderboard } from "./components/Leaderboard";
 import { UserManual } from "./components/UserManual";
 import { AIChatBot } from "./components/AIChatBot";
 import { Toaster } from "./components/ui/sonner";
+import { toast } from "sonner";
 import newLogo from "./assets/shiningStar.png";
 // import backgroundImage from "figma:asset/c8fe8aa003d8613000580c8d8851b32ef93680a1.png";
 
 import "./styles/globals.css";
+import ForgotPassword from "./components/ForgotPassword";
 
 export default function App() {
   // Check for post id in URL and filter feed if present
   const [singlePost, setSinglePost] = useState<any | null>(null);
   useEffect(() => {
-    console.log("in UseEffect");
+    console.log("in Useeffect");
     const match = window.location.pathname.match(/\/post\/(\w+)/);
     if (match && match[1]) {
       fetch(`/api/posts/${match[1]}`)
@@ -186,7 +188,23 @@ export default function App() {
   };
 
   const handleDeleteSubmission = (submissionId: number) => {
-    setSubmissions((prev: any) => prev.filter((submission: any) => submission.id !== submissionId));
+    fetch(`/api/posts/${submissionId}`, {
+      method: "DELETE",
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const error = await res.json();
+          throw new Error(error.message || "Delete failed");
+        }
+        return res.json();
+      })
+      .then(() => {
+        setSubmissions((prev) => prev.filter((submission) => String(submission._id) !== String(submissionId)));
+        toast.success("Post deleted successfully.");
+      })
+      .catch((err) => {
+        toast.error(`Delete failed: ${err.message}`);
+      });
   };
 
   const handleUpdateSubmission = (submissionId: number, updatedData: any) => {
@@ -231,6 +249,11 @@ export default function App() {
       })
     );
   };
+
+  const pathname = window.location.pathname;
+  if (pathname === "/forgot-password") {
+    return <ForgotPassword />;
+  }
 
   if (loading) {
     return (
@@ -316,6 +339,11 @@ export default function App() {
                 Secure Login
               </button>
             </form>
+            <p className="mt-4 text-sm text-center">
+              <a href="/forgot-password" className="text-purple-600 hover:underline">
+                Forgot Password?
+              </a>
+            </p>
 
             <div className="mt-4 sm:mt-6 text-center">
               <p className="text-xs text-gray-500">Secure access to Shining Stars Season 3 Platform</p>

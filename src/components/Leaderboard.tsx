@@ -4,7 +4,6 @@ import { Badge } from "./ui/badge";
 import { Progress } from "./ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-
 import { useEffect, useState } from "react";
 
 // Define types for the data structures
@@ -56,7 +55,6 @@ export function Leaderboard() {
       .then((data) => setCategoryLeaders(data));
   }, []);
 
-  // export function Leaderboard() {
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
@@ -84,20 +82,20 @@ export function Leaderboard() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6">
       {/* Header */}
       <Card className="bg-gradient-to-r from-purple-500 to-blue-600 text-white">
-        <CardHeader>
-          <CardTitle className="text-2xl flex items-center">
-            <Trophy className="h-6 w-6 mr-2" />
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-xl sm:text-2xl flex items-center">
+            <Trophy className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
             Season 3 Leaderboard
           </CardTitle>
-          <p className="text-purple-100">Celebrating participation, creativity, and community engagement</p>
+          <p className="text-purple-100 text-sm sm:text-base">Celebrating participation, creativity, and community engagement</p>
         </CardHeader>
       </Card>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
@@ -141,44 +139,52 @@ export function Leaderboard() {
       {/* Leaderboard Tabs */}
       <Tabs defaultValue="departments" className="space-y-6">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="departments">Departments</TabsTrigger>
-          <TabsTrigger value="individuals">Individuals</TabsTrigger>
-          <TabsTrigger value="categories">Categories</TabsTrigger>
+          <TabsTrigger value="departments" className="text-xs sm:text-sm">
+            Departments
+          </TabsTrigger>
+          <TabsTrigger value="individuals" className="text-xs sm:text-sm">
+            Individuals
+          </TabsTrigger>
+          <TabsTrigger value="categories" className="text-xs sm:text-sm">
+            Categories
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="departments" className="space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle>Department Participation Leaderboard</CardTitle>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-lg sm:text-xl">Department Participation Leaderboard</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-6">
               <div className="space-y-4">
                 {departmentLeaderboard.map((dept) => (
-                  <div key={dept.rank} className="flex items-center justify-between p-4 rounded-lg border">
-                    <div className="flex items-center space-x-4">
+                  <div
+                    key={dept.rank}
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-lg border gap-4 sm:gap-0">
+                    <div className="flex items-center space-x-4 w-full sm:w-auto">
                       <div className="flex items-center space-x-2">
                         {getRankIcon(dept.rank)}
                         <Badge className={getRankBadge(dept.rank)}>#{dept.rank}</Badge>
                       </div>
 
-                      <div>
-                        <h3 className="font-semibold">{dept.department}</h3>
-                        <div className="flex items-center space-x-4 text-sm text-gray-600">
+                      <div className="flex-1 sm:flex-none">
+                        <h3 className="font-semibold text-sm sm:text-base">{dept.department}</h3>
+                        <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4 text-xs sm:text-sm text-gray-600 mt-1">
                           <span>{dept.participants} participants</span>
-                          <span>•</span>
+                          <span className="hidden sm:inline">•</span>
                           <span>{dept.submissions} submissions</span>
-                          <span>•</span>
+                          <span className="hidden sm:inline">•</span>
                           <span>{dept.likes} likes</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="text-right">
+                    <div className="text-left sm:text-right w-full sm:w-auto">
                       <div className="flex items-center space-x-2 mb-2">
                         <TrendingUp className="h-4 w-4 text-green-500" />
-                        <span className="font-medium">{dept.engagement}%</span>
+                        <span className="font-medium text-sm sm:text-base">{dept.engagement}%</span>
                       </div>
-                      <Progress value={dept.engagement} className="w-24 h-2" />
+                      <Progress value={dept.engagement} className="w-full sm:w-24 h-2" />
                     </div>
                   </div>
                 ))}
@@ -189,41 +195,45 @@ export function Leaderboard() {
 
         <TabsContent value="individuals" className="space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle>Top Individual Contributors</CardTitle>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-lg sm:text-xl">Top Individual Contributors</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-6">
               <div className="space-y-4">
                 {individualLeaderboard.map((person) => (
-                  <div key={person.rank} className="flex items-center justify-between p-4 rounded-lg border">
-                    <div className="flex items-center space-x-4">
+                  <div
+                    key={person.rank}
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-lg border gap-4 sm:gap-0">
+                    <div className="flex items-center space-x-4 w-full sm:w-auto">
                       <div className="flex items-center space-x-2">
                         {getRankIcon(person.rank)}
                         <Badge className={getRankBadge(person.rank)}>#{person.rank}</Badge>
                       </div>
 
-                      <Avatar>
-                        <AvatarFallback>
+                      <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+                        <AvatarFallback className="text-xs sm:text-sm">
                           {person.name
                             .split(" ")
-                            .map((n: any[]) => n[0])
+                            .map((n: string) => n[0])
                             .join("")}
                         </AvatarFallback>
                       </Avatar>
 
-                      <div>
-                        <h3 className="font-semibold">{person.name}</h3>
-                        <div className="flex items-center space-x-4 text-sm text-gray-600">
+                      <div className="flex-1 sm:flex-none">
+                        <h3 className="font-semibold text-sm sm:text-base">{person.name}</h3>
+                        <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4 text-xs sm:text-sm text-gray-600 mt-1">
                           <span>{person.department}</span>
-                          <span>•</span>
+                          <span className="hidden sm:inline">•</span>
                           <span>{person.submissions} submissions</span>
-                          <span>•</span>
+                          <span className="hidden sm:inline">•</span>
                           <span>{person.likes} likes</span>
                         </div>
                       </div>
                     </div>
 
-                    <Badge variant="outline" className="bg-purple-50 text-purple-700">
+                    <Badge
+                      variant="outline"
+                      className="bg-purple-50 text-purple-700 text-xs sm:text-sm self-start sm:self-auto mt-2 sm:mt-0">
                       {person.badge}
                     </Badge>
                   </div>
@@ -235,21 +245,21 @@ export function Leaderboard() {
 
         <TabsContent value="categories" className="space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle>Category Leaders</CardTitle>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-lg sm:text-xl">Category Leaders</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {categoryLeaders.map((category, index) => (
                   <div key={index} className="p-4 rounded-lg border bg-gradient-to-r from-gray-50 to-gray-100">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold">{category.category}</h3>
+                      <h3 className="font-semibold text-sm sm:text-base">{category.category}</h3>
                       <Trophy className="h-4 w-4 text-yellow-500" />
                     </div>
 
-                    <p className="text-sm text-gray-600 mb-2">Leading Team: {category.leader}</p>
+                    <p className="text-xs sm:text-sm text-gray-600 mb-2">Leading Team: {category.leader}</p>
 
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center justify-between text-xs sm:text-sm">
                       <span>{category.submissions} submissions</span>
                       <span className="font-medium">{category.likes} likes</span>
                     </div>

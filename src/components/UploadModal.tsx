@@ -14,7 +14,7 @@ interface UploadModalProps {
   onClose: () => void;
   user: any;
   onSubmit: (submissionData: any) => void;
-  uploading: boolean; // ✅ add this
+  uploading: boolean;
 }
 
 export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: UploadModalProps) {
@@ -177,7 +177,6 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
       tags: "",
     });
     setUploadedFile(null);
-    // onClose();
   };
 
   const getFileIcon = (file: File) => {
@@ -188,24 +187,24 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center space-x-2">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto sm:max-h-[90vh] w-[95vw] sm:w-full p-4 sm:p-6">
+        <DialogHeader className="px-0 sm:px-0">
+          <DialogTitle className="flex items-center space-x-2 text-lg sm:text-xl">
             <Upload className="h-5 w-5" />
             <span>Upload Your Entry</span>
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-sm sm:text-base">
             Submit your creative work for the Shining Stars Season 3 competition. Fill in all required fields and upload your file to get
             started.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-6 mt-4">
           {/* File Upload Guidelines */}
           <Card className="bg-blue-50 border-blue-200">
             <CardContent className="pt-4">
-              <h4 className="font-medium text-blue-900 mb-2">Upload Guidelines</h4>
-              <ul className="text-sm text-blue-800 space-y-1">
+              <h4 className="font-medium text-blue-900 mb-2 text-sm sm:text-base">Upload Guidelines</h4>
+              <ul className="text-xs sm:text-sm text-blue-800 space-y-1">
                 <li>• Images: JPEG, PNG, GIF (Max 2MB)</li>
                 <li>• Videos: MP4, AVI, MOV (Max 1.5GB)</li>
                 <li>• Recommended image size: 1920x1080px</li>
@@ -217,24 +216,29 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
           {/* Form Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="title">Title *</Label>
+              <Label htmlFor="title" className="text-sm sm:text-base">
+                Title *
+              </Label>
               <Input
                 id="title"
                 placeholder="Enter entry title"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                className="text-sm sm:text-base"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="category">Category *</Label>
+              <Label htmlFor="category" className="text-sm sm:text-base">
+                Category *
+              </Label>
               <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
-                <SelectTrigger>
+                <SelectTrigger className="text-sm sm:text-base">
                   <SelectValue placeholder="Choose category" />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
+                    <SelectItem key={category} value={category} className="text-sm sm:text-base">
                       {category}
                     </SelectItem>
                   ))}
@@ -244,57 +248,72 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description *</Label>
+            <Label htmlFor="description" className="text-sm sm:text-base">
+              Description *
+            </Label>
             <Textarea
               id="description"
               placeholder="Describe your entry..."
               rows={4}
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="text-sm sm:text-base"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Participant Type *</Label>
+              <Label className="text-sm sm:text-base">Participant Type *</Label>
               <Select value={formData.participantType} onValueChange={(value) => setFormData({ ...formData, participantType: value })}>
-                <SelectTrigger>
+                <SelectTrigger className="text-sm sm:text-base">
                   <SelectValue placeholder="Select participant type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Employee">Employee</SelectItem>
-                  <SelectItem value="Spouse">Spouse</SelectItem>
-                  <SelectItem value="Child">Child</SelectItem>
+                  <SelectItem value="Employee" className="text-sm sm:text-base">
+                    Employee
+                  </SelectItem>
+                  <SelectItem value="Spouse" className="text-sm sm:text-base">
+                    Spouse
+                  </SelectItem>
+                  <SelectItem value="Child" className="text-sm sm:text-base">
+                    Child
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="department">Department/Unit</Label>
+              <Label htmlFor="department" className="text-sm sm:text-base">
+                Department/Unit
+              </Label>
               <Input
                 id="department"
                 placeholder="Enter department"
                 value={formData.department}
                 onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                className="text-sm sm:text-base"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="tags">Tags (Optional)</Label>
+            <Label htmlFor="tags" className="text-sm sm:text-base">
+              Tags (Optional)
+            </Label>
             <Input
               id="tags"
               placeholder="Add tags separated by commas"
               value={formData.tags}
               onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+              className="text-sm sm:text-base"
             />
           </div>
 
           {/* File Upload Area */}
           <div className="space-y-4">
-            <Label>Upload File</Label>
+            <Label className="text-sm sm:text-base">Upload File</Label>
             <div
-              className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+              className={`border-2 border-dashed rounded-lg p-4 sm:p-8 text-center transition-colors ${
                 dragActive ? "border-purple-500 bg-purple-50" : "border-gray-300 hover:border-gray-400"
               }`}
               onDragEnter={handleDrag}
@@ -302,16 +321,16 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
               onDragOver={handleDrag}
               onDrop={handleDrop}>
               {uploadedFile ? (
-                <div className="flex items-center justify-center space-x-4">
+                <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                   {getFileIcon(uploadedFile)}
-                  <div className="text-left">
-                    <p className="font-medium">{uploadedFile.name}</p>
-                    <p className="text-sm text-gray-500">
+                  <div className="text-center sm:text-left">
+                    <p className="font-medium text-sm sm:text-base">{uploadedFile.name}</p>
+                    <p className="text-xs sm:text-sm text-gray-500">
                       {uploadedFile.size > 1024 * 1024 * 1024
                         ? `${(uploadedFile.size / 1024 / 1024 / 1024).toFixed(2)} GB`
                         : `${(uploadedFile.size / 1024 / 1024).toFixed(2)} MB`}
                     </p>
-                    <div className="flex items-center mt-1">
+                    <div className="flex items-center justify-center sm:justify-start mt-1">
                       <div
                         className={`h-2 w-2 rounded-full mr-2 ${
                           uploadedFile.type.startsWith("image/") ? "bg-green-500" : "bg-purple-500"
@@ -321,18 +340,18 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
                       </span>
                     </div>
                   </div>
-                  <Button variant="ghost" size="icon" onClick={() => setUploadedFile(null)}>
+                  <Button variant="ghost" size="icon" onClick={() => setUploadedFile(null)} className="self-center sm:self-auto">
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <Upload className="h-12 w-12 text-gray-400 mx-auto" />
+                  <Upload className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mx-auto" />
                   <div>
-                    <p className="text-lg font-medium">Drag & Drop your file here</p>
-                    <p className="text-gray-500">or click to browse</p>
+                    <p className="text-base sm:text-lg font-medium">Drag & Drop your file here</p>
+                    <p className="text-xs sm:text-gray-500">or click to browse</p>
                   </div>
-                  <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+                  <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} className="text-xs sm:text-sm">
                     Browse Files
                   </Button>
                   <input
@@ -348,22 +367,21 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-between pt-4">
-            <Button variant="outline" onClick={() => handleSubmit(true)}>
+          <div className="flex flex-col-reverse sm:flex-row items-center justify-between pt-4 gap-3 sm:gap-0">
+            <Button variant="outline" onClick={() => handleSubmit(true)} className="w-full sm:w-auto text-xs sm:text-sm">
               <Save className="h-4 w-4 mr-2" />
               Save as Draft
             </Button>
 
-            <div className="flex items-center space-x-3">
-              <Button variant="ghost" onClick={onClose}>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center w-full sm:w-auto gap-2 sm:space-x-3">
+              <Button variant="ghost" onClick={onClose} className="w-full sm:w-auto text-xs sm:text-sm">
                 Cancel
               </Button>
-              {/* <Button onClick={() => handleSubmit(false)}>Post</Button> */}
               <button
                 type="button"
                 onClick={() => handleSubmit(false)}
                 disabled={uploading}
-                className={`px-4 py-2 rounded-lg font-medium shadow-lg ${
+                className={`px-4 py-2 rounded-lg font-medium shadow-lg text-sm sm:text-base w-full sm:w-auto ${
                   uploading ? "bg-gray-400 cursor-not-allowed text-white" : "bg-purple-600 hover:bg-purple-700 text-white"
                 }`}>
                 {uploading ? "Uploading..." : "Post"}

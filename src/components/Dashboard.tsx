@@ -33,7 +33,8 @@ interface DashboardProps {
 
 export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmission, onPublishDraft, onLikeSubmission }: DashboardProps) {
   const [leaderboardRank, setLeaderboardRank] = useState<number | null>(null);
-  // Filter user's submissions
+
+  // Always derive userSubmissions from the latest submissions prop
   const userSubmissions = submissions
     .filter((submission) => submission.author.name === user.name)
     .map((submission) => ({
@@ -166,24 +167,24 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6">
       {/* User Profile Header */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <CardTitle className="text-2xl">Welcome back, {user.name}!</CardTitle>
-              <p className="text-gray-600 mt-1">
+              <CardTitle className="text-xl sm:text-2xl">Welcome back, {user.name}!</CardTitle>
+              <p className="text-gray-600 mt-1 text-sm sm:text-base">
                 {user.department} • Employee ID: {user.employeeId}
               </p>
             </div>
-            <Badge className="bg-purple-100 text-purple-800 text-lg px-4 py-2">Rank #{stats.ranking}</Badge>
+            <Badge className="bg-purple-100 text-purple-800 text-base sm:text-lg px-3 py-1 sm:px-4 sm:py-2">Rank #{stats.ranking}</Badge>
           </div>
         </CardHeader>
       </Card>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
@@ -253,10 +254,13 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
 
       {/* Main Dashboard Content */}
       <Tabs defaultValue="submissions" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="submissions">My Submissions</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
+        <TabsList className="w-full flex">
+          <TabsTrigger value="submissions" className="flex-1 text-xs sm:text-sm">
+            My Submissions
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="flex-1 text-xs sm:text-sm">
+            Analytics
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="submissions" className="space-y-4">
@@ -271,21 +275,21 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
             userSubmissions.map((submission) => (
               <Card key={submission.id}>
                 <CardContent className="pt-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <h3 className="font-semibold">{submission.title}</h3>
-                        <Badge className={getStatusColor(submission.status)}>
+                  <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                    <div className="flex-1 w-full">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                        <h3 className="font-semibold text-lg sm:text-base line-clamp-1">{submission.title}</h3>
+                        <Badge className={getStatusColor(submission.status) + " self-start sm:self-center"}>
                           {getStatusIcon(submission.status)}
                           <span className="ml-1 capitalize">{submission.status}</span>
                         </Badge>
                       </div>
 
-                      <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-sm text-gray-600 mb-3">
                         <span>{submission.category}</span>
-                        <span>•</span>
+                        <span className="hidden sm:inline">•</span>
                         <span>Submitted {submission.submittedAt}</span>
-                        <span>•</span>
+                        <span className="hidden sm:inline">•</span>
                         <span className="capitalize">{submission.type}</span>
                       </div>
 
@@ -305,24 +309,35 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                       </div>
                     </div>
 
-                    <div className="flex items-center space-x-2">
-                      <Button variant="outline" size="sm" onClick={() => setViewingSubmission(submission)}>
-                        <Eye className="h-4 w-4 mr-2" />
-                        View
+                    <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-start sm:justify-end">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 sm:flex-initial"
+                        onClick={() => setViewingSubmission(submission)}>
+                        <Eye className="h-4 w-4 sm:mr-2" />
+                        <span className="hidden sm:inline">View</span>
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => setEditingSubmission(submission)}>
-                        <Edit className="h-4 w-4 mr-2" />
-                        Edit
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 sm:flex-initial"
+                        onClick={() => setEditingSubmission(submission)}>
+                        <Edit className="h-4 w-4 sm:mr-2" />
+                        <span className="hidden sm:inline">Edit</span>
                       </Button>
                       {submission.status === "draft" && (
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white">
-                              <Send className="h-4 w-4 mr-2" />
-                              Publish
+                            <Button
+                              variant="default"
+                              size="sm"
+                              className="flex-1 sm:flex-initial bg-green-600 hover:bg-green-700 text-white">
+                              <Send className="h-4 w-4 sm:mr-2" />
+                              <span className="hidden sm:inline">Publish</span>
                             </Button>
                           </AlertDialogTrigger>
-                          <AlertDialogContent>
+                          <AlertDialogContent className="max-w-[95vw] rounded-lg">
                             <AlertDialogHeader>
                               <AlertDialogTitle>Publish Draft</AlertDialogTitle>
                               <AlertDialogDescription>
@@ -330,10 +345,10 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                                 community feed and cannot be unpublished.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogFooter className="flex flex-col sm:flex-row gap-2">
+                              <AlertDialogCancel className="m-0">Cancel</AlertDialogCancel>
                               <AlertDialogAction
-                                className="bg-green-600 hover:bg-green-700"
+                                className="bg-green-600 hover:bg-green-700 m-0"
                                 onClick={() => handlePublishDraft(submission.id, submission.title)}>
                                 Publish Now
                               </AlertDialogAction>
@@ -343,11 +358,12 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                       )}
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
+                          <Button variant="ghost" size="sm" className="flex-1 sm:flex-initial text-red-600 hover:text-red-700">
                             <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">Delete</span>
                           </Button>
                         </AlertDialogTrigger>
-                        <AlertDialogContent>
+                        <AlertDialogContent className="max-w-[95vw] rounded-lg">
                           <AlertDialogHeader>
                             <AlertDialogTitle>Delete Submission</AlertDialogTitle>
                             <AlertDialogDescription>
@@ -355,11 +371,11 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                               your submission from the platform.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogFooter className="flex flex-col sm:flex-row gap-2">
+                            <AlertDialogCancel className="m-0">Cancel</AlertDialogCancel>
                             <AlertDialogAction
-                              className="bg-red-600 hover:bg-red-700"
-                              onClick={() => handleDeleteSubmission(submission.id, submission.title)}>
+                              className="bg-red-600 hover:bg-red-700 m-0"
+                              onClick={() => handleDeleteSubmission(submission._id, submission.title)}>
                               Delete Submission
                             </AlertDialogAction>
                           </AlertDialogFooter>
