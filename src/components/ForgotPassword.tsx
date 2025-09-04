@@ -65,7 +65,7 @@ export default function ForgotPassword() {
     <div className="max-w-md mx-auto p-6">
       {step === 1 && (
         <form onSubmit={handleRequestOtp} className="space-y-4">
-          <h2 className="text-xl font-bold mb-2">Forgot Password</h2>
+          <h2 className="text-xl font-bold mb-2">First Time Login</h2>
           <input
             type="email"
             placeholder="Enter your email"
