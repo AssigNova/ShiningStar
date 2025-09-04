@@ -341,7 +341,7 @@ export default function App() {
             </form>
             <p className="mt-4 text-sm text-center">
               <a href="/forgot-password" className="text-purple-600 hover:underline">
-                Forgot Password?
+                First Time Login?
               </a>
             </p>
 
