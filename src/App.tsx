@@ -22,7 +22,7 @@ export default function App() {
   const [singlePost, setSinglePost] = useState<any | null>(null);
   useEffect(() => {
     console.log("in Useeffect");
-    const match = window.location.pathname.match(/\/post\/(\w+)/);
+    const match = window.location.pathname.match(/\/posts\/(\w+)/);
     if (match && match[1]) {
       fetch(`/api/posts/${match[1]}`)
         .then((res) => res.json())

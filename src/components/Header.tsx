@@ -125,14 +125,16 @@ export function Header({ user, activeView, setActiveView, onUpload, onLogout, on
 
           {/* Navigation (Desktop) */}
           <div className="hidden md:flex items-center justify-center space-x-1 py-2 lg:border-0 border-t">
-            <Button
-              variant={activeView === "feed" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveView("feed")}
-              className="text-xs sm:text-sm">
-              <Home className="h-4 w-4 mr-1 sm:mr-2" />
-              Explore
-            </Button>
+            <a href="/">
+              <Button
+                variant={activeView === "feed" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setActiveView("feed")}
+                className="text-xs sm:text-sm">
+                <Home className="h-4 w-4 mr-1 sm:mr-2" />
+                Explore
+              </Button>
+            </a>
 
             <Button
               variant={activeView === "dashboard" ? "default" : "ghost"}
