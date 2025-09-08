@@ -26,7 +26,7 @@ export function ShareModal({ isOpen, onClose, submission }: ShareModalProps) {
 
   // Use _id if available, else fallback to id
   const postId = (submission as any)._id || submission.id;
-  const postUrl = `http://localhost:5173/posts/${postId}`;
+  const postUrl = `https://itcshiningstars.cosmosevents.in/posts/${postId}`;
   const shareText = `Check out this amazing submission: "${submission.title}" by ${submission.author.name} from ${submission.author.department}`;
 
   const handleCopyLink = async () => {
