@@ -217,13 +217,17 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       {/* Main Feed */}
       <div className="lg:col-span-3 space-y-6">
+        <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-center bg-gradient-to-r from-[#8200db] to-black bg-clip-text text-transparent leading-normal tracking-wide">
+          Welcome to ITC’s Shining Stars Season 3
+        </h1>
+
         {/* Filters */}
         <Card>
           <CardHeader className="pb-4">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <h2 className="text-xl font-semibold">Community Feed</h2>
               <div className="flex items-center space-x-2">
-                <Filter className="h-4 w-4 text-gray-500" />
+                {/* <Filter className="h-4 w-4 text-gray-500" /> */}
                 <Tabs value={filter} onValueChange={(value) => setFilter(value as any)}>
                   <TabsList>
                     <TabsTrigger value="mostLoved" className="text-sm">
@@ -345,10 +349,10 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                     </Button>
                   </div>
 
-                  <Button variant="ghost" size="sm" className="text-purple-600">
+                  {/* <Button variant="ghost" size="sm" className="text-purple-600">
                     <TrendingUp className="h-4 w-4 mr-2" />
                     Internal Shoutout
-                  </Button>
+                  </Button> */}
                 </div>
               </CardContent>
             </Card>
@@ -381,7 +385,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
         {/* Quick Stats (Dynamic) */}
         <Card>
           <CardHeader>
-            <h3 className="font-semibold">Season 3 Stats</h3>
+            <h3 className="font-semibold">ITC Shining Stars Season 3 Stats</h3>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex justify-between">

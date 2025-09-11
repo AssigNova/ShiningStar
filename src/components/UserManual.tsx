@@ -78,13 +78,13 @@ export function UserManual() {
                       <p className="text-sm text-gray-600">Use your ITC email credentials to access the platform</p>
                     </div>
                   </div>
-                  <div className="flex items-start space-x-3">
+                  {/* <div className="flex items-start space-x-3">
                     <Badge className="bg-blue-100 text-blue-800 mt-1">2</Badge>
                     <div>
                       <h4 className="font-medium">Complete Your Profile</h4>
                       <p className="text-sm text-gray-600">Add your department and role information</p>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="flex items-start space-x-3">
                     <Badge className="bg-blue-100 text-blue-800 mt-1">3</Badge>
                     <div>

@@ -65,8 +65,8 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
     // Define allowed types and size limits
     const imageTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
     const videoTypes = ["video/mp4", "video/avi", "video/mov", "video/quicktime"];
-    const maxImageSize = 2 * 1024 * 1024; // 2MB for images
-    const maxVideoSize = 1.5 * 1024 * 1024 * 1024; // 1.5GB for videos
+    const maxImageSize = 30 * 1024 * 1024; // 30MB for images
+    const maxVideoSize = 1 * 1024 * 1024 * 1024; // 1GB for videos
 
     const isImage = imageTypes.includes(file.type);
     const isVideo = videoTypes.includes(file.type);
@@ -81,14 +81,14 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
 
     // Check file size based on type
     if (isImage && file.size > maxImageSize) {
-      toast.error(`Image file is too large. Maximum size allowed is 2MB.\nYour file: ${(file.size / 1024 / 1024).toFixed(2)}MB`, {
+      toast.error(`Image file is too large. Maximum size allowed is 30MB.\nYour file: ${(file.size / 1024 / 1024).toFixed(2)}MB`, {
         duration: 5000,
       });
       return;
     }
 
     if (isVideo && file.size > maxVideoSize) {
-      toast.error(`Video file is too large. Maximum size allowed is 1.5GB.\nYour file: ${(file.size / 1024 / 1024 / 1024).toFixed(2)}GB`, {
+      toast.error(`Video file is too large. Maximum size allowed is 1GB.\nYour file: ${(file.size / 1024 / 1024 / 1024).toFixed(2)}GB`, {
         duration: 5000,
       });
       return;
@@ -131,16 +131,16 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
         return;
       }
 
-      const maxImageSize = 2 * 1024 * 1024; // 2MB
-      const maxVideoSize = 1.5 * 1024 * 1024 * 1024; // 1.5GB
+      const maxImageSize = 30 * 1024 * 1024; // 30MB
+      const maxVideoSize = 1 * 1024 * 1024 * 1024; // 1GB
 
       if (isImage && uploadedFile.size > maxImageSize) {
-        toast.error("Image file exceeds 2MB limit. Please choose a smaller image.");
+        toast.error("Image file exceeds 30MB limit. Please choose a smaller image.");
         return;
       }
 
       if (isVideo && uploadedFile.size > maxVideoSize) {
-        toast.error("Video file exceeds 1.5GB limit. Please choose a smaller video.");
+        toast.error("Video file exceeds 1GB limit. Please choose a smaller video.");
         return;
       }
     }
@@ -205,10 +205,10 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
             <CardContent className="pt-4">
               <h4 className="font-medium text-blue-900 mb-2 text-sm sm:text-base">Upload Guidelines</h4>
               <ul className="text-xs sm:text-sm text-blue-800 space-y-1">
-                <li>• Images: JPEG, PNG, GIF (Max 2MB)</li>
-                <li>• Videos: MP4, AVI, MOV (Max 1.5GB)</li>
+                <li>• Images: JPEG, PNG, GIF (Max 30MB)</li>
+                <li>• Videos: MP4, AVI, MOV (Max 1GB)</li>
                 <li>• Recommended image size: 1920x1080px</li>
-                <li>• Video length: Maximum 2 minutes</li>
+                <li>• Video length: Maximum 30 Seconds</li>
               </ul>
             </CardContent>
           </Card>
