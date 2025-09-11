@@ -86,14 +86,14 @@ export function UserManual() {
                     </div>
                   </div> */}
                   <div className="flex items-start space-x-3">
-                    <Badge className="bg-blue-100 text-blue-800 mt-1">3</Badge>
+                    <Badge className="bg-blue-100 text-blue-800 mt-1">2</Badge>
                     <div>
                       <h4 className="font-medium">Explore Categories</h4>
                       <p className="text-sm text-gray-600">Browse different submission categories to understand themes</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
-                    <Badge className="bg-blue-100 text-blue-800 mt-1">4</Badge>
+                    <Badge className="bg-blue-100 text-blue-800 mt-1">3</Badge>
                     <div>
                       <h4 className="font-medium">Create Your First Submission</h4>
                       <p className="text-sm text-gray-600">Share your story, innovation, or team achievement</p>
