@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Heart, MessageCircle, Share2, Filter, TrendingUp, Clock, Sparkles } from "lucide-react";
+import { Heart, MessageCircle, Share2, Clock, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -217,7 +217,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       {/* Main Feed */}
       <div className="lg:col-span-3 space-y-6">
-        <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-center bg-gradient-to-r from-[#8200db] to-black bg-clip-text text-transparent leading-normal tracking-wide">
+        <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-center bg-gradient-to-r from-[#8200db] to-black text-transparent leading-normal tracking-wide">
           Welcome to ITC’s Shining Stars Season 3
         </h1>
 
