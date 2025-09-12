@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Heart, MessageCircle, Share2, Clock, Sparkles } from "lucide-react";
+import { Heart, MessageCircle, Share2, Clock, Sparkles, Play } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -295,19 +295,51 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                 <p className="text-gray-700">{submission.description}</p>
 
                 {/* Media Content */}
-                <div className="rounded-lg overflow-hidden cursor-pointer" onClick={() => handleViewPost(submission)}>
+                <div
+                  className="rounded-lg overflow-hidden"
+                  onClick={() => {
+                    // Only open modal if the video is not currently playing
+                    const video = document.querySelector(`video[src="${submission.content}"]`) as HTMLVideoElement;
+                    if (!video || video.paused) {
+                      handleViewPost(submission);
+                    }
+                  }}>
                   <AspectRatio ratio={16 / 9}>
                     {submission.mediaType === "video" || (submission.content && submission.content.match(/\.(mp4|webm|ogg)$/i)) ? (
-                      <video
-                        src={submission.content}
-                        poster={submission.thumbnail || undefined}
-                        className="w-full h-full object-cover bg-black"
-                      />
+                      <div className="relative w-full h-full">
+                        <video
+                          src={submission.content}
+                          poster={submission.thumbnail || undefined}
+                          className="w-full h-full object-cover bg-black"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const video = e.target as HTMLVideoElement;
+                            if (video.paused) {
+                              video.play();
+                            } else {
+                              video.pause();
+                            }
+                          }}
+                        />
+                        {/* Play button overlay */}
+                        <div
+                          className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const video = e.currentTarget.previousSibling as HTMLVideoElement;
+                            video.play();
+                          }}>
+                          <div className="bg-black/50 rounded-full p-2">
+                            <Play className="h-8 w-8 text-white fill-white" />
+                          </div>
+                        </div>
+                      </div>
                     ) : (
                       <ImageWithFallback
                         src={submission.content}
                         alt={submission.title}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                        onClick={() => handleViewPost(submission)}
                       />
                     )}
                   </AspectRatio>
