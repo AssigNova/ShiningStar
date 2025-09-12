@@ -315,7 +315,14 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                         {/* Play button overlay */}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
                           <div className="bg-black/50 rounded-full p-2">
-                            <Play className="h-8 w-8 text-white fill-white" />
+                            <Play
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const video = e.currentTarget.previousSibling as HTMLVideoElement;
+                                video.play();
+                              }}
+                              className="h-8 w-8 text-white fill-white"
+                            />
                           </div>
                         </div>
                       </div>
