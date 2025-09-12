@@ -334,7 +334,7 @@ export function ViewPostModal({ isOpen, onClose, submission }: ViewPostModalProp
                   src={submission.content}
                   alt={submission.title}
                   className="w-full h-auto max-h-[50vh] md:max-h-full object-contain cursor-pointer"
-                  onClick={() => setIsFullSizeOpen(true)}
+                  onClick={() => setIsFullSizeOpen(false)}
                 />
               </div>
             )}
