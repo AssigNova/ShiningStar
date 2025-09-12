@@ -300,7 +300,6 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                     {submission.mediaType === "video" || (submission.content && submission.content.match(/\.(mp4|webm|ogg)$/i)) ? (
                       <video
                         src={submission.content}
-                        controls
                         poster={submission.thumbnail || undefined}
                         className="w-full h-full object-cover bg-black"
                       />
