@@ -311,15 +311,6 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                           src={submission.content}
                           poster={submission.thumbnail || undefined}
                           className="w-full h-full object-cover bg-black"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const video = e.target as HTMLVideoElement;
-                            if (video.paused) {
-                              video.play();
-                            } else {
-                              video.pause();
-                            }
-                          }}
                         />
                         {/* Play button overlay */}
                         <div
