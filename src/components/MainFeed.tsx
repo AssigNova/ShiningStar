@@ -298,11 +298,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                 <div
                   className="rounded-lg overflow-hidden"
                   onClick={() => {
-                    // Only open modal if the video is not currently playing
-                    const video = document.querySelector(`video[src="${submission.content}"]`) as HTMLVideoElement;
-                    if (!video || video.paused) {
-                      handleViewPost(submission);
-                    }
+                    handleViewPost(submission);
                   }}>
                   <AspectRatio ratio={16 / 9}>
                     {submission.mediaType === "video" || (submission.content && submission.content.match(/\.(mp4|webm|ogg)$/i)) ? (
@@ -320,7 +316,13 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                                 e.stopPropagation();
                                 const parent = e.currentTarget.closest("div.relative");
                                 const video = parent?.querySelector("video");
-                                video?.play();
+                                if (video) {
+                                  if (video.paused) {
+                                    video.play();
+                                  } else {
+                                    video.pause();
+                                  }
+                                }
                               }}
                               className="h-8 w-8 text-white fill-white"
                             />
