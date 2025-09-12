@@ -389,10 +389,12 @@ export function ViewPostModal({ isOpen, onClose, submission }: ViewPostModalProp
                     {isVideo ? (
                       <div className="relative group">
                         <video
+                          ref={videoRef}
                           src={submission.content}
-                          className="w-full h-24 md:h-32 object-cover cursor-pointer"
+                          className="w-full h-full object-contain max-h-[50vh] md:max-h-full cursor-pointer"
                           poster={submission.content}
-                          onClick={() => setIsFullSizeOpen(true)}>
+                          onClick={() => setIsFullSizeOpen(true)} // Changed from play/pause to open fullscreen
+                        >
                           Your browser does not support the video tag.
                         </video>
                         <div
@@ -523,12 +525,12 @@ export function ViewPostModal({ isOpen, onClose, submission }: ViewPostModalProp
               {isVideo ? (
                 <div className="relative w-full h-full flex items-center justify-center">
                   <video
-                    ref={fullscreenVideoRef}
+                    ref={videoRef}
                     src={submission.content}
-                    className="max-w-full max-h-full object-contain"
-                    autoPlay
+                    className="w-full h-full object-contain max-h-[50vh] md:max-h-full cursor-pointer"
                     poster={submission.content}
-                    onClick={() => handlePlayPause(fullscreenVideoRef.current, setIsPlayingFullscreen)}>
+                    onClick={() => setIsFullSizeOpen(true)} // Changed from play/pause to open fullscreen
+                  >
                     Your browser does not support the video tag.
                   </video>
 
