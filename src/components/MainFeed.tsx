@@ -318,8 +318,9 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                             <Play
                               onClick={(e) => {
                                 e.stopPropagation();
-                                const video = e.currentTarget.previousSibling as HTMLVideoElement;
-                                video.play();
+                                const parent = e.currentTarget.closest("div.relative");
+                                const video = parent?.querySelector("video");
+                                video?.play();
                               }}
                               className="h-8 w-8 text-white fill-white"
                             />
