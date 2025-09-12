@@ -195,23 +195,23 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
     setIsViewModalOpen(true);
   };
 
-  const handleModalLike = (submissionId: string, userId: string) => {
-    // Update liked submissions set
-    setLikedSubmissions((prev) => {
-      const newLiked = new Set(prev);
-      if (userId) {
-        newLiked.add(submissionId);
-      } else {
-        newLiked.delete(submissionId);
-      }
-      return newLiked;
-    });
+  // const handleModalLike = (submissionId: string, userId: string) => {
+  //   // Update liked submissions set
+  //   setLikedSubmissions((prev) => {
+  //     const newLiked = new Set(prev);
+  //     if (userId) {
+  //       newLiked.add(submissionId);
+  //     } else {
+  //       newLiked.delete(submissionId);
+  //     }
+  //     return newLiked;
+  //   });
 
-    // Notify parent component
-    if (onLikeSubmission) {
-      onLikeSubmission(submissionId, userId);
-    }
-  };
+  //   // Notify parent component
+  //   if (onLikeSubmission) {
+  //     onLikeSubmission(submissionId, userId);
+  //   }
+  // };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -428,13 +428,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
       <ShareModal isOpen={isShareModalOpen} onClose={() => setIsShareModalOpen(false)} submission={selectedSubmission} />
 
       {/* View Post Modal */}
-      <ViewPostModal
-        isOpen={isViewModalOpen}
-        onClose={() => setIsViewModalOpen(false)}
-        submission={selectedSubmission}
-        user={user}
-        onLike={handleModalLike}
-      />
+      <ViewPostModal isOpen={isViewModalOpen} onClose={() => setIsViewModalOpen(false)} submission={selectedSubmission} user={user} />
     </div>
   );
 }

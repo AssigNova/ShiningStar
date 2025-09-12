@@ -29,10 +29,12 @@ interface DashboardProps {
   onUpdateSubmission?: (submissionId: number, updatedData: any) => void;
   onPublishDraft?: (submissionId: number) => void;
   onLikeSubmission?: (submissionId: string, userId: string) => void;
+  token?: string; // Add token prop
 }
 
-export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmission, onPublishDraft, onLikeSubmission }: DashboardProps) {
+export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmission, onPublishDraft }: DashboardProps) {
   const [leaderboardRank, setLeaderboardRank] = useState<number | null>(null);
+  const token = localStorage.getItem("token");
 
   // Always derive userSubmissions from the latest submissions prop
   const userSubmissions = submissions
@@ -126,6 +128,41 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
     statusUpdates: true,
     weeklyDigest: false,
   });
+
+  const handleDownloadStats = async (endpoint: string, filename: string) => {
+    try {
+      const res = await fetch(endpoint, {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          // Remove the Accept header since we're not requesting CSV anymore
+        },
+      });
+
+      if (!res.ok) throw new Error("Download failed");
+
+      // Get the response as a blob (for binary data like Excel files)
+      const blob = await res.blob();
+
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+
+      // Append to body, click, and remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Clean up URL object
+      URL.revokeObjectURL(url);
+
+      toast.success("Download started successfully");
+    } catch (error) {
+      console.error("Download error:", error);
+      toast.error("Failed to download statistics");
+    }
+  };
 
   const [viewingSubmission, setViewingSubmission] = useState<any>(null);
   const [editingSubmission, setEditingSubmission] = useState<any>(null);
@@ -261,6 +298,11 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
           <TabsTrigger value="analytics" className="flex-1 text-xs sm:text-sm">
             Analytics
           </TabsTrigger>
+          {user.role === "admin" && (
+            <TabsTrigger value="admin" className="flex-1 text-xs sm:text-sm">
+              Admin Tools
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="submissions" className="space-y-4">
@@ -479,16 +521,31 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
             </CardContent>
           </Card>
         </TabsContent>
+
+        {user.role === "admin" && (
+          <TabsContent value="admin" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Admin Statistics</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Button onClick={() => handleDownloadStats("/api/stats/getStats", "overall_stats.xlsx")} className="w-full">
+                  Download Overall Stats
+                </Button>
+                <Button onClick={() => handleDownloadStats("/api/stats/getUserStats", "user_stats.xlsx")} className="w-full">
+                  Download User Stats
+                </Button>
+                <Button onClick={() => handleDownloadStats("/api/stats/getEntryStats", "entry_stats.xlsx")} className="w-full">
+                  Download Entry Stats
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
       </Tabs>
 
       {/* View Post Modal */}
-      <ViewPostModal
-        isOpen={!!viewingSubmission}
-        onClose={() => setViewingSubmission(null)}
-        submission={viewingSubmission}
-        user={user}
-        onLike={(submissionId, userId) => onLikeSubmission && onLikeSubmission(submissionId, userId)}
-      />
+      <ViewPostModal isOpen={!!viewingSubmission} onClose={() => setViewingSubmission(null)} submission={viewingSubmission} user={user} />
 
       {/* Edit Post Modal */}
       <EditPostModal

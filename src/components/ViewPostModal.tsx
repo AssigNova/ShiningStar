@@ -1,12 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { X, Heart, MessageCircle, Share2, Eye, ZoomIn, Play, Pause, Maximize, Volume2, VolumeX } from "lucide-react";
+import { X, Share2, Eye, ZoomIn, Play, Pause, Maximize, Volume2, VolumeX } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { AspectRatio } from "./ui/aspect-ratio";
 import { Slider } from "./ui/slider";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { CommentsModal } from "./CommentsModal";
 import { ShareModal } from "./ShareModal";
 
 interface ViewPostModalProps {
@@ -14,16 +12,16 @@ interface ViewPostModalProps {
   onClose: () => void;
   submission: any;
   user: any;
-  onLike: (submissionId: string, userId: string) => void; // <— make it string,string
 }
 
-export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: ViewPostModalProps) {
+export function ViewPostModal({ isOpen, onClose, submission }: ViewPostModalProps) {
   // Increment post views when modal opens and submission changes
   useEffect(() => {
     if (isOpen && submission && submission._id) {
       fetch(`/api/posts/${submission._id}/view`, { method: "POST" });
     }
   }, [isOpen, submission]);
+
   const [isFullSizeOpen, setIsFullSizeOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPlayingFullscreen, setIsPlayingFullscreen] = useState(false);
@@ -33,14 +31,11 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
   const [durationFullscreen, setDurationFullscreen] = useState(0);
   const [isSeeking, setIsSeeking] = useState(false);
   const [isSeekingFullscreen, setIsSeekingFullscreen] = useState(false);
-  const [isCommentsModalOpen, setIsCommentsModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [volume, setVolume] = useState(100);
   const [isMuted, setIsMuted] = useState(false);
   const [volumeFullscreen, setVolumeFullscreen] = useState(100);
   const [isMutedFullscreen, setIsMutedFullscreen] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(submission?.likes || 0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const fullscreenVideoRef = useRef<HTMLVideoElement>(null);
 
@@ -140,21 +135,6 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
       } else {
         videoElement.volume = volume / 100;
       }
-    }
-  };
-
-  const handleLike = () => {
-    if (submission.status !== "published") return; // Only allow likes on published posts
-
-    const newIsLiked = !isLiked;
-    const newLikeCount = newIsLiked ? likeCount + 1 : likeCount - 1;
-
-    setIsLiked(newIsLiked);
-    setLikeCount(newLikeCount);
-
-    // Call the parent handler to update the submission in the main state
-    if (onLike) {
-      onLike(submission._id, user._id);
     }
   };
 
@@ -260,284 +240,266 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
     }
   }, [isFullSizeOpen, volume, isMuted]);
 
-  // Reset like state when submission changes
-  useEffect(() => {
-    if (submission) {
-      setLikeCount(submission.likes || 0);
-      setIsLiked(false); // Reset to not liked when modal opens
-    }
-  }, [submission]);
-
   if (!submission) return null;
 
   const isVideo = submission.type === "video";
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-7xl p-0 h-auto w-[90vw]">
+      <DialogContent className="max-w-7xl p-0 h-auto w-[90vw] md:w-full md:max-w-4xl lg:max-w-7xl">
         <DialogTitle className="sr-only">{submission.title} - Submission Details</DialogTitle>
         <DialogDescription className="sr-only">
           View full details of the submission including media, engagement stats, and author information.
         </DialogDescription>
 
-        <AspectRatio ratio={16 / 9} className="bg-white rounded-lg overflow-hidden">
-          <div className="h-full flex">
-            {/* Left side - Media */}
-            <div className="flex-1 relative">
-              {isVideo ? (
-                <div className="relative w-full h-full">
-                  <video
-                    ref={videoRef}
-                    src={submission.content}
-                    className="w-full h-full object-cover"
-                    poster={submission.content}
-                    onClick={() => handlePlayPause(videoRef.current, setIsPlaying)}>
-                    Your browser does not support the video tag.
-                  </video>
+        <div className="flex flex-col lg:flex-row h-full max-h-[90vh] md:max-h-[80vh]">
+          {/* Left side - Media */}
+          <div className="flex-1 relative bg-gray-900 lg:max-w-[70%]">
+            {isVideo ? (
+              <div className="relative w-full h-full">
+                <video
+                  ref={videoRef}
+                  src={submission.content}
+                  className="w-full h-full object-contain max-h-[50vh] md:max-h-full"
+                  poster={submission.content}
+                  onClick={() => handlePlayPause(videoRef.current, setIsPlaying)}>
+                  Your browser does not support the video tag.
+                </video>
 
-                  {/* Video Controls Overlay - Only show when playing */}
-                  <div
-                    className={`absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-sm rounded-lg p-3 transition-opacity duration-200 ${
-                      isPlaying ? "opacity-0 hover:opacity-100" : "opacity-0 pointer-events-none"
-                    }`}>
-                    <div className="space-y-3">
-                      {/* Timeline Slider */}
-                      <div className="flex items-center space-x-3">
-                        <span className="text-white font-mono text-sm min-w-[40px]">{formatTime(currentTime)}</span>
-                        <Slider
-                          value={[currentTime]}
-                          max={duration || 0}
-                          step={0.1}
-                          className="flex-1"
-                          onValueChange={(value) => handleSeek(videoRef.current, value)}
-                          onValueCommit={() => handleSeekEnd(false)}
-                          onPointerDown={() => handleSeekStart(false)}
-                        />
-                        <span className="text-white font-mono text-sm min-w-[40px]">{formatTime(duration)}</span>
-                      </div>
+                {/* Video Controls Overlay */}
+                <div
+                  className={`absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-sm rounded-lg p-3 transition-opacity duration-200 ${
+                    isPlaying ? "opacity-0 hover:opacity-100" : "opacity-0 pointer-events-none"
+                  }`}>
+                  <div className="space-y-3">
+                    {/* Timeline Slider */}
+                    <div className="flex items-center space-x-3">
+                      <span className="text-white font-mono text-sm min-w-[40px]">{formatTime(currentTime)}</span>
+                      <Slider
+                        value={[currentTime]}
+                        max={duration || 0}
+                        step={0.1}
+                        className="flex-1"
+                        onValueChange={(value) => handleSeek(videoRef.current, value)}
+                        onValueCommit={() => handleSeekEnd(false)}
+                        onPointerDown={() => handleSeekStart(false)}
+                      />
+                      <span className="text-white font-mono text-sm min-w-[40px]">{formatTime(duration)}</span>
+                    </div>
 
-                      {/* Control Buttons */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-white hover:bg-white/20 p-2"
-                            onClick={() => handlePlayPause(videoRef.current, setIsPlaying)}>
-                            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                          </Button>
-
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-white hover:bg-white/20 p-2"
-                            onClick={() => handleMuteToggle(videoRef.current, false)}>
-                            {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-                          </Button>
-
-                          <div className="flex items-center space-x-2 w-20">
-                            <Slider
-                              value={[isMuted ? 0 : volume]}
-                              max={100}
-                              step={1}
-                              className="flex-1"
-                              onValueChange={(value) => handleVolumeChange(videoRef.current, value, false)}
-                            />
-                          </div>
-                        </div>
+                    {/* Control Buttons */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-white hover:bg-white/20 p-2"
+                          onClick={() => handlePlayPause(videoRef.current, setIsPlaying)}>
+                          {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                        </Button>
 
                         <Button
                           variant="ghost"
                           size="sm"
                           className="text-white hover:bg-white/20 p-2"
-                          onClick={() => setIsFullSizeOpen(true)}>
-                          <Maximize className="h-4 w-4" />
+                          onClick={() => handleMuteToggle(videoRef.current, false)}>
+                          {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                         </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <ImageWithFallback src={submission.content} alt={submission.title} className="w-full h-full object-cover" />
-              )}
-            </div>
 
-            {/* Right side - Content */}
-            <div className="w-[480px] flex flex-col bg-white border-l">
-              {/* Header */}
-              <div className="p-6 border-b flex-shrink-0">
-                <div className="flex items-center space-x-4">
-                  {/* Author Profile Picture */}
-                  <div className="relative">
-                    <ImageWithFallback
-                      src={`https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`}
-                      alt={`${submission.author.name} profile`}
-                      className="h-14 w-14 rounded-full object-cover ring-2 ring-purple-200"
-                    />
-                    <div className="absolute -bottom-1 -right-1 h-5 w-5 bg-green-500 rounded-full ring-2 ring-white flex items-center justify-center">
-                      <div className="h-2 w-2 bg-white rounded-full"></div>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="font-semibold">{submission.author.name}</p>
-                    <p className="text-sm text-gray-600">
-                      {submission.author.department} • {submission.timestamp}
-                    </p>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <Badge variant="outline" className="text-xs">
-                        {submission.participantType}
-                      </Badge>
+                        <div className="flex items-center space-x-2 w-20">
+                          <Slider
+                            value={[isMuted ? 0 : volume]}
+                            max={100}
+                            step={1}
+                            className="flex-1"
+                            onValueChange={(value) => handleVolumeChange(videoRef.current, value, false)}
+                          />
+                        </div>
+                      </div>
+
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-white hover:bg-white/20 p-2"
+                        onClick={() => setIsFullSizeOpen(true)}>
+                        <Maximize className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
                 </div>
               </div>
+            ) : (
+              <div className="h-full flex items-center justify-center p-4">
+                <ImageWithFallback
+                  src={submission.content}
+                  alt={submission.title}
+                  className="w-full h-auto max-h-[50vh] md:max-h-full object-contain cursor-pointer"
+                  onClick={() => setIsFullSizeOpen(true)}
+                />
+              </div>
+            )}
+          </div>
 
-              {/* Scrollable Content */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                {/* Title and Description */}
-                <div>
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="font-semibold text-lg leading-tight pr-4">{submission.title}</h3>
-                    <Badge variant="secondary" className="flex-shrink-0">
-                      {submission.category}
+          {/* Right side - Content */}
+          <div className="w-full lg:w-[30%] flex flex-col bg-white border-t lg:border-l overflow-y-auto max-h-[40vh] lg:max-h-full">
+            {/* Header */}
+            <div className="p-4 border-b flex-shrink-0">
+              <div className="flex items-center space-x-3">
+                {/* Author Profile Picture */}
+                <div className="relative flex-shrink-0">
+                  <ImageWithFallback
+                    src={`https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`}
+                    alt={`${submission.author.name} profile`}
+                    className="h-10 w-10 md:h-14 md:w-14 rounded-full object-cover ring-2 ring-purple-200"
+                  />
+                  <div className="absolute -bottom-1 -right-1 h-4 w-4 md:h-5 md:w-5 bg-green-500 rounded-full ring-2 ring-white flex items-center justify-center">
+                    <div className="h-1 w-1 md:h-2 md:w-2 bg-white rounded-full"></div>
+                  </div>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold truncate">{submission.author.name}</p>
+                  <p className="text-xs md:text-sm text-gray-600 truncate">
+                    {submission.author.department} • {submission.timestamp}
+                  </p>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <Badge variant="outline" className="text-xs">
+                      {submission.participantType}
                     </Badge>
                   </div>
-                  <p className="text-gray-700 leading-relaxed mb-4">{submission.description}</p>
-
-                  {/* Post Image Preview */}
-                  <div className="mb-4">
-                    <p className="text-sm font-medium text-gray-600 mb-2">Posted Content:</p>
-                    <div className="rounded-lg overflow-hidden border border-gray-200">
-                      {isVideo ? (
-                        <div className="relative group">
-                          <video
-                            src={submission.content}
-                            className="w-full h-32 object-cover cursor-pointer"
-                            poster={submission.content}
-                            onClick={() => setIsFullSizeOpen(true)}>
-                            Your browser does not support the video tag.
-                          </video>
-                          <div
-                            className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center cursor-pointer pointer-events-none group-hover:pointer-events-auto"
-                            onClick={() => setIsFullSizeOpen(true)}>
-                            <ZoomIn className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="relative group">
-                          <ImageWithFallback
-                            src={submission.content}
-                            alt={submission.title}
-                            className="w-full h-32 object-cover hover:scale-105 transition-transform cursor-pointer"
-                            onClick={() => setIsFullSizeOpen(true)}
-                          />
-                          <div
-                            className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center cursor-pointer"
-                            onClick={() => setIsFullSizeOpen(true)}>
-                            <ZoomIn className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
                 </div>
+              </div>
+            </div>
 
-                {/* Engagement Stats - Only show for published posts */}
-                {submission.status === "published" && (
-                  <div className="flex items-center space-x-6 py-4 border-t border-b">
-                    <button className="flex items-center space-x-2 hover:bg-gray-100 rounded-lg p-2 transition-colors" onClick={handleLike}>
-                      <Heart
-                        className={`h-5 w-5 transition-all duration-200 ${
-                          isLiked ? "text-red-500 fill-red-500" : "text-red-500 fill-transparent hover:fill-red-100"
-                        }`}
-                      />
-                      <span className="font-medium">{likeCount}</span>
-                      <span className="text-gray-600">likes</span>
-                    </button>
-                    <button
-                      className="flex items-center space-x-2 hover:bg-gray-100 rounded-lg p-2 transition-colors"
-                      onClick={() => setIsCommentsModalOpen(true)}>
-                      <MessageCircle className="h-5 w-5 text-blue-500" />
-                      <span className="font-medium">{Array.isArray(submission.comments) ? submission.comments.length : 0}</span>
-                      <span className="text-gray-600">comments</span>
-                    </button>
-                    <div className="flex items-center space-x-2">
-                      <Eye className="h-5 w-5 text-gray-500" />
-                      <span className="font-medium">{submission.views || 0}</span>
-                      <span className="text-gray-600">views</span>
-                    </div>
-                  </div>
-                )}
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {/* Title and Description */}
+              <div>
+                <div className="flex items-start justify-between mb-2">
+                  <h3 className="font-semibold text-base md:text-lg leading-tight pr-2">{submission.title}</h3>
+                  <Badge variant="secondary" className="flex-shrink-0 text-xs">
+                    {submission.category}
+                  </Badge>
+                </div>
+                <p className="text-gray-700 text-sm md:text-base leading-relaxed mb-3">{submission.description}</p>
 
-                {/* Draft Notice - Only show for draft posts */}
-                {submission.status === "draft" && (
-                  <div className="py-4 border-t border-b">
-                    <div className="flex items-center space-x-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <div className="h-2 w-2 bg-yellow-500 rounded-full"></div>
-                      <div className="flex-1">
-                        <p className="font-medium text-yellow-800">Draft Post</p>
-                        <p className="text-sm text-yellow-700">
-                          This post is saved as a draft and only visible to you. Publish it from your dashboard to share with the community.
-                        </p>
+                {/* Post Image Preview */}
+                <div className="mb-3">
+                  <p className="text-xs md:text-sm font-medium text-gray-600 mb-1">Posted Content:</p>
+                  <div className="rounded-lg overflow-hidden border border-gray-200">
+                    {isVideo ? (
+                      <div className="relative group">
+                        <video
+                          src={submission.content}
+                          className="w-full h-24 md:h-32 object-cover cursor-pointer"
+                          poster={submission.content}
+                          onClick={() => setIsFullSizeOpen(true)}>
+                          Your browser does not support the video tag.
+                        </video>
+                        <div
+                          className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center cursor-pointer pointer-events-none group-hover:pointer-events-auto"
+                          onClick={() => setIsFullSizeOpen(true)}>
+                          <ZoomIn className="h-5 w-5 md:h-6 md:w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="relative group">
+                        <ImageWithFallback
+                          src={submission.content}
+                          alt={submission.title}
+                          className="w-full h-24 md:h-32 object-cover hover:scale-105 transition-transform cursor-pointer"
+                          onClick={() => setIsFullSizeOpen(true)}
+                        />
+                        <div
+                          className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center cursor-pointer"
+                          onClick={() => setIsFullSizeOpen(true)}>
+                          <ZoomIn className="h-5 w-5 md:h-6 md:w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
+              </div>
 
-                {/* Action Buttons - Only show for published posts */}
-                {submission.status === "published" && (
-                  <div className="flex items-center space-x-3">
-                    <Button variant="outline" size="default" onClick={() => setIsShareModalOpen(true)}>
-                      <Share2 className="h-4 w-4 mr-2" />
-                      Share
-                    </Button>
+              {/* View Stats */}
+              {submission.status === "published" && (
+                <div className="flex items-center space-x-4 py-3 border-t border-b">
+                  <div className="flex items-center space-x-1 md:space-x-2">
+                    <Eye className="h-4 w-4 md:h-5 md:w-5 text-gray-500" />
+                    <span className="font-medium text-sm md:text-base">{submission.views || 0}</span>
+                    <span className="text-gray-600 text-sm md:text-base">views</span>
                   </div>
-                )}
+                </div>
+              )}
 
-                {/* Author Info Section */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-center space-x-3">
-                    <ImageWithFallback
-                      src={`https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face`}
-                      alt={`${submission.author.name} profile`}
-                      className="h-12 w-12 rounded-full object-cover ring-2 ring-purple-200"
-                    />
+              {/* Draft Notice */}
+              {submission.status === "draft" && (
+                <div className="py-3 border-t border-b">
+                  <div className="flex items-center space-x-2 p-2 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <div className="h-2 w-2 bg-yellow-500 rounded-full flex-shrink-0"></div>
                     <div className="flex-1">
-                      <p className="font-medium">Posted by {submission.author.name}</p>
-                      <p className="text-sm text-gray-600">{submission.author.department} Department</p>
+                      <p className="font-medium text-yellow-800 text-sm">Draft Post</p>
+                      <p className="text-xs text-yellow-700">This post is saved as a draft and only visible to you.</p>
                     </div>
                   </div>
                 </div>
+              )}
 
-                {/* Submission Details */}
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600 mb-1">Status</p>
-                      <Badge className={submission.status === "published" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
-                        {submission.status}
-                      </Badge>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-600 mb-1">Content Type</p>
-                      <p className="capitalize">{submission.type}</p>
-                    </div>
+              {/* Action Buttons */}
+              {submission.status === "published" && (
+                <div className="flex items-center space-x-2">
+                  <Button variant="outline" size="sm" className="text-xs md:text-sm" onClick={() => setIsShareModalOpen(true)}>
+                    <Share2 className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                    Share
+                  </Button>
+                </div>
+              )}
+
+              {/* Author Info Section */}
+              <div className="bg-gray-50 rounded-lg p-3">
+                <div className="flex items-center space-x-2">
+                  <ImageWithFallback
+                    src={`https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face`}
+                    alt={`${submission.author.name} profile`}
+                    className="h-8 w-8 md:h-10 md:w-10 rounded-full object-cover ring-2 ring-purple-200 flex-shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm md:text-base truncate">Posted by {submission.author.name}</p>
+                    <p className="text-xs text-gray-600 truncate">{submission.author.department} Department</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600 mb-1">Department</p>
-                      <p>{submission.department}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-600 mb-1">Posted</p>
-                      <p>{submission.timestamp}</p>
-                    </div>
+                </div>
+              </div>
+
+              {/* Submission Details */}
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <p className="text-xs font-medium text-gray-600 mb-1">Status</p>
+                    <Badge
+                      className={`text-xs ${
+                        submission.status === "published" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                      }`}>
+                      {submission.status}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-gray-600 mb-1">Content Type</p>
+                    <p className="text-xs md:text-sm capitalize">{submission.type}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <p className="text-xs font-medium text-gray-600 mb-1">Department</p>
+                    <p className="text-xs md:text-sm truncate">{submission.department}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-gray-600 mb-1">Posted</p>
+                    <p className="text-xs md:text-sm">{submission.timestamp}</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </AspectRatio>
+        </div>
       </DialogContent>
 
       {/* Full Size Media Viewer */}
@@ -551,13 +513,13 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
             <Button
               variant="ghost"
               size="icon"
-              className="absolute top-4 right-4 z-10 text-white hover:bg-white/20"
+              className="absolute top-2 right-2 md:top-4 md:right-4 z-10 text-white hover:bg-white/20"
               onClick={() => setIsFullSizeOpen(false)}>
-              <X className="h-6 w-6" />
+              <X className="h-5 w-5 md:h-6 md:w-6" />
             </Button>
 
             {/* Media Content */}
-            <div className="w-full h-full flex items-center justify-center p-8">
+            <div className="w-full h-full flex items-center justify-center p-4 md:p-8">
               {isVideo ? (
                 <div className="relative w-full h-full flex items-center justify-center">
                   <video
@@ -572,13 +534,15 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
 
                   {/* Custom Video Controls for Fullscreen */}
                   <div
-                    className={`absolute bottom-20 left-8 right-8 bg-black/60 backdrop-blur-sm rounded-lg p-4 transition-opacity duration-200 ${
+                    className={`absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 bg-black/60 backdrop-blur-sm rounded-lg p-3 md:p-4 transition-opacity duration-200 ${
                       isPlayingFullscreen ? "opacity-0 hover:opacity-100" : "opacity-0 pointer-events-none"
                     }`}>
-                    <div className="space-y-4">
+                    <div className="space-y-3 md:space-y-4">
                       {/* Timeline Slider */}
-                      <div className="flex items-center space-x-4">
-                        <span className="text-white font-mono min-w-[50px]">{formatTime(currentTimeFullscreen)}</span>
+                      <div className="flex items-center space-x-2 md:space-x-4">
+                        <span className="text-white font-mono text-xs md:text-sm min-w-[40px] md:min-w-[50px]">
+                          {formatTime(currentTimeFullscreen)}
+                        </span>
                         <Slider
                           value={[currentTimeFullscreen]}
                           max={durationFullscreen || 0}
@@ -588,29 +552,35 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                           onValueCommit={() => handleSeekEnd(true)}
                           onPointerDown={() => handleSeekStart(true)}
                         />
-                        <span className="text-white font-mono min-w-[50px]">{formatTime(durationFullscreen)}</span>
+                        <span className="text-white font-mono text-xs md:text-sm min-w-[40px] md:min-w-[50px]">
+                          {formatTime(durationFullscreen)}
+                        </span>
                       </div>
 
                       {/* Control Buttons */}
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-2 md:space-x-4">
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-white hover:bg-white/20 p-3"
+                            className="text-white hover:bg-white/20 p-2 md:p-3"
                             onClick={() => handlePlayPause(fullscreenVideoRef.current, setIsPlayingFullscreen)}>
-                            {isPlayingFullscreen ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
+                            {isPlayingFullscreen ? <Pause className="h-4 w-4 md:h-6 md:w-6" /> : <Play className="h-4 w-4 md:h-6 md:w-6" />}
                           </Button>
 
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-white hover:bg-white/20 p-3"
+                            className="text-white hover:bg-white/20 p-2 md:p-3"
                             onClick={() => handleMuteToggle(fullscreenVideoRef.current, true)}>
-                            {isMutedFullscreen ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                            {isMutedFullscreen ? (
+                              <VolumeX className="h-4 w-4 md:h-5 md:w-5" />
+                            ) : (
+                              <Volume2 className="h-4 w-4 md:h-5 md:w-5" />
+                            )}
                           </Button>
 
-                          <div className="flex items-center space-x-3 w-32">
+                          <div className="flex items-center space-x-2 md:space-x-3 w-24 md:w-32">
                             <Slider
                               value={[isMutedFullscreen ? 0 : volumeFullscreen]}
                               max={100}
@@ -618,7 +588,7 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                               className="flex-1"
                               onValueChange={(value) => handleVolumeChange(fullscreenVideoRef.current, value, true)}
                             />
-                            <span className="text-white text-sm font-mono min-w-[35px]">
+                            <span className="text-white text-xs md:text-sm font-mono min-w-[30px] md:min-w-[35px]">
                               {isMutedFullscreen ? "0%" : `${Math.round(volumeFullscreen)}%`}
                             </span>
                           </div>
@@ -626,9 +596,9 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-white hover:bg-white/20 p-3"
+                          className="text-white hover:bg-white/20 p-2 md:p-3"
                           onClick={() => handleFullscreen(fullscreenVideoRef.current)}>
-                          <Maximize className="h-6 w-6" />
+                          <Maximize className="h-4 w-4 md:h-6 md:w-6" />
                         </Button>
                       </div>
                     </div>
@@ -640,15 +610,15 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
             </div>
 
             {/* Media Info Overlay */}
-            <div className="absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-sm rounded-lg p-4">
+            <div className="absolute bottom-2 left-2 right-2 md:bottom-4 md:left-4 md:right-4 bg-black/60 backdrop-blur-sm rounded-lg p-2 md:p-4">
               <div className="flex items-center justify-between text-white">
-                <div>
-                  <h3 className="font-semibold text-lg">{submission.title}</h3>
-                  <p className="text-sm text-gray-300">
+                <div className="truncate pr-2">
+                  <h3 className="font-semibold text-sm md:text-lg truncate">{submission.title}</h3>
+                  <p className="text-xs md:text-sm text-gray-300 truncate">
                     by {submission.author.name} • {submission.timestamp}
                   </p>
                 </div>
-                <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                <Badge variant="secondary" className="bg-white/20 text-white border-white/30 text-xs flex-shrink-0">
                   {submission.category}
                 </Badge>
               </div>
@@ -656,11 +626,6 @@ export function ViewPostModal({ isOpen, onClose, submission, user, onLike }: Vie
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Comments Modal - Only for published posts */}
-      {submission.status === "published" && (
-        <CommentsModal isOpen={isCommentsModalOpen} onClose={() => setIsCommentsModalOpen(false)} submission={submission} user={user} />
-      )}
 
       {/* Share Modal - Only for published posts */}
       {submission.status === "published" && (
