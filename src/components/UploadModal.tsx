@@ -31,7 +31,14 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const categories = ["Voice of ITC", "Dance ITC Dance", "Strokes of a Genius", "Generations in Harmony", "Reel Stars"];
+  const categories = [
+    "Voice of ITC (Individual Performance)",
+    "Dance ITC Dance (Individual Performance)",
+    "Strokes of a Genius (Individual Performance)",
+    "Generations in Harmony (Family Performance)",
+    "Reel Stars (Only Employees)",
+    "Harmony in Action (Group Employees)",
+  ];
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -208,7 +215,9 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
                 <li>• Images: JPEG, PNG, GIF (Max 30MB)</li>
                 <li>• Videos: MP4, AVI, MOV (Max 1GB)</li>
                 <li>• Recommended image size: 1920x1080px</li>
-                <li>• Video length: Maximum 30 Seconds</li>
+                <li>• Video length: </li>
+                <li className="ml-4"> - Maximum 30 Seconds For Reels</li>
+                <li className="ml-4"> - 2 minutes for Normal Video</li>
               </ul>
             </CardContent>
           </Card>
@@ -272,11 +281,11 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
                   <SelectItem value="Employee" className="text-sm sm:text-base">
                     Employee
                   </SelectItem>
-                  <SelectItem value="Spouse" className="text-sm sm:text-base">
-                    Spouse
+                  <SelectItem value="Family" className="text-sm sm:text-base">
+                    Family
                   </SelectItem>
-                  <SelectItem value="Child" className="text-sm sm:text-base">
-                    Child
+                  <SelectItem value="Child (Under 12)" className="text-sm sm:text-base">
+                    Child (Under 12)
                   </SelectItem>
                 </SelectContent>
               </Select>

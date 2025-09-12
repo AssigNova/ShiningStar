@@ -240,7 +240,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Profile Views</p>
+                <p className="text-sm font-medium text-gray-600">Views</p>
                 <p className="text-2xl font-bold">{stats.totalViews}</p>
               </div>
               <div className="h-8 w-8 bg-purple-100 rounded-full flex items-center justify-center">
