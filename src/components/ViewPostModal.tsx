@@ -260,9 +260,10 @@ export function ViewPostModal({ isOpen, onClose, submission }: ViewPostModalProp
                 <video
                   ref={videoRef}
                   src={submission.content}
-                  className="w-full h-full object-contain max-h-[50vh] md:max-h-full"
+                  className="w-full h-full object-contain max-h-[50vh] md:max-h-full cursor-pointer"
                   poster={submission.content}
-                  onClick={() => handlePlayPause(videoRef.current, setIsPlaying)}>
+                  onClick={() => setIsFullSizeOpen(true)} // Changed from play/pause to open fullscreen
+                >
                   Your browser does not support the video tag.
                 </video>
 
@@ -389,12 +390,10 @@ export function ViewPostModal({ isOpen, onClose, submission }: ViewPostModalProp
                     {isVideo ? (
                       <div className="relative group">
                         <video
-                          ref={videoRef}
                           src={submission.content}
-                          className="w-full h-full object-contain max-h-[50vh] md:max-h-full cursor-pointer"
+                          className="w-full h-24 md:h-32 object-cover cursor-pointer"
                           poster={submission.content}
-                          onClick={() => setIsFullSizeOpen(true)} // Changed from play/pause to open fullscreen
-                        >
+                          onClick={() => setIsFullSizeOpen(true)}>
                           Your browser does not support the video tag.
                         </video>
                         <div
@@ -525,12 +524,12 @@ export function ViewPostModal({ isOpen, onClose, submission }: ViewPostModalProp
               {isVideo ? (
                 <div className="relative w-full h-full flex items-center justify-center">
                   <video
-                    ref={videoRef}
+                    ref={fullscreenVideoRef}
                     src={submission.content}
-                    className="w-full h-full object-contain max-h-[50vh] md:max-h-full cursor-pointer"
+                    className="max-w-full max-h-full object-contain"
+                    autoPlay
                     poster={submission.content}
-                    onClick={() => setIsFullSizeOpen(true)} // Changed from play/pause to open fullscreen
-                  >
+                    onClick={() => handlePlayPause(fullscreenVideoRef.current, setIsPlayingFullscreen)}>
                     Your browser does not support the video tag.
                   </video>
 
