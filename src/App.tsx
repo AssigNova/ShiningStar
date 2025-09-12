@@ -11,7 +11,7 @@ import { UserManual } from "./components/UserManual";
 import { AIChatBot } from "./components/AIChatBot";
 import { Toaster } from "./components/ui/sonner";
 import { toast } from "sonner";
-import newLogo from "./assets/shiningStar.png";
+import newLogo from "./assets/shiningStar2.png";
 // import backgroundImage from "figma:asset/c8fe8aa003d8613000580c8d8851b32ef93680a1.png";
 
 import "./styles/globals.css";

@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import newLogo from "../assets/shiningStar.png";
+import newLogo from "../assets/shiningStar2.png";
 import { useState } from "react";
 
 interface HeaderProps {
@@ -50,7 +50,7 @@ export function Header({ user, activeView, setActiveView, onUpload, onLogout, on
               <Button variant="ghost" size="icon" onClick={toggleMobileMenu} className="md:hidden mr-2">
                 {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </Button>
-              <img src={newLogo} alt="Logo" className="h-12 w-12 md:h-16 md:w-16 rounded-full object-cover" />
+              <img src={newLogo} alt="Logo" className="h-12 w-12 md:h-16 md:w-24 rounded-full object-cover" />
             </div>
 
             {/* Search Bar - Desktop */}
