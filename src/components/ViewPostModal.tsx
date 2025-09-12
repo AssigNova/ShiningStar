@@ -258,14 +258,11 @@ export function ViewPostModal({ isOpen, onClose, submission }: ViewPostModalProp
             {isVideo ? (
               <div className="relative w-full h-full">
                 <video
-                  ref={videoRef}
                   src={submission.content}
-                  className="w-full h-full object-contain max-h-[50vh] md:max-h-full cursor-pointer"
-                  poster={submission.content}
-                  onClick={() => setIsFullSizeOpen(true)} // Changed from play/pause to open fullscreen
-                >
-                  Your browser does not support the video tag.
-                </video>
+                  controls
+                  poster={submission.thumbnail || undefined}
+                  className="w-full h-full object-cover bg-black"
+                />
 
                 {/* Video Controls Overlay */}
                 <div
