@@ -29,7 +29,7 @@ export default function ForgotPassword() {
     const res = await fetch("/api/password/verify-otp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, otp }),
+      body: JSON.stringify({ email: email.toLowerCase(), otp }),
     });
     const data = await res.json();
     if (res.ok) {
@@ -46,7 +46,7 @@ export default function ForgotPassword() {
     const res = await fetch("/api/password/reset", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password: newPassword }),
+      body: JSON.stringify({ email: email.toLowerCase(), password: newPassword }),
     });
     const data = await res.json();
     if (res.ok) {
