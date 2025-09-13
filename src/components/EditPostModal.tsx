@@ -138,7 +138,7 @@ export function EditPostModal({ isOpen, onClose, submission, onUpdate }: EditPos
     formDataToSend.append("participantType", formData.participantType);
     formDataToSend.append("department", formData.department);
     formDataToSend.append("tags", formData.tags || "");
-    formDataToSend.append("status", submission.status || "published");
+    formDataToSend.append("status", "published");
     formDataToSend.append("type", uploadedFile ? (uploadedFile.type.startsWith("image/") ? "image" : "video") : submission.type);
     formDataToSend.append("timestamp", new Date().toISOString());
     formDataToSend.append("author", JSON.stringify(submission.author));
