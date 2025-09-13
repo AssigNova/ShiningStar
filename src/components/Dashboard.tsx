@@ -32,7 +32,7 @@ interface DashboardProps {
   token?: string; // Add token prop
 }
 
-export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmission, onPublishDraft }: DashboardProps) {
+export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmission }: DashboardProps) {
   const [leaderboardRank, setLeaderboardRank] = useState<number | null>(null);
   const token = localStorage.getItem("token");
 
@@ -174,12 +174,12 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
     }
   };
 
-  const handlePublishDraft = (submissionId: number, submissionTitle: string) => {
-    if (onPublishDraft) {
-      onPublishDraft(submissionId);
-      toast.success(`"${submissionTitle}" has been published successfully! It's now live in the community feed.`);
-    }
-  };
+  // const handlePublishDraft = (submissionId: number, submissionTitle: string) => {
+  //   if (onPublishDraft) {
+  //     onPublishDraft(submissionId);
+  //     toast.success(`"${submissionTitle}" has been published successfully! It's now live in the community feed.`);
+  //   }
+  // };
 
   const getStatusColor = (status: string) => {
     switch (status) {
