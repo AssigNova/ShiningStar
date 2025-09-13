@@ -391,7 +391,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                               <AlertDialogCancel className="m-0">Cancel</AlertDialogCancel>
                               <AlertDialogAction
                                 className="bg-green-600 hover:bg-green-700 m-0"
-                                onClick={() => handlePublishDraft(submission.id, submission.title)}>
+                                onClick={() => setEditingSubmission(submission)}>
                                 Publish Now
                               </AlertDialogAction>
                             </AlertDialogFooter>
