@@ -266,37 +266,144 @@ export function AIChatBot({ user, isFirstLogin = false, activeView = "feed", onV
   const generateAIResponse = (input: string): Message => {
     const lowercaseInput = input.toLowerCase();
 
-    // Enhanced responses with interactive elements
+    // Expanded predefined response data covering broad platform aspects
     const responses: { [key: string]: any } = {
       dashboard: {
         content:
-          "Your Dashboard is your command center! Here's what you can do:\n\n📊 **Main Features:**\n• View all submissions (published & drafts)\n• Edit or delete your posts\n• Publish drafts when ready\n• Track engagement metrics\n• Monitor your ranking\n\n🎯 **Pro Tips:**\n• Use drafts to perfect your content\n• Check analytics to see what works\n• Publish during peak hours for better reach",
+          "Your Dashboard is your control center! Here you can:\n\n" +
+          "📊 **Main Features:**\n" +
+          "• Manage all your submissions, drafts, and published items\n" +
+          "• Edit or delete any of your posts\n" +
+          "• Publish drafts when you're ready\n" +
+          "• Track engagement metrics like views, likes, and comments\n" +
+          "• Monitor your ranking in the competition\n\n" +
+          "🎯 **Pro Tips:**\n" +
+          "• Use drafts to perfect your submissions\n" +
+          "• Analyze what content performs best\n" +
+          "• Publish during peak hours for maximum visibility",
         actions: [
           { label: "Go to Dashboard", action: "open-dashboard", icon: BarChart3 },
           { label: "Draft Tips", action: "draft-help", icon: BookOpen },
         ],
       },
+
       upload: {
         content:
-          "Ready to create something amazing? Here's your upload guide:\n\n🚀 **Step-by-Step:**\n1. Click on 'Upload Entry' button on the header\n2. Choose image or video\n3. Upload your file (max 30MB)\n4. Craft an engaging title\n5. Write a compelling description\n6. Select the perfect category\n7. Save as draft or publish\n\n✨ **Success Tips:**\n• Tell a story, don't just describe\n• Use high-quality visuals\n• Choose the most relevant category",
+          "Ready to create something amazing? Follow this step-by-step guide:\n\n" +
+          "🚀 **Upload Guide:**\n" +
+          "1. Click the 'Upload Entry' button at the header\n" +
+          "2. Choose if your entry is an image or video\n" +
+          "3. Drag & drop or select your file (Max 30MB images, 1GB videos)\n" +
+          "4. Provide a compelling title\n" +
+          "5. Write an engaging and descriptive summary\n" +
+          "6. Select the most appropriate category for your entry\n" +
+          "7. Save as draft or publish immediately\n\n" +
+          "✨ **Success Tips:**\n" +
+          "• Use descriptive titles and rich storytelling\n" +
+          "• Choose high-quality visuals for better engagement\n" +
+          "• Select correct categories to reach the right audience",
         actions: [
           { label: "Start Upload", action: "open-upload", icon: Upload },
           { label: "Category Guide", action: "categories", icon: HelpCircle },
         ],
       },
+
       leaderboard: {
         content:
-          "🏆 **Leaderboard Insights:**\n\n📈 **How Rankings Work:**\n• Likes & comments boost your score\n• Consistency matters as much as viral posts\n• Cross-department engagement is valuable\n• Quality content gets lasting engagement\n\n🎯 **Climb the Rankings:**\n• Engage with others' content\n• Post high-quality submissions regularly\n• Respond to comments on your posts\n• Share content that resonates",
+          "🏆 **Leaderboard Insights:**\n\n" +
+          "📈 **How Rankings Work:**\n" +
+          "• Likes and comments significantly boost your score\n" +
+          "• Consistency and quality over viral spikes\n" +
+          "• Engage with cross-department content for more impact\n" +
+          "• Quality submissions get lasting recognition\n\n" +
+          "🎯 **Tips to Climb the Ranks:**\n" +
+          "• Regularly post high-quality content\n" +
+          "• Interact with others by liking and commenting\n" +
+          "• Respond to feedback on your posts promptly",
         actions: [
           { label: "View Rankings", action: "open-leaderboard", icon: ExternalLink },
           { label: "Ranking Tips", action: "ranking-tips", icon: Sparkles },
         ],
       },
+
+      categories: {
+        content:
+          "Choosing the right category helps your entry reach the right audience. Here are the main categories:\n\n" +
+          "• Voice of ITC (Individual Performance)\n" +
+          "• Dance ITC Dance (Individual Performance)\n" +
+          "• Strokes of a Genius (Individual Performance)\n" +
+          "• Generations in Harmony (Family Performance)\n" +
+          "• Reel Stars (Only Employees)\n" +
+          "• Harmony in Action (Group Employees)\n\n" +
+          "Each category has specific eligibility and content type guidelines to follow.",
+        actions: [{ label: "Category Details", action: "category-details", icon: BookOpen }],
+      },
+
+      "best practices": {
+        content:
+          "Here are some best practices to maximize your success:\n\n" +
+          "📸 **Content Creation:**\n" +
+          "• Use high-resolution images and clear videos\n" +
+          "• Keep videos within recommended lengths (e.g., 30 seconds for reels)\n" +
+          "• Write engaging and authentic descriptions\n" +
+          "• Use relevant and descriptive tags\n\n" +
+          "💬 **Engagement:**\n" +
+          "• Like, comment, and share other submissions\n" +
+          "• Respond quickly to comments on your posts\n" +
+          "• Share your entries with your teams and peers\n\n" +
+          "🎯 **Timing & Frequency:**\n" +
+          "• Post consistently but focus on quality over quantity\n" +
+          "• Publish during peak platform activity hours\n\n" +
+          "Following these tips boosts your visibility and ranking.",
+        actions: [
+          { label: "Content Guidelines", action: "content-guide", icon: BookOpen },
+          { label: "Engagement Tips", action: "engagement", icon: Sparkles },
+        ],
+      },
+
+      analytics: {
+        content:
+          "🎯 **Performance Analytics Overview:**\n\n" +
+          "Track your engagement via:\n" +
+          "• Likes and comments count\n" +
+          "• Views your posts have received\n" +
+          "• Your engagement and community impact rates\n\n" +
+          "Use this data to refine your content strategy and maximize reach.",
+        actions: [
+          { label: "View Analytics", action: "open-analytics", icon: BarChart3 },
+          { label: "Improve Performance", action: "performance-tips", icon: Zap },
+        ],
+      },
+
+      manual: {
+        content:
+          "📖 The User Manual is your go-to resource:\n\n" +
+          "• Getting Started Guide\n" +
+          "• Submission Guidelines\n" +
+          "• Competition Rules\n" +
+          "• Platform Features\n" +
+          "• Troubleshooting\n\n" +
+          "Use the manual anytime for comprehensive guidance.",
+        actions: [{ label: "Open Manual", action: "view-manual", icon: BookOpen }],
+      },
+
+      support: {
+        content:
+          "Need help? You can contact support or check our FAQ:\n\n" +
+          "• Reach out via support chat or email\n" +
+          "• Browse common questions and answers\n" +
+          "• Get tips on platform usage and troubleshooting",
+        actions: [
+          { label: "Contact Support", action: "contact-support", icon: HelpCircle },
+          { label: "View FAQ", action: "view-faq", icon: HelpCircle },
+        ],
+      },
     };
 
-    // Check for specific topics
+    // Prioritize most specific match: check all keys with word boundary
     for (const [key, response] of Object.entries(responses)) {
-      if (lowercaseInput.includes(key)) {
+      const regex = new RegExp(`\\b${key}\\b`, "i");
+      if (regex.test(input)) {
         return {
           id: Date.now() + 1,
           content: response.content,
@@ -308,22 +415,91 @@ export function AIChatBot({ user, isFirstLogin = false, activeView = "feed", onV
       }
     }
 
-    // Default enhanced response
+    // Default response if no match found
     return {
       id: Date.now() + 1,
       content:
-        "I'd love to help you with that! Here are some popular topics I can assist with:\n\n🎯 **Popular Help Topics:**\n• Creating and uploading submissions\n• Understanding the competition\n• Improving your rankings\n• Platform navigation and features\n\nWhat specific area would you like to explore?",
+        "I'm here to help! You can ask me about uploading entries, managing your dashboard, competition rules, or platform features.\n\n" +
+        "Popular topics:\n" +
+        "• Upload guide\n" +
+        "• Dashboard usage\n" +
+        "• Leaderboard & ranking\n" +
+        "• Best practices\n" +
+        "• Viewing analytics\n\n" +
+        "What would you like to know?",
       sender: "bot",
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       type: "interactive",
       actions: [
         { label: "Upload Help", action: "upload-help", icon: Upload },
-        { label: "Platform Tour", action: "platform-tour", icon: Search },
+        { label: "Dashboard", action: "open-dashboard", icon: BarChart3 },
+        { label: "Leaderboard", action: "open-leaderboard", icon: ExternalLink },
         { label: "Best Practices", action: "best-practices", icon: Sparkles },
-        { label: "Performance Tips", action: "performance-tips", icon: BarChart3 },
       ],
     };
   };
+
+  // const generateAIResponse = (input: string): Message => {
+  //   const lowercaseInput = input.toLowerCase();
+
+  //   // Enhanced responses with interactive elements
+  //   const responses: { [key: string]: any } = {
+  //     dashboard: {
+  //       content:
+  //         "Your Dashboard is your command center! Here's what you can do:\n\n📊 **Main Features:**\n• View all submissions (published & drafts)\n• Edit or delete your posts\n• Publish drafts when ready\n• Track engagement metrics\n• Monitor your ranking\n\n🎯 **Pro Tips:**\n• Use drafts to perfect your content\n• Check analytics to see what works\n• Publish during peak hours for better reach",
+  //       actions: [
+  //         { label: "Go to Dashboard", action: "open-dashboard", icon: BarChart3 },
+  //         { label: "Draft Tips", action: "draft-help", icon: BookOpen },
+  //       ],
+  //     },
+  //     upload: {
+  //       content:
+  //         "Ready to create something amazing? Here's your upload guide:\n\n🚀 **Step-by-Step:**\n1. Click on 'Upload Entry' button on the header\n2. Choose image or video\n3. Upload your file (max 30MB)\n4. Craft an engaging title\n5. Write a compelling description\n6. Select the perfect category\n7. Save as draft or publish\n\n✨ **Success Tips:**\n• Tell a story, don't just describe\n• Use high-quality visuals\n• Choose the most relevant category",
+  //       actions: [
+  //         { label: "Start Upload", action: "open-upload", icon: Upload },
+  //         { label: "Category Guide", action: "categories", icon: HelpCircle },
+  //       ],
+  //     },
+  //     leaderboard: {
+  //       content:
+  //         "🏆 **Leaderboard Insights:**\n\n📈 **How Rankings Work:**\n• Likes & comments boost your score\n• Consistency matters as much as viral posts\n• Cross-department engagement is valuable\n• Quality content gets lasting engagement\n\n🎯 **Climb the Rankings:**\n• Engage with others' content\n• Post high-quality submissions regularly\n• Respond to comments on your posts\n• Share content that resonates",
+  //       actions: [
+  //         { label: "View Rankings", action: "open-leaderboard", icon: ExternalLink },
+  //         { label: "Ranking Tips", action: "ranking-tips", icon: Sparkles },
+  //       ],
+  //     },
+  //   };
+
+  //   // Check for specific topics
+  //   for (const [key, response] of Object.entries(responses)) {
+  //     if (lowercaseInput.includes(key)) {
+  //       return {
+  //         id: Date.now() + 1,
+  //         content: response.content,
+  //         sender: "bot",
+  //         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+  //         type: "interactive",
+  //         actions: response.actions,
+  //       };
+  //     }
+  //   }
+
+  //   // Default enhanced response
+  //   return {
+  //     id: Date.now() + 1,
+  //     content:
+  //       "I'd love to help you with that! Here are some popular topics I can assist with:\n\n🎯 **Popular Help Topics:**\n• Creating and uploading submissions\n• Understanding the competition\n• Improving your rankings\n• Platform navigation and features\n\nWhat specific area would you like to explore?",
+  //     sender: "bot",
+  //     timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+  //     type: "interactive",
+  //     actions: [
+  //       { label: "Upload Help", action: "upload-help", icon: Upload },
+  //       { label: "Platform Tour", action: "platform-tour", icon: Search },
+  //       { label: "Best Practices", action: "best-practices", icon: Sparkles },
+  //       { label: "Performance Tips", action: "performance-tips", icon: BarChart3 },
+  //     ],
+  //   };
+  // };
 
   const handleActionClick = (action: string) => {
     switch (action) {
