@@ -264,7 +264,7 @@ export function AIChatBot({ user, isFirstLogin = false, activeView = "feed", onV
   };
 
   const generateAIResponse = (input: string): Message => {
-    const lowercaseInput = input.toLowerCase();
+    // const lowercaseInput = input.toLowerCase();
 
     // Expanded predefined response data covering broad platform aspects
     const responses: { [key: string]: any } = {
