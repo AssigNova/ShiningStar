@@ -45,7 +45,6 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [isFirstLogin, setIsFirstLogin] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [uploadToastId, setUploadToastId] = useState<string | number | null>(null);
 
   // Fetch posts from backend on mount
   useEffect(() => {
@@ -145,7 +144,6 @@ export default function App() {
   const handleNewSubmission = async (submissionData: any) => {
     setUploading(true);
     const id = toast.loading("Starting upload...");
-    setUploadToastId(id);
     try {
       const token = localStorage.getItem("token");
       const formData = new FormData();
@@ -198,7 +196,6 @@ export default function App() {
       toast.error("Server error during upload. Please try again.");
     } finally {
       setUploading(false);
-      setUploadToastId(null);
       // setUploadProgress(0); // Reset progress after completion or error
     }
   };
