@@ -11,6 +11,7 @@ import { UserManual } from "./components/UserManual";
 import { AIChatBot } from "./components/AIChatBot";
 import { Toaster } from "./components/ui/sonner";
 import { toast } from "sonner";
+import axios from "axios";
 import newLogo from "./assets/shiningStar2.png";
 // import backgroundImage from "figma:asset/c8fe8aa003d8613000580c8d8851b32ef93680a1.png";
 
@@ -44,6 +45,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [isFirstLogin, setIsFirstLogin] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadToastId, setUploadToastId] = useState<string | number | null>(null);
 
   // Fetch posts from backend on mount
   useEffect(() => {
@@ -142,6 +144,8 @@ export default function App() {
 
   const handleNewSubmission = async (submissionData: any) => {
     setUploading(true);
+    const id = toast.loading("Starting upload...");
+    setUploadToastId(id);
     try {
       const token = localStorage.getItem("token");
       const formData = new FormData();
@@ -163,27 +167,39 @@ export default function App() {
       formData.append("status", submissionData.status);
       formData.append("type", submissionData.type);
       formData.append("content", submissionData.content);
+
       if (submissionData.file) {
         formData.append("media", submissionData.file);
       }
-      const res = await fetch("/api/posts", {
-        method: "POST",
+
+      const res = await axios.post("/api/posts", formData, {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          "Content-Type": "multipart/form-data",
         },
-        body: formData,
+        onUploadProgress: (progressEvent: any) => {
+          const { loaded, total } = progressEvent;
+          if (total) {
+            const percent = Math.round((loaded * 100) / total);
+            toast.loading(`Uploading... ${percent}%`, {
+              id, // Use the same ID to update the existing toast
+              description: `File size: ${(total / 1024 / 1024).toFixed(2)} MB`,
+            });
+          }
+        },
       });
-      if (!res.ok) {
-        throw new Error("Upload failed");
-      }
-      const newPost = await res.json();
-      // ✅ Only update UI after backend confirms
+
+      const newPost = res.data;
       setSubmissions((prev: any) => [newPost, ...prev]);
       setIsUploadModalOpen(false);
-    } catch {
-      alert("Server error during upload");
+      toast.success("Entry uploaded successfully!");
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("Server error during upload. Please try again.");
     } finally {
       setUploading(false);
+      setUploadToastId(null);
+      // setUploadProgress(0); // Reset progress after completion or error
     }
   };
 

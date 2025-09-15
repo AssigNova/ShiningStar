@@ -46,6 +46,8 @@ const s3 = new S3Client({ region: "us-east-1" });
 //   },
 // });
 
+// For S3 and CloudFront
+
 const upload = multer({
   storage: multerS3({
     s3: s3,
