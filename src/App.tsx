@@ -190,10 +190,10 @@ export default function App() {
       const newPost = res.data;
       setSubmissions((prev: any) => [newPost, ...prev]);
       setIsUploadModalOpen(false);
-      toast.success("Entry uploaded successfully!");
+      toast.success("Entry uploaded successfully!", { id });
     } catch (error) {
       console.error("Upload error:", error);
-      toast.error("Server error during upload. Please try again.");
+      toast.error("Server error during upload. Please try again.", { id });
     } finally {
       setUploading(false);
       // setUploadProgress(0); // Reset progress after completion or error
