@@ -70,28 +70,28 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
 
   // Step 1: Define allowed mime types per category
   const categoryAllowedTypes: Record<string, string[]> = {
-    // "Reel Stars (Only Employees)": ["video/mp4", "video/avi", "video/mov", "video/quicktime"],
-    // "Strokes of a Genius (Individual Performance)": ["image/jpeg", "image/jpg", "image/png", "image/gif"],
-    "Reel Stars (Only Employees)": [
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-      "image/gif",
-      "video/mp4",
-      "video/avi",
-      "video/mov",
-      "video/quicktime",
-    ],
-    "Strokes of a Genius (Individual Performance)": [
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-      "image/gif",
-      "video/mp4",
-      "video/avi",
-      "video/mov",
-      "video/quicktime",
-    ],
+    "Reel Stars (Only Employees)": ["video/mp4", "video/avi", "video/mov", "video/quicktime"],
+    "Strokes of a Genius (Individual Performance)": ["image/jpeg", "image/jpg", "image/png", "image/gif"],
+    // "Reel Stars (Only Employees)": [
+    //   "image/jpeg",
+    //   "image/jpg",
+    //   "image/png",
+    //   "image/gif",
+    //   "video/mp4",
+    //   "video/avi",
+    //   "video/mov",
+    //   "video/quicktime",
+    // ],
+    // "Strokes of a Genius (Individual Performance)": [
+    //   "image/jpeg",
+    //   "image/jpg",
+    //   "image/png",
+    //   "image/gif",
+    //   "video/mp4",
+    //   "video/avi",
+    //   "video/mov",
+    //   "video/quicktime",
+    // ],
 
     // Add other categories as needed, e.g.:
     // allow images and videos for these categories
@@ -137,11 +137,11 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
     ],
   };
 
-  // const categoryMaxVideoDuration: Record<string, number> = {
-  //   "Reel Stars (Only Employees)": 30, // 30 seconds
-  //   // Example: set 2 minutes (120s) for other specific categories if needed
-  //   // Otherwise, let default be 120
-  // };
+  const categoryMaxVideoDuration: Record<string, number> = {
+    "Reel Stars (Only Employees)": 30, // 30 seconds
+    // Example: set 2 minutes (120s) for other specific categories if needed
+    // Otherwise, let default be 120
+  };
 
   const validateAndSetFile = (file: File) => {
     // Step 2 & 3: Modify validateAndSetFile to restrict by category
@@ -183,28 +183,28 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
       return;
     }
 
-    // // If video, check duration category-wise
-    // if (isVideo) {
-    //   const maxDuration = categoryMaxVideoDuration[formData.category] ?? 120; // default 120s (2 min)
-    //   const videoEl = document.createElement("video");
-    //   videoEl.preload = "metadata";
-    //   videoEl.onloadedmetadata = () => {
-    //     window.URL.revokeObjectURL(videoEl.src);
-    //     if (videoEl.duration > maxDuration) {
-    //       toast.error(
-    //         `Video is too long for this category. Maximum allowed: ${
-    //           maxDuration / 60 >= 1 ? `${maxDuration / 60} minutes` : `${maxDuration} seconds`
-    //         }. Your video: ${videoEl.duration.toFixed(2)} seconds.`
-    //       );
-    //       return;
-    //     }
-    //     // File is valid; set it
-    //     setUploadedFile(file);
-    //     toast.success("Video is ready for upload! click post to start uploading", { duration: 3000 });
-    //   };
-    //   videoEl.src = URL.createObjectURL(file);
-    //   return; // Don't validate further until duration checked
-    // }
+    // If video, check duration category-wise
+    if (isVideo) {
+      const maxDuration = categoryMaxVideoDuration[formData.category] ?? 120; // default 120s (2 min)
+      const videoEl = document.createElement("video");
+      videoEl.preload = "metadata";
+      videoEl.onloadedmetadata = () => {
+        window.URL.revokeObjectURL(videoEl.src);
+        if (videoEl.duration > maxDuration) {
+          toast.error(
+            `Video is too long for this category. Maximum allowed: ${
+              maxDuration / 60 >= 1 ? `${maxDuration / 60} minutes` : `${maxDuration} seconds`
+            }. Your video: ${videoEl.duration.toFixed(2)} seconds.`
+          );
+          return;
+        }
+        // File is valid; set it
+        setUploadedFile(file);
+        toast.success("Video is ready for upload! click post to start uploading", { duration: 3000 });
+      };
+      videoEl.src = URL.createObjectURL(file);
+      return; // Don't validate further until duration checked
+    }
 
     // File is valid
     setUploadedFile(file);
