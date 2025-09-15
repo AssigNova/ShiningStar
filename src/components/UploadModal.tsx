@@ -35,9 +35,9 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
     "Voice of ITC (Individual Performance)",
     "Dance ITC Dance (Individual Performance)",
     "Strokes of a Genius (Individual Performance)",
-    "Generations in Harmony (Family Performance)",
+    "Generations in Harmony (Family Group Performance)",
     "Reel Stars (Only Employees)",
-    "Harmony in Action (Group Employees)",
+    "Generation in Unity (Group Employee Performance/ Interdepartmental)",
   ];
 
   const handleDrag = (e: React.DragEvent) => {
@@ -115,7 +115,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
       "video/mov",
       "video/quicktime",
     ],
-    "Generations in Harmony (Family Performance)": [
+    "Generations in Harmony (Family Group Performance)": [
       "image/jpeg",
       "image/jpg",
       "image/png",
@@ -125,7 +125,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
       "video/mov",
       "video/quicktime",
     ],
-    "Harmony in Action (Group Employees)": [
+    "Generation in Unity (Group Employee Performance/ Interdepartmental)": [
       "image/jpeg",
       "image/jpg",
       "image/png",
@@ -390,7 +390,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
                     Family
                   </SelectItem>
                   <SelectItem value="Child (Under 12)" className="text-sm sm:text-base">
-                    Child (Under 12)
+                    Child (Up To 12)
                   </SelectItem>
                 </SelectContent>
               </Select>

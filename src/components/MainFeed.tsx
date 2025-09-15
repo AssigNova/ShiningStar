@@ -58,7 +58,15 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
     setSubmissionLikes(newLikesCount);
   }, [submissions, user._id]);
 
-  const categories = ["All Categories", "Voice of ITC", "Dance ITC Dance", "Strokes of a Genius", "Generations in Harmony", "Reel Stars"];
+  const categories = [
+    "All Categories",
+    "Voice of ITC (Individual Performance)",
+    "Dance ITC Dance (Individual Performance)",
+    "Strokes of a Genius (Individual Performance)",
+    "Generations in Harmony (Family Group Performance)",
+    "Reel Stars (Only Employees)",
+    "Generation in Unity (Group Employee Performance/ Interdepartmental)",
+  ];
 
   // const filteredSubmissions = submissions
   //   .filter((submission) => {
