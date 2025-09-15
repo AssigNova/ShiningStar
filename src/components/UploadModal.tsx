@@ -276,7 +276,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
     } else {
       console.log("Submission:", submissionData);
       onSubmit(submissionData);
-      toast.success("Upload Started successfully! It will be live on the feed once uploaded.");
+      // toast.success("Upload Started successfully! It will be live on the feed once uploaded.");
     }
 
     // Reset form and close modal
