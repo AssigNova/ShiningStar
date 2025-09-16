@@ -31,7 +31,7 @@ export function ShareModal({ isOpen, onClose, submission }: ShareModalProps) {
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(postUrl);
+      await navigator.clipboard.writeText("Checkout this submission on ITC Shining Stars Season 3: " + postUrl);
       setCopied(true);
       toast.success("Link copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
@@ -126,6 +126,8 @@ export function ShareModal({ isOpen, onClose, submission }: ShareModalProps) {
             <h5 className="font-medium text-gray-900 text-center">Or copy link</h5>
             <div className="flex items-center gap-2 w-full">
               <div className="flex-1 bg-gray-50 rounded-lg px-3 py-2 text-sm text-gray-600 font-mono break-all border border-gray-200">
+                Checkout this submission on ITC Shining Stars Season 3: <br />
+                <br />
                 {postUrl}
               </div>
               <Button

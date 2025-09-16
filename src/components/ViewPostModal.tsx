@@ -261,7 +261,7 @@ export function ViewPostModal({ isOpen, onClose, submission }: ViewPostModalProp
                   src={submission.content}
                   controls
                   poster={submission.thumbnail || undefined}
-                  className="w-full h-full object-cover bg-black"
+                  className="w-full h-full object-contain bg-black"
                 />
 
                 {/* Video Controls Overlay */}

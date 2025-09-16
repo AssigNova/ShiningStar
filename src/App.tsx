@@ -357,6 +357,11 @@ export default function App() {
                 First Time Login?
               </a>
             </p>
+            <p className="mt-4 text-sm text-center">
+              <a href="/forgot-password" className="text-purple-600 hover:underline">
+                Forgot Password?
+              </a>
+            </p>
 
             <div className="mt-4 sm:mt-6 text-center">
               <p className="text-xs text-gray-500">Secure access to Shining Stars Season 3 Platform</p>

@@ -194,7 +194,8 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                         <span>•</span>
                         <span className="truncate">{submission.author.department}</span>
                         <span>•</span>
-                        <span>{submission.timestamp}</span>
+                        {/* <span>{submission.timestamp}</span> */}
+                        <span>{new Date(submission.timestamp).toLocaleDateString()}</span>
                       </div>
                     </div>
                   </div>
@@ -226,18 +227,18 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                         <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity">
                           <div className="bg-black/50 rounded-full p-2">
                             <Play
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const parent = e.currentTarget.closest("div.relative");
-                                const video = parent?.querySelector("video");
-                                if (video) {
-                                  if (video.paused) {
-                                    video.play();
-                                  } else {
-                                    video.pause();
-                                  }
-                                }
-                              }}
+                              // onClick={(e) => {
+                              //   e.stopPropagation();
+                              //   const parent = e.currentTarget.closest("div.relative");
+                              //   const video = parent?.querySelector("video");
+                              //   if (video) {
+                              //     if (video.paused) {
+                              //       video.play();
+                              //     } else {
+                              //       video.pause();
+                              //     }
+                              //   }
+                              // }}
                               className="h-8 w-8 text-white fill-white"
                             />
                           </div>
