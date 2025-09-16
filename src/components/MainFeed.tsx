@@ -60,12 +60,12 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
 
   const categories = [
     "All Categories",
-    "Voice of ITC",
-    "Dance ITC Dance",
-    "Strokes of a Genius",
-    "Generations in Harmony",
-    "Reel Stars",
-    "Generation in Unity",
+    "Voice of ITC (Individual Performance)",
+    "Dance ITC Dance (Individual Performance)",
+    "Strokes of a Genius (Individual Performance)",
+    "Generations in Harmony (Family Group Performance)",
+    "Reel Stars (Only Employees)",
+    "Generation in Unity (Group Employee Performance/ Interdepartmental)",
   ];
 
   const filteredSubmissions = (searchResults.length > 0 ? searchResults : submissions)
