@@ -60,36 +60,16 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
 
   const categories = [
     "All Categories",
-    "Voice of ITC (Individual Performance)",
-    "Dance ITC Dance (Individual Performance)",
-    "Strokes of a Genius (Individual Performance)",
-    "Generations in Harmony (Family Group Performance)",
-    "Reel Stars (Only Employees)",
-    "Generation in Unity (Group Employee Performance/ Interdepartmental)",
+    "Voice of ITC",
+    "Dance ITC Dance",
+    "Strokes of a Genius",
+    "Generations in Harmony",
+    "Reel Stars",
+    "Generation in Unity",
   ];
-
-  // const filteredSubmissions = submissions
-  //   .filter((submission) => {
-  //     // Only show published submissions in the main feed
-  //     if (submission.status !== "published") return false;
-  //     if (selectedCategory !== "all" && submission.category !== selectedCategory) return false;
-  //     return true;
-  //   })
-  //   .sort((a, b) => {
-  //     if (filter === "mostLoved") return (submissionLikes[b._id] || 0) - (submissionLikes[a._id] || 0);
-  //     if (filter === "new") {
-  //       // For "Just now" entries, prioritize them
-  //       if (a.timestamp === "Just now" && b.timestamp !== "Just now") return -1;
-  //       if (b.timestamp === "Just now" && a.timestamp !== "Just now") return 1;
-  //       if (a.timestamp === "Just now" && b.timestamp === "Just now") return b._id.localeCompare(a._id);
-  //       return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
-  //     }
-  //     return 0;
-  //   });
 
   const filteredSubmissions = (searchResults.length > 0 ? searchResults : submissions)
     .filter((submission) => {
-      // Only show published submissions in the main feed
       if (submission.status !== "published") return false;
       if (selectedCategory !== "all" && submission.category !== selectedCategory) return false;
       return true;
@@ -97,7 +77,6 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
     .sort((a, b) => {
       if (filter === "mostLoved") return (submissionLikes[b._id] || 0) - (submissionLikes[a._id] || 0);
       if (filter === "new") {
-        // For "Just now" entries, prioritize them
         if (a.timestamp === "Just now" && b.timestamp !== "Just now") return -1;
         if (b.timestamp === "Just now" && a.timestamp !== "Just now") return 1;
         if (a.timestamp === "Just now" && b.timestamp === "Just now") return b._id.localeCompare(a._id);
@@ -115,46 +94,6 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
     setSelectedSubmission(submission);
     setIsShareModalOpen(true);
   };
-
-  // const handleToggleLike = (submissionId: string) => {
-  //   const isLiked = likedSubmissions.has(submissionId);
-  //   const url = `/api/posts/${submissionId}/${isLiked ? "unlike" : "like"}`;
-  //   fetch(url, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ userId: user._id }),
-  //   })
-  //     .then((res) => {
-  //       if (!res.ok) throw new Error("Failed to update like status");
-  //       return res.json();
-  //     })
-  //     .then((data) => {
-  //       // Assume backend returns updated like count
-  //       const newLikeCount = data.likes;
-  //       setLikedSubmissions((prev) => {
-  //         const newLiked = new Set(prev);
-  //         if (isLiked) {
-  //           newLiked.delete(submissionId);
-  //         } else {
-  //           newLiked.add(submissionId);
-  //         }
-  //         return newLiked;
-  //       });
-  //       setSubmissionLikes((prevLikes) => ({
-  //         ...prevLikes,
-  //         [submissionId]: newLikeCount,
-  //       }));
-  //       if (onLikeSubmission) {
-  //         onLikeSubmission(submissionId, newLikeCount);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       // Optionally show error to user
-  //       console.error(err);
-  //     });
-  // };
 
   const handleToggleLike = (submissionId: string) => {
     const isLiked = likedSubmissions.has(submissionId);
@@ -175,23 +114,6 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
         if (onLikeSubmission) {
           onLikeSubmission(submissionId, user._id);
         }
-        // const newLikeCount = data.likes;
-        // setSubmissionLikes((prevLikes) => ({
-        //   ...prevLikes,
-        //   [submissionId]: newLikeCount,
-        // }));
-        // setLikedSubmissions((prev) => {
-        //   const newLiked = new Set(prev);
-        //   if (isLiked) {
-        //     newLiked.delete(submissionId);
-        //   } else {
-        //     newLiked.add(submissionId);
-        //   }
-        //   return newLiked;
-        // });
-        // if (onLikeSubmission) {
-        //   onLikeSubmission(submissionId, newLikeCount);
-        // }
       })
       .catch((err) => {
         console.error(err);
@@ -203,26 +125,8 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
     setIsViewModalOpen(true);
   };
 
-  // const handleModalLike = (submissionId: string, userId: string) => {
-  //   // Update liked submissions set
-  //   setLikedSubmissions((prev) => {
-  //     const newLiked = new Set(prev);
-  //     if (userId) {
-  //       newLiked.add(submissionId);
-  //     } else {
-  //       newLiked.delete(submissionId);
-  //     }
-  //     return newLiked;
-  //   });
-
-  //   // Notify parent component
-  //   if (onLikeSubmission) {
-  //     onLikeSubmission(submissionId, userId);
-  //   }
-  // };
-
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 p-4">
       {/* Main Feed */}
       <div className="lg:col-span-3 space-y-6">
         <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-center text-[#8200db] leading-normal tracking-wide">
@@ -235,14 +139,13 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
             <div className="flex flex-wrap items-center justify-between gap-4">
               <h2 className="text-xl font-semibold">Community Feed</h2>
               <div className="flex items-center space-x-2">
-                {/* <Filter className="h-4 w-4 text-gray-500" /> */}
                 <Tabs value={filter} onValueChange={(value) => setFilter(value as any)}>
-                  <TabsList>
-                    <TabsTrigger value="mostLoved" className="text-sm">
+                  <TabsList className="flex-wrap">
+                    <TabsTrigger value="mostLoved" className="text-xs sm:text-sm">
                       <Heart className="h-3 w-3 mr-1" />
                       Most Loved
                     </TabsTrigger>
-                    <TabsTrigger value="new" className="text-sm">
+                    <TabsTrigger value="new" className="text-xs sm:text-sm">
                       <Clock className="h-3 w-3 mr-1" />
                       New
                     </TabsTrigger>
@@ -251,17 +154,20 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
               </div>
             </div>
 
-            {/* Category Filter */}
-            <div className="flex flex-wrap gap-2 pt-2">
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  variant={selectedCategory === (category === "All Categories" ? "all" : category) ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory(category === "All Categories" ? "all" : category)}>
-                  {category}
-                </Button>
-              ))}
+            {/* Category Filter - Horizontal Scroll for Mobile */}
+            <div className="mt-4 overflow-x-auto pb-2">
+              <div className="flex gap-2 w-max min-w-full">
+                {categories.map((category) => (
+                  <Button
+                    key={category}
+                    variant={selectedCategory === (category === "All Categories" ? "all" : category) ? "default" : "outline"}
+                    size="sm"
+                    className="whitespace-nowrap text-xs sm:text-sm"
+                    onClick={() => setSelectedCategory(category === "All Categories" ? "all" : category)}>
+                    {category}
+                  </Button>
+                ))}
+              </div>
             </div>
           </CardHeader>
         </Card>
@@ -271,7 +177,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
           {filteredSubmissions.map((submission) => (
             <Card key={submission._id} className="overflow-hidden">
               <CardHeader>
-                <div className="flex items-start justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                   <div className="flex items-center space-x-3">
                     <Avatar>
                       <AvatarFallback>
@@ -281,33 +187,33 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                           .join("")}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <h3 className="font-semibold">{submission.title}</h3>
-                      <div className="flex items-center space-x-2 text-sm text-gray-500">
-                        <span>{submission.author.name}</span>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold truncate">{submission.title}</h3>
+                      <div className="flex flex-wrap items-center gap-1 text-sm text-gray-500">
+                        <span className="truncate">{submission.author.name}</span>
                         <span>•</span>
-                        <span>{submission.author.department}</span>
+                        <span className="truncate">{submission.author.department}</span>
                         <span>•</span>
                         <span>{submission.timestamp}</span>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Badge variant="secondary">{submission.category}</Badge>
-                    <Badge variant="outline">{submission.participantType}</Badge>
+                  <div className="flex flex-wrap gap-2 justify-end">
+                    <Badge variant="secondary" className="text-xs max-w-full truncate">
+                      {submission.category}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {submission.participantType}
+                    </Badge>
                   </div>
                 </div>
               </CardHeader>
 
               <CardContent className="space-y-4">
-                <p className="text-gray-700">{submission.description}</p>
+                <p className="text-gray-700 break-words">{submission.description}</p>
 
                 {/* Media Content */}
-                <div
-                  className="rounded-lg overflow-hidden"
-                  onClick={() => {
-                    handleViewPost(submission);
-                  }}>
+                <div className="rounded-lg overflow-hidden cursor-pointer" onClick={() => handleViewPost(submission)}>
                   <AspectRatio ratio={16 / 9}>
                     {submission.mediaType === "video" || (submission.content && submission.content.match(/\.(mp4|webm|ogg)$/i)) ? (
                       <div className="relative w-full h-full">
@@ -317,7 +223,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                           className="w-full h-full object-cover bg-black"
                         />
                         {/* Play button overlay */}
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity">
                           <div className="bg-black/50 rounded-full p-2">
                             <Play
                               onClick={(e) => {
@@ -341,8 +247,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                       <ImageWithFallback
                         src={submission.content}
                         alt={submission.title}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
-                        onClick={() => handleViewPost(submission)}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       />
                     )}
                   </AspectRatio>
@@ -350,43 +255,44 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
 
                 {/* Actions */}
                 <div className="flex items-center justify-between pt-4">
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2 sm:space-x-4">
                     <Button
                       variant="ghost"
                       size="sm"
-                      className={`transition-colors ${
+                      className={`transition-colors p-2 sm:px-3 sm:py-2 ${
                         likedSubmissions.has(submission._id) ? "text-red-500 hover:text-red-600" : "text-gray-500 hover:text-red-500"
                       }`}
                       onClick={() => handleToggleLike(submission._id)}>
                       <Heart
-                        className={`h-4 w-4 mr-2 transition-all ${
+                        className={`h-4 w-4 sm:mr-2 transition-all ${
                           likedSubmissions.has(submission._id) ? "fill-current" : "fill-transparent"
                         }`}
                       />
-                      {submissionLikes[submission._id] ?? (Array.isArray(submission.likes) ? submission.likes.length : 0)}
+                      <span className="hidden sm:inline">
+                        {submissionLikes[submission._id] ?? (Array.isArray(submission.likes) ? submission.likes.length : 0)}
+                      </span>
+                      <span className="sm:hidden text-xs">
+                        {submissionLikes[submission._id] ?? (Array.isArray(submission.likes) ? submission.likes.length : 0)}
+                      </span>
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-gray-500 hover:text-blue-500"
+                      className="text-gray-500 hover:text-blue-500 p-2 sm:px-3 sm:py-2"
                       onClick={() => handleOpenComments(submission)}>
-                      <MessageCircle className="h-4 w-4 mr-2" />
-                      {Array.isArray(submission.comments) ? submission.comments.length : 0}
+                      <MessageCircle className="h-4 w-4 sm:mr-2" />
+                      <span className="hidden sm:inline">{Array.isArray(submission.comments) ? submission.comments.length : 0}</span>
+                      <span className="sm:hidden text-xs">{Array.isArray(submission.comments) ? submission.comments.length : 0}</span>
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-gray-500 hover:text-green-500"
+                      className="text-gray-500 hover:text-green-500 p-2 sm:px-3 sm:py-2"
                       onClick={() => handleOpenShare(submission)}>
-                      <Share2 className="h-4 w-4 mr-2" />
-                      Share
+                      <Share2 className="h-4 w-4 sm:mr-2" />
+                      <span className="hidden sm:inline">Share</span>
                     </Button>
                   </div>
-
-                  {/* <Button variant="ghost" size="sm" className="text-purple-600">
-                    <TrendingUp className="h-4 w-4 mr-2" />
-                    Internal Shoutout
-                  </Button> */}
                 </div>
               </CardContent>
             </Card>
