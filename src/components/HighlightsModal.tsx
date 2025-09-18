@@ -2,27 +2,27 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Sparkles } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
-import img1 from "./assets/PSP_0002.jpg";
-import img2 from "./assets/PSP_0040.jpg";
-import img3 from "./assets/PSP_0044.jpg";
-import img4 from "./assets/PSP_0048.jpg";
-import img5 from "./assets/PSP_0050.jpg";
-import img6 from "./assets/PSP_0064.jpg";
-import img7 from "./assets/PSP_0072.jpg";
-import img8 from "./assets/PSP_0126.jpg";
-import img9 from "./assets/PSP_0145.jpg";
-import img10 from "./assets/PSP_0245.jpg";
-import img11 from "./assets/PSP_9671.jpg";
-import img12 from "./assets/PSP_9685.jpg";
-import img13 from "./assets/PSP_9760.jpg";
-import img14 from "./assets/PSP_9781.jpg";
-import img15 from "./assets/PSP_9794.jpg";
-import img16 from "./assets/PSP_9809.jpg";
-import img17 from "./assets/PSP_9841.jpg";
-import img18 from "./assets/PSP_9952.jpg";
-import img19 from "./assets/PSP_9956.jpg";
-import img20 from "./assets/PSP_9957.jpg";
-import img21 from "./assets/PSP_9964.jpg";
+import img1 from "./assets/PSP_0002.JPG";
+import img2 from "./assets/PSP_0040.JPG";
+import img3 from "./assets/PSP_0044.JPG";
+import img4 from "./assets/PSP_0048.JPG";
+import img5 from "./assets/PSP_0050.JPG";
+import img6 from "./assets/PSP_0064.JPG";
+import img7 from "./assets/PSP_0072.JPG";
+import img8 from "./assets/PSP_0126.JPG";
+import img9 from "./assets/PSP_0145.JPG";
+import img10 from "./assets/PSP_0245.JPG";
+import img11 from "./assets/PSP_9671.JPG";
+import img12 from "./assets/PSP_9685.JPG";
+import img13 from "./assets/PSP_9760.JPG";
+import img14 from "./assets/PSP_9781.JPG";
+import img15 from "./assets/PSP_9794.JPG";
+import img16 from "./assets/PSP_9809.JPG";
+import img17 from "./assets/PSP_9841.JPG";
+import img18 from "./assets/PSP_9952.JPG";
+import img19 from "./assets/PSP_9956.JPG";
+import img20 from "./assets/PSP_9957.JPG";
+import img21 from "./assets/PSP_9964.JPG";
 
 const lastSeasonImages = [
   img1,
