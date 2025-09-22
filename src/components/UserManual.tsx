@@ -9,13 +9,13 @@ export function UserManual() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+      <Card className="bg-gradient-to-r from-blue-100 to-purple-200 text-purple-900">
         <CardHeader className="mx-[0px] my-[18px]">
           <CardTitle className="text-2xl flex items-center">
             <Book className="h-6 w-6 mr-2" />
             User Manual & Handbook
           </CardTitle>
-          <p className="text-blue-100">Everything you need to know about Shining Stars Season 3</p>
+          <p className="text-blue-900">Everything you need to know about Shining Stars Season 3</p>
         </CardHeader>
       </Card>
 

@@ -84,13 +84,13 @@ export function Leaderboard() {
   return (
     <div className="space-y-6 p-4 sm:p-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-purple-500 to-blue-600 text-white">
+      <Card className="bg-gradient-to-r from-purple-100 to-blue-200 text-purple-900">
         <CardHeader className="p-4 sm:p-6">
           <CardTitle className="text-xl sm:text-2xl flex items-center">
             <Trophy className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
             Season 3 Leaderboard
           </CardTitle>
-          <p className="text-purple-100 text-sm sm:text-base">Celebrating participation, creativity, and community engagement</p>
+          <p className="text-purple9100 text-sm sm:text-base">Celebrating participation, creativity, and community engagement</p>
         </CardHeader>
       </Card>
 
