@@ -129,20 +129,25 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 p-4">
       {/* Main Feed */}
       <div className="lg:col-span-3 space-y-6">
-        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-center text-[#8200db] leading-normal tracking-wide">
+        <h1
+          className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-center leading-normal tracking-wide"
+          style={{
+            backgroundImage: "linear-gradient(to right, black, purple, blue)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}>
           Welcome to ITC’s Shining Stars Season 3
         </h1>
-
         {/* Filters */}
-        <Card>
-          <CardHeader className="pb-4">
-            <div className="flex flex-wrap items-center justify-between gap-4">
+        <Card className="shadow-black shadow">
+          <CardHeader className="pb-4 ">
+            <div className="flex flex-wrap items-center justify-between gap-4 ">
               <h2 className="text-xl font-semibold">Community Feed</h2>
               <div className="flex items-center space-x-2">
                 <Tabs value={filter} onValueChange={(value) => setFilter(value as any)}>
-                  <TabsList className="flex-wrap">
+                  <TabsList className="flex-wrap shadow-black shadow">
                     <TabsTrigger value="mostLoved" className="text-xs sm:text-sm">
-                      <Heart className="h-3 w-3 mr-1" />
+                      <Heart className="h-3 w-3 mr-1 fill-red-600 text-red-600" />
                       Most Loved
                     </TabsTrigger>
                     <TabsTrigger value="new" className="text-xs sm:text-sm">
@@ -162,7 +167,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                     key={category}
                     variant={selectedCategory === (category === "All Categories" ? "all" : category) ? "default" : "outline"}
                     size="sm"
-                    className="whitespace-nowrap text-xs sm:text-sm"
+                    className="whitespace-nowrap text-xs sm:text-sm shadow-black shadow"
                     onClick={() => setSelectedCategory(category === "All Categories" ? "all" : category)}>
                     {category}
                   </Button>
@@ -200,10 +205,10 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 justify-end">
-                    <Badge variant="secondary" className="text-xs max-w-full truncate">
+                    <Badge variant="secondary" className="text-xs max-w-full truncate shadow-black shadow">
                       {submission.category}
                     </Badge>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs shadow-black shadow">
                       {submission.participantType}
                     </Badge>
                   </div>
@@ -304,7 +309,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
       {/* Sidebar */}
       <div className="space-y-6">
         {/* Last Season's Highlights */}
-        <Card>
+        <Card className="shadow-black shadow">
           <CardHeader>
             <h3 className="font-semibold flex items-center">
               <Sparkles className="h-4 w-4 mr-2 text-yellow-500" />
@@ -324,7 +329,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
         </Card>
 
         {/* Quick Stats (Dynamic) */}
-        <Card>
+        <Card className="shadow-black shadow">
           <CardHeader>
             <h3 className="font-semibold">ITC Shining Stars Season 3 Stats</h3>
           </CardHeader>
