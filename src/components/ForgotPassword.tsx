@@ -62,17 +62,17 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6">
+    <div className="max-w-md mx-auto p-6 h-screen flex justify-center items-center text-white w-full">
       {step === 1 && (
-        <form onSubmit={handleRequestOtp} className="space-y-4">
-          <h2 className="text-xl font-bold mb-2">First Time Login</h2>
+        <form onSubmit={handleRequestOtp} className="space-y-4 bg-gray-900/80 p-8 flex flex-col w-3xl gap-4 rounded-xl shadow-white shadow">
+          <h2 className="text-2xl font-bold mb-2">First Time Login</h2>
           <input
             type="email"
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded bg-gray-300 text-black"
           />
           <button type="submit" className="w-full bg-purple-600 text-white py-2 rounded">
             Request OTP
