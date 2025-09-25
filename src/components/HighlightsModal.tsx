@@ -34,7 +34,7 @@ interface HighlightsModalProps {
 export function HighlightsModal({ isOpen, onClose }: HighlightsModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto p-6 bg-white rounded-2xl shadow-xl">
+      <DialogContent className="w-screen max-h-[90vh] overflow-y-auto p-6 bg-white rounded-2xl shadow-xl">
         <DialogHeader>
           <DialogTitle className="flex items-center text-2xl font-semibold mb-6">
             <Sparkles className="h-6 w-6 mr-2 text-yellow-500" />
@@ -42,7 +42,7 @@ export function HighlightsModal({ isOpen, onClose }: HighlightsModalProps) {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-8">
           {lastSeasonImages.map((src, idx) => (
             <div
               key={idx}
