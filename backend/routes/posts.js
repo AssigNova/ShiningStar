@@ -32,7 +32,7 @@ const storage = multer.diskStorage({
 // router.post("/", upload.single("media"), createPost);
 
 // Create S3 instance (will use IAM Role on EC2 automatically)
-const s3 = new S3Client({ region: "us-east-1" });
+const s3 = new S3Client({ region: "ap-south-1" });
 
 // const upload = multer({
 //   storage,
@@ -51,7 +51,7 @@ const s3 = new S3Client({ region: "us-east-1" });
 const upload = multer({
   storage: multerS3({
     s3: s3,
-    bucket: "cosmos-uploads-prod",
+    bucket: "cosmos-mumbai-bucket",
     // Remove the following line:
     // acl: "public-read",
     key: function (req, file, cb) {
