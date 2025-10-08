@@ -26,9 +26,11 @@ export function UserManual() {
             <Download className="h-12 w-12 mx-auto mb-4 text-green-500" />
             <h3 className="font-semibold mb-2">Download PDF Guide</h3>
             <p className="text-sm text-gray-600 mb-4">Complete handbook in PDF format</p>
-            <Button size="sm" variant="outline">
-              Download
-            </Button>
+            <a target="_blank" href="https://cosmos-mumbai-bucket.s3.ap-south-1.amazonaws.com/Shining+Stars+User+Manual+R3.pdf">
+              <Button size="sm" variant="outline">
+                Download
+              </Button>
+            </a>
           </CardContent>
         </Card>
 
