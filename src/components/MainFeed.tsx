@@ -6,7 +6,7 @@ import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 import { AspectRatio } from "./ui/aspect-ratio";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
+// import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { CommentsModal } from "./CommentsModal";
 import { ShareModal } from "./ShareModal";
 import { ViewPostModal } from "./ViewPostModal";
