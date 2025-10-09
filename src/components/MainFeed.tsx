@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Heart, MessageCircle, Share2, Clock, Sparkles, Play } from "lucide-react";
+import { Heart, MessageCircle, Share2, Clock, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -228,27 +228,14 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                           src={submission.content}
                           poster={submission.thumbnail || undefined}
                           className="w-full h-full object-cover bg-black"
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          // keep controls hidden to match design; user can open full view to control
                         />
-                        {/* Play button overlay */}
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity">
-                          <div className="bg-black/50 rounded-full p-2">
-                            <Play
-                              // onClick={(e) => {
-                              //   e.stopPropagation();
-                              //   const parent = e.currentTarget.closest("div.relative");
-                              //   const video = parent?.querySelector("video");
-                              //   if (video) {
-                              //     if (video.paused) {
-                              //       video.play();
-                              //     } else {
-                              //       video.pause();
-                              //     }
-                              //   }
-                              // }}
-                              className="h-8 w-8 text-white fill-white"
-                            />
-                          </div>
-                        </div>
+                        {/* Keep a subtle overlay for visual consistency but don't block autoplay */}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none" />
                       </div>
                     ) : (
                       <ImageWithFallback
