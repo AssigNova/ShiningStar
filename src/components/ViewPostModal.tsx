@@ -242,7 +242,16 @@ export function ViewPostModal({ isOpen, onClose, submission }: ViewPostModalProp
 
   if (!submission) return null;
 
-  const isVideo = submission.type === "video";
+  const isVideo = (() => {
+    if (!submission) return false;
+    const t = (submission.type || submission.mediaType || "").toString().toLowerCase();
+    if (t === "video" || t === "reel" || t === "mp4" || t === "webm") return true;
+    const content = (submission.content || "").toString();
+    if (/^data:video\//i.test(content)) return true;
+    if (content.match(/\.(mp4|webm|ogg)(\?.*)?$/i)) return true;
+    if (submission.isVideo === true) return true;
+    return false;
+  })();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

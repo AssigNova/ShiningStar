@@ -126,6 +126,24 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
     setIsViewModalOpen(true);
   };
 
+  // Helper: determine if a submission should be treated as a video
+  const isSubmissionVideo = (submission: any) => {
+    if (!submission) return false;
+    // explicit type or mediaType fields
+    const t = (submission.type || submission.mediaType || "").toString().toLowerCase();
+    if (t === "video" || t === "reel" || t === "mp4" || t === "webm") return true;
+
+    // content string that ends with common video extensions or is a data URL for video
+    const content = (submission.content || "").toString();
+    if (/^data:video\//i.test(content)) return true;
+    if (content.match(/\.(mp4|webm|ogg)(\?.*)?$/i)) return true;
+
+    // thumbnails or explicit flags
+    if (submission.isVideo === true) return true;
+
+    return false;
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 p-4">
       {/* Main Feed */}
@@ -222,8 +240,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                 {/* Media Content */}
                 <div className="rounded-lg overflow-hidden cursor-pointer" onClick={() => handleViewPost(submission)}>
                   <AspectRatio ratio={16 / 9}>
-                    {submission.mediaType?.toLowerCase() === "video" ||
-                    (typeof submission.content === "string" && submission.content.match(/\.(mp4|webm|ogg)(\?.*)?$/i)) ? (
+                    {isSubmissionVideo(submission) ? (
                       <div className="relative w-full h-full">
                         <video // IMPORTANT: Add 'controls' to allow playback in the feed
                           controls
