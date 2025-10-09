@@ -149,7 +149,7 @@ export function UserManual() {
                       </h4>
                       <ul className="text-sm space-y-1 text-gray-700">
                         <li>• Formats: JPEG, PNG, GIF</li>
-                        <li>• Max size: 2MB</li>
+                        <li>• Max size: 30MB</li>
                         <li>• Recommended: 1920x1080px</li>
                         <li>• High quality preferred</li>
                       </ul>
@@ -161,7 +161,7 @@ export function UserManual() {
                       </h4>
                       <ul className="text-sm space-y-1 text-gray-700">
                         <li>• Formats: MP4, AVI, MOV</li>
-                        <li>• Max size: 1.5GB</li>
+                        <li>• Max size: 1GB</li>
                         <li>• Max duration: 2 minutes</li>
                         <li>• HD quality recommended</li>
                       </ul>
@@ -174,11 +174,22 @@ export function UserManual() {
                 <h3 className="font-semibold mb-3">Submission Categories</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {[
-                    { name: "Voice of ITC", desc: "Celebrating soulful voices and musical talent" },
-                    { name: "Dance ITC Dance", desc: "Showcasing energy, rhythm, and graceful moves" },
-                    { name: "Strokes of a Genius", desc: "Artistic brilliance through painting and creativity" },
-                    { name: "Generations in Harmony", desc: "Bridging generations with unity and collaboration" },
-                    { name: "Reel Stars", desc: "Capturing stories and creativity through short films" },
+                    { name: "Reel Stars (Only Employees)", desc: "Capturing stories and creativity through short films by employees" },
+                    { name: "Beats in Motion", desc: "Expressing rhythm, passion, and energy through dance" },
+                    { name: "Harmony", desc: "Celebrating musical talent and soulful voices" },
+                    { name: "Strokes of a Genius", desc: "Showcasing artistic brilliance through painting and creativity" },
+                    {
+                      name: "Through Your Lens (Photography)",
+                      desc: "Capturing unique perspectives and visual storytelling through photography",
+                    },
+                    {
+                      name: "Generations in Harmony (Family Group Performances)",
+                      desc: "Bringing families together through collaborative performances",
+                    },
+                    {
+                      name: "Teams in Unity (Group Performances by employees across departments or within departments)",
+                      desc: "Fostering teamwork and creativity through group performances",
+                    },
                   ].map((category) => (
                     <div key={category.name} className="p-3 border rounded-lg">
                       <h4 className="font-medium">{category.name}</h4>
