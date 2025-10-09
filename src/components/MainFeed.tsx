@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Heart, MessageCircle, Share2, Clock, Sparkles } from "lucide-react";
+import { Heart, MessageCircle, Share2, Clock, Sparkles, Play } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -222,7 +222,8 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                 {/* Media Content */}
                 <div className="rounded-lg overflow-hidden cursor-pointer" onClick={() => handleViewPost(submission)}>
                   <AspectRatio ratio={16 / 9}>
-                    {submission.mediaType === "video" || (submission.content && submission.content.match(/\.(mp4|webm|ogg)$/i)) ? (
+                    {submission.mediaType?.toLowerCase() === "video" ||
+                    (typeof submission.content === "string" && submission.content.match(/\.(mp4|webm|ogg)(\?.*)?$/i)) ? (
                       <div className="relative w-full h-full">
                         <video // IMPORTANT: Add 'controls' to allow playback in the feed
                           controls
@@ -230,7 +231,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                           poster={submission.thumbnail || undefined}
                           className="w-full h-full object-cover bg-black"
                         />
-                        {/* Play button overlay
+                        {/* Play button overlay */}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity">
                           <div className="bg-black/50 rounded-full p-2">
                             <Play
@@ -249,7 +250,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                               className="h-8 w-8 text-white fill-white"
                             />
                           </div>
-                        </div> */}
+                        </div>
                       </div>
                     ) : (
                       <ImageWithFallback
