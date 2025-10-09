@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Heart, MessageCircle, Share2, Clock, Sparkles } from "lucide-react";
+import { Heart, MessageCircle, Share2, Clock, Sparkles, Play } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -224,33 +224,32 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                   <AspectRatio ratio={16 / 9}>
                     {submission.mediaType === "video" || (submission.content && submission.content.match(/\.(mp4|webm|ogg)$/i)) ? (
                       <div className="relative w-full h-full">
-                        <video
+                        <video // IMPORTANT: Add 'controls' to allow playback in the feed
+                          controls
                           src={submission.content}
-                          // remove poster to show video frame when autoplay works; fallback thumbnail can be shown in modal
-                          // poster={submission.thumbnail || undefined}
+                          poster={submission.thumbnail || undefined}
                           className="w-full h-full object-cover bg-black"
-                          autoPlay
-                          muted
-                          loop
-                          playsInline
-                          preload="metadata"
-                          onCanPlayCapture={(e) => {
-                            // try to play programmatically; some browsers return a promise
-                            const video = e.currentTarget as HTMLVideoElement;
-                            try {
-                              const p = video.play();
-                              if (p && typeof (p as unknown as Promise<void>).catch === "function") {
-                                (p as Promise<void>).catch(() => {
-                                  // autoplay blocked; leave muted or let user open modal to play
-                                });
-                              }
-                            } catch (err) {
-                              // ignore
-                            }
-                          }}
                         />
-                        {/* subtle non-interactive overlay for consistent look */}
-                        <div className="absolute inset-0 bg-black/10 pointer-events-none" />
+                        {/* Play button overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity">
+                          <div className="bg-black/50 rounded-full p-2">
+                            <Play
+                              // onClick={(e) => {
+                              //   e.stopPropagation();
+                              //   const parent = e.currentTarget.closest("div.relative");
+                              //   const video = parent?.querySelector("video");
+                              //   if (video) {
+                              //     if (video.paused) {
+                              //       video.play();
+                              //     } else {
+                              //       video.pause();
+                              //     }
+                              //   }
+                              // }}
+                              className="h-8 w-8 text-white fill-white"
+                            />
+                          </div>
+                        </div>
                       </div>
                     ) : (
                       <ImageWithFallback
