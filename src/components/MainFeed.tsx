@@ -227,7 +227,6 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                         <video // IMPORTANT: Add 'controls' to allow playback in the feed
                           controls
                           src={submission.content}
-                          poster={submission.thumbnail || undefined}
                           className="w-full h-full object-cover bg-black"
                         />
                         {/* Play button overlay */}
