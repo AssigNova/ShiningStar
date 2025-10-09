@@ -6,7 +6,7 @@ import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 import { AspectRatio } from "./ui/aspect-ratio";
-// import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { CommentsModal } from "./CommentsModal";
 import { ShareModal } from "./ShareModal";
 import { ViewPostModal } from "./ViewPostModal";
@@ -222,43 +222,43 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                 {/* Media Content */}
                 <div className="rounded-lg overflow-hidden cursor-pointer" onClick={() => handleViewPost(submission)}>
                   <AspectRatio ratio={16 / 9}>
-                    {/* {submission.mediaType?.toLowerCase() === "video" ||
-                    (typeof submission.content === "string" && submission.content.match(/\.(mp4|webm|ogg)(\?.*)?$/i)) ? ( */}
-                    <div className="relative w-full h-full">
-                      <video // IMPORTANT: Add 'controls' to allow playback in the feed
-                        controls
-                        src={submission.content}
-                        poster={submission.thumbnail || undefined}
-                        className="w-full h-full object-cover bg-black"
-                      />
-                      {/* Play button overlay */}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity">
-                        <div className="bg-black/50 rounded-full p-2">
-                          <Play
-                            // onClick={(e) => {
-                            //   e.stopPropagation();
-                            //   const parent = e.currentTarget.closest("div.relative");
-                            //   const video = parent?.querySelector("video");
-                            //   if (video) {
-                            //     if (video.paused) {
-                            //       video.play();
-                            //     } else {
-                            //       video.pause();
-                            //     }
-                            //   }
-                            // }}
-                            className="h-8 w-8 text-white fill-white"
-                          />
+                    {submission.mediaType?.toLowerCase() === "video" ||
+                    (typeof submission.content === "string" && submission.content.match(/\.(mp4|webm|ogg)(\?.*)?$/i)) ? (
+                      <div className="relative w-full h-full">
+                        <video // IMPORTANT: Add 'controls' to allow playback in the feed
+                          controls
+                          src={submission.content}
+                          poster={submission.thumbnail || undefined}
+                          className="w-full h-full object-cover bg-black"
+                        />
+                        {/* Play button overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity">
+                          <div className="bg-black/50 rounded-full p-2">
+                            <Play
+                              // onClick={(e) => {
+                              //   e.stopPropagation();
+                              //   const parent = e.currentTarget.closest("div.relative");
+                              //   const video = parent?.querySelector("video");
+                              //   if (video) {
+                              //     if (video.paused) {
+                              //       video.play();
+                              //     } else {
+                              //       video.pause();
+                              //     }
+                              //   }
+                              // }}
+                              className="h-8 w-8 text-white fill-white"
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    {/* ) : (
+                    ) : (
                       <ImageWithFallback
                         src={submission.content}
                         alt={submission.title}
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       />
-                    )} */}
+                    )}
                   </AspectRatio>
                 </div>
 
