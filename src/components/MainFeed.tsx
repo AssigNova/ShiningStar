@@ -226,16 +226,31 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
                       <div className="relative w-full h-full">
                         <video
                           src={submission.content}
-                          poster={submission.thumbnail || undefined}
+                          // remove poster to show video frame when autoplay works; fallback thumbnail can be shown in modal
+                          // poster={submission.thumbnail || undefined}
                           className="w-full h-full object-cover bg-black"
                           autoPlay
                           muted
                           loop
                           playsInline
-                          // keep controls hidden to match design; user can open full view to control
+                          preload="metadata"
+                          onCanPlayCapture={(e) => {
+                            // try to play programmatically; some browsers return a promise
+                            const video = e.currentTarget as HTMLVideoElement;
+                            try {
+                              const p = video.play();
+                              if (p && typeof (p as unknown as Promise<void>).catch === "function") {
+                                (p as Promise<void>).catch(() => {
+                                  // autoplay blocked; leave muted or let user open modal to play
+                                });
+                              }
+                            } catch (err) {
+                              // ignore
+                            }
+                          }}
                         />
-                        {/* Keep a subtle overlay for visual consistency but don't block autoplay */}
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none" />
+                        {/* subtle non-interactive overlay for consistent look */}
+                        <div className="absolute inset-0 bg-black/10 pointer-events-none" />
                       </div>
                     ) : (
                       <ImageWithFallback
