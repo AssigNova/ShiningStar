@@ -6,6 +6,7 @@ import { Badge } from "./ui/badge";
 import { Slider } from "./ui/slider";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { ShareModal } from "./ShareModal";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
 interface ViewPostModalProps {
   isOpen: boolean;
@@ -354,11 +355,14 @@ export function ViewPostModal({ isOpen, onClose, submission }: ViewPostModalProp
               <div className="flex items-center space-x-3">
                 {/* Author Profile Picture */}
                 <div className="relative flex-shrink-0">
-                  <ImageWithFallback
-                    src={`https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`}
-                    alt={`${submission.author.name} profile`}
-                    className="h-10 w-10 md:h-14 md:w-14 rounded-full object-cover ring-2 ring-purple-200"
-                  />
+                  <Avatar>
+                    <AvatarFallback>
+                      {submission.author.name
+                        .split(" ")
+                        .map((n: string) => n[0])
+                        .join("")}
+                    </AvatarFallback>
+                  </Avatar>
                   <div className="absolute -bottom-1 -right-1 h-4 w-4 md:h-5 md:w-5 bg-green-500 rounded-full ring-2 ring-white flex items-center justify-center">
                     <div className="h-1 w-1 md:h-2 md:w-2 bg-white rounded-full"></div>
                   </div>
