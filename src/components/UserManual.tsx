@@ -174,7 +174,7 @@ export function UserManual() {
                 <h3 className="font-semibold mb-3">Submission Categories</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {[
-                    { name: "Reel Stars (Only Employees)", desc: "Capturing stories and creativity through short films by employees" },
+                    { name: "Reel Stars", desc: "Capturing stories and creativity through short films by employees" },
                     { name: "Beats in Motion", desc: "Expressing rhythm, passion, and energy through dance" },
                     { name: "Harmony", desc: "Celebrating musical talent and soulful voices" },
                     { name: "Strokes of a Genius", desc: "Showcasing artistic brilliance through painting and creativity" },

@@ -60,7 +60,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
 
   const categories = [
     "All Categories",
-    "Reel Stars (Only Employees)",
+    "Reel Stars",
     "Beats in Motion",
     "Harmony",
     "Strokes of a Genius",

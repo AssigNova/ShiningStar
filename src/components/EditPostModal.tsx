@@ -33,7 +33,7 @@ export function EditPostModal({ isOpen, onClose, submission, onUpdate }: EditPos
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const categories = [
-    "Reel Stars (Only Employees)",
+    "Reel Stars",
     "Beats in Motion",
     "Harmony",
     "Strokes of a Genius",

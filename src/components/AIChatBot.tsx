@@ -333,7 +333,7 @@ export function AIChatBot({ user, isFirstLogin = false, activeView = "feed", onV
           "• Dance ITC Dance (Individual Performance)\n" +
           "• Strokes of a Genius (Individual Performance)\n" +
           "• Generations in Harmony (Family Group Performance)\n" +
-          "• Reel Stars (Only Employees)\n" +
+          "• Reel Stars\n" +
           "• Generation in Unity (Group Employee Performance/ Interdepartmental)\n\n" +
           "Each category has specific eligibility and content type guidelines to follow.",
         actions: [{ label: "Category Details", action: "category-details", icon: BookOpen }],

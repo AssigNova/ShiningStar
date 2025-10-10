@@ -32,7 +32,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const categories = [
-    "Reel Stars (Only Employees)",
+    "Reel Stars",
     "Beats in Motion",
     "Harmony",
     "Strokes of a Genius",
@@ -71,9 +71,9 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
 
   // Step 1: Define allowed mime types per category
   const categoryAllowedTypes: Record<string, string[]> = {
-    "Reel Stars (Only Employees)": ["video/mp4", "video/avi", "video/mov", "video/quicktime"],
+    "Reel Stars": ["video/mp4", "video/avi", "video/mov", "video/quicktime"],
     "Strokes of a Genius (Individual Performance)": ["image/jpeg", "image/jpg", "image/png", "image/gif"],
-    // "Reel Stars (Only Employees)": [
+    // "Reel Stars": [
     //   "image/jpeg",
     //   "image/jpg",
     //   "image/png",
@@ -139,7 +139,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
   };
 
   const categoryMaxVideoDuration: Record<string, number> = {
-    "Reel Stars (Only Employees)": 30, // 30 seconds
+    "Reel Stars": 30, // 30 seconds
     // Example: set 2 minutes (120s) for other specific categories if needed
     // Otherwise, let default be 120
   };
