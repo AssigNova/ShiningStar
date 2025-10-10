@@ -315,9 +315,9 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                             <Badge variant="outline" className="text-xs">
                               {comment.user?.department || ""}
                             </Badge>
-                            <span className="text-xs text-gray-500">
+                            {/* <span className="text-xs text-gray-500">
                               {comment.createdAt ? new Date(comment.createdAt).toLocaleString() : ""}
-                            </span>
+                            </span> */}
                           </div>
 
                           {/* Three dot menu - only show for current user's comments and not in edit mode */}
@@ -444,7 +444,7 @@ export function CommentsModal({ isOpen, onClose, submission, user }: CommentsMod
                                       <Badge variant="outline" className="text-xs px-1 py-0">
                                         {reply.department}
                                       </Badge>
-                                      <span className="text-xs text-gray-500">{reply.timestamp}</span>
+                                      {/* <span className="text-xs text-gray-500">{reply.timestamp}</span> */}
                                     </div>
 
                                     {/* Three dot menu for replies - only show for current user's replies and not in edit mode */}
