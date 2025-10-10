@@ -532,6 +532,9 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                 <Button onClick={() => handleDownloadStats("/api/stats/getStats", "overall_stats.xlsx")} className="w-full">
                   Download Overall Stats
                 </Button>
+                <Button onClick={() => handleDownloadStats("/api/stats/getPostsStats", "overall_Posts_stats.xlsx")} className="w-full">
+                  Download Posts Stats
+                </Button>
                 <Button
                   onClick={() => handleDownloadStats("/api/stats/getStatsByParticipantType", "overall_participant_type.xlsx")}
                   className="w-full">
