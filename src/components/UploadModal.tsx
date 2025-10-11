@@ -405,6 +405,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
                 id="department"
                 placeholder="Enter department"
                 value={formData.department}
+                readOnly
                 onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                 className="text-sm sm:text-base"
               />
