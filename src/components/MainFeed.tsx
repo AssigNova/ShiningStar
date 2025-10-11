@@ -15,11 +15,12 @@ interface MainFeedProps {
   onOpenHighlights: () => void;
   user: any;
   submissions: any[];
+  singlePost?: any | null;
   onLikeSubmission?: (submissionId: string, userId: string) => void;
   searchResults: any[];
 }
 
-export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission, searchResults }: MainFeedProps) {
+export function MainFeed({ onOpenHighlights, user, submissions, singlePost, onLikeSubmission, searchResults }: MainFeedProps) {
   const [filter, setFilter] = useState<"mostLoved" | "new" | "all">("mostLoved");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [isCommentsModalOpen, setIsCommentsModalOpen] = useState(false);
@@ -69,7 +70,10 @@ export function MainFeed({ onOpenHighlights, user, submissions, onLikeSubmission
     "Teams in Unity (Group Performances by employees across departments or within departments)",
   ];
 
-  const filteredSubmissions = (searchResults.length > 0 ? searchResults : submissions)
+  // If a singlePost is provided (direct link), show that post in the feed list
+  const feedSource = singlePost ? [singlePost] : submissions;
+
+  const filteredSubmissions = (searchResults.length > 0 ? searchResults : feedSource)
     .filter((submission) => {
       if (submission.status !== "published") return false;
       if (selectedCategory !== "all" && submission.category !== selectedCategory) return false;

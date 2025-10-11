@@ -398,7 +398,8 @@ export default function App() {
                 <MainFeed
                   onOpenHighlights={() => setIsHighlightsModalOpen(true)}
                   user={user}
-                  submissions={singlePost ? [singlePost] : submissions}
+                  submissions={submissions}
+                  singlePost={singlePost}
                   searchResults={searchResults}
                   onLikeSubmission={handleLikeSubmission}
                 />
