@@ -89,8 +89,8 @@ export function EditPostModal({ isOpen, onClose, submission, onUpdate }: EditPos
     // Define allowed types and size limits
     const imageTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
     const videoTypes = ["video/mp4", "video/avi", "video/mov", "video/quicktime"];
-    const maxImageSize = 2 * 1024 * 1024; // 2MB for images
-    const maxVideoSize = 1.5 * 1024 * 1024 * 1024; // 1.5GB for videos
+    const maxImageSize = 30 * 1024 * 1024; // 30MB for images
+    const maxVideoSize = 1 * 1024 * 1024 * 1024; // 1GB for videos
 
     const isImage = imageTypes.includes(file.type);
     const isVideo = videoTypes.includes(file.type);
@@ -105,14 +105,14 @@ export function EditPostModal({ isOpen, onClose, submission, onUpdate }: EditPos
 
     // Check file size based on type
     if (isImage && file.size > maxImageSize) {
-      toast.error(`Image file is too large. Maximum size allowed is 2MB.\nYour file: ${(file.size / 1024 / 1024).toFixed(2)}MB`, {
+      toast.error(`Image file is too large. Maximum size allowed is 30MB.\nYour file: ${(file.size / 1024 / 1024).toFixed(2)}MB`, {
         duration: 5000,
       });
       return;
     }
 
     if (isVideo && file.size > maxVideoSize) {
-      toast.error(`Video file is too large. Maximum size allowed is 1.5GB.\nYour file: ${(file.size / 1024 / 1024 / 1024).toFixed(2)}GB`, {
+      toast.error(`Video file is too large. Maximum size allowed is 1GB.\nYour file: ${(file.size / 1024 / 1024 / 1024).toFixed(2)}GB`, {
         duration: 5000,
       });
       return;
