@@ -61,6 +61,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, singlePost, onLi
 
   const categories = [
     "All Categories",
+    "Radiant 2025",
     "Reel Stars",
     "Beats in Motion",
     "Harmony",

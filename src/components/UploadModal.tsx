@@ -32,6 +32,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const categories = [
+    "Radiant 2025",
     "Reel Stars",
     "Beats in Motion",
     "Harmony",
