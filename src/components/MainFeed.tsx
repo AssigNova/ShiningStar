@@ -303,7 +303,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, singlePost, onLi
                               likedSubmissions.has(submission._id) ? "fill-current" : "fill-transparent"
                             }`}
                           />
-                          <span className="hidden sm:inline">
+                          <span className="inline">
                             {submissionLikes[submission._id] ?? (Array.isArray(submission.likes) ? submission.likes.length : 0)}
                           </span>
                         </Button>
