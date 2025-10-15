@@ -10,7 +10,7 @@ import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { CommentsModal } from "./CommentsModal";
 import { ShareModal } from "./ShareModal";
 import { ViewPostModal } from "./ViewPostModal";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { HoverCard, HoverCardTrigger, HoverCardContent } from "./ui/hover-card";
 
 interface MainFeedProps {
   onOpenHighlights: () => void;
@@ -289,42 +289,38 @@ export function MainFeed({ onOpenHighlights, user, submissions, singlePost, onLi
                 {/* Actions */}
                 <div className="flex items-center justify-between pt-4">
                   <div className="flex items-center space-x-2 sm:space-x-4">
-                    <TooltipProvider delayDuration={200}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className={`transition-colors p-2 sm:px-3 sm:py-2 ${
-                              likedSubmissions.has(submission._id) ? "text-red-500 hover:text-red-600" : "text-gray-500 hover:text-red-500"
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={`transition-colors p-2 sm:px-3 sm:py-2 ${
+                            likedSubmissions.has(submission._id) ? "text-red-500 hover:text-red-600" : "text-gray-500 hover:text-red-500"
+                          }`}
+                          onClick={() => handleToggleLike(submission._id)}>
+                          <Heart
+                            className={`h-4 w-4 sm:mr-2 transition-all ${
+                              likedSubmissions.has(submission._id) ? "fill-current" : "fill-transparent"
                             }`}
-                            onClick={() => handleToggleLike(submission._id)}>
-                            <Heart
-                              className={`h-4 w-4 sm:mr-2 transition-all ${
-                                likedSubmissions.has(submission._id) ? "fill-current" : "fill-transparent"
-                              }`}
-                            />
-                            <span className="hidden sm:inline">
-                              {submissionLikes[submission._id] ?? (Array.isArray(submission.likes) ? submission.likes.length : 0)}
-                            </span>
-                            <span className="sm:hidden text-xs">
-                              {submissionLikes[submission._id] ?? (Array.isArray(submission.likes) ? submission.likes.length : 0)}
-                            </span>
-                          </Button>
-                        </TooltipTrigger>
+                          />
+                          <span className="hidden sm:inline">
+                            {submissionLikes[submission._id] ?? (Array.isArray(submission.likes) ? submission.likes.length : 0)}
+                          </span>
+                        </Button>
+                      </HoverCardTrigger>
 
-                        <TooltipContent className="bg-gray-900 text-white text-xs px-3 py-2 rounded-md shadow-md max-w-[220px] text-center">
-                          {submission.likerNames && submission.likerNames.length > 0 ? (
-                            <>
-                              {submission.likerNames.slice(0, 5).join(", ")}
-                              {submission.likerNames.length > 5 && ` and ${submission.likerNames.length - 5} others`}
-                            </>
-                          ) : (
-                            "No likes yet"
-                          )}
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                      <HoverCardContent className="text-xs p-3 max-h-40 overflow-y-auto w-56">
+                        {submission.likerNames && submission.likerNames.length > 0 ? (
+                          <ul className="space-y-1">
+                            {submission.likerNames.map((name: string, idx: number) => (
+                              <li key={idx}>{name}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <div>No likes yet</div>
+                        )}
+                      </HoverCardContent>
+                    </HoverCard>
 
                     <Button
                       variant="ghost"
