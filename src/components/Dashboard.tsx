@@ -42,7 +42,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
     .map((submission) => ({
       ...submission,
       views: typeof submission.views === "number" ? submission.views : 0,
-      submittedAt: submission.timestamp === "Just now" ? new Date().toISOString().split("T")[0] : "2024-08-05",
+      submittedAt: submission.timestamp,
     }));
 
   // Fetch leaderboard rank for current user
@@ -330,7 +330,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                       <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-sm text-gray-600 mb-3">
                         <span>{submission.category}</span>
                         <span className="hidden sm:inline">•</span>
-                        <span>Submitted {submission.submittedAt}</span>
+                        <span>Submitted {submission.timestamp}</span>
                         <span className="hidden sm:inline">•</span>
                         <span className="capitalize">{submission.type}</span>
                       </div>

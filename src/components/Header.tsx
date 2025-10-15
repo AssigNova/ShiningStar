@@ -145,14 +145,16 @@ export function Header({ user, activeView, setActiveView, onUpload, onLogout, on
               Dashboard
             </Button>
 
-            <Button
-              variant={activeView === "leaderboard" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveView("leaderboard")}
-              className="text-xs sm:text-sm">
-              <Trophy className="h-4 w-4 mr-1 sm:mr-2" />
-              Leaderboard
-            </Button>
+            {user.role === "admin" && (
+              <Button
+                variant={activeView === "leaderboard" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setActiveView("leaderboard")}
+                className="text-xs sm:text-sm">
+                <Trophy className="h-4 w-4 mr-1 sm:mr-2" />
+                Leaderboard
+              </Button>
+            )}
 
             <Button
               variant={activeView === "manual" ? "default" : "ghost"}

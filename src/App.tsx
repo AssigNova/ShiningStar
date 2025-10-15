@@ -419,7 +419,7 @@ export default function App() {
               </div>
             )}
 
-            {activeView === "leaderboard" && (
+            {activeView === "leaderboard" && user.role === "admin" && (
               <div className="w-full">
                 <Leaderboard />
               </div>
