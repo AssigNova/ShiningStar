@@ -330,7 +330,7 @@ export function Dashboard({ user, submissions, onDeleteSubmission, onUpdateSubmi
                       <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-sm text-gray-600 mb-3">
                         <span>{submission.category}</span>
                         <span className="hidden sm:inline">•</span>
-                        <span>Submitted {submission.timestamp}</span>
+                        <span>Submitted {new Date(submission.timestamp).toLocaleDateString()}</span>
                         <span className="hidden sm:inline">•</span>
                         <span className="capitalize">{submission.type}</span>
                       </div>
