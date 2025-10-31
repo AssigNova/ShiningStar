@@ -140,7 +140,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
   };
 
   const categoryMaxVideoDuration: Record<string, number> = {
-    "Reel Stars": 30, // 30 seconds
+    "Reel Stars": 60, // 30 seconds
     // Example: set 2 minutes (120s) for other specific categories if needed
     // Otherwise, let default be 120
   };

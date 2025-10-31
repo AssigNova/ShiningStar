@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Heart, MessageCircle, Share2, Clock, Sparkles, Play } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
@@ -21,6 +21,11 @@ interface MainFeedProps {
   searchResults: any[];
 }
 
+// --- CONSTANTS FOR LAZY LOADING ---
+const POSTS_PER_LOAD = 5;
+const INITIAL_POST_COUNT = 10;
+// ---------------------------------
+
 export function MainFeed({ onOpenHighlights, user, submissions, singlePost, onLikeSubmission, searchResults }: MainFeedProps) {
   const [filter, setFilter] = useState<"mostLoved" | "new" | "all">("mostLoved");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -28,6 +33,13 @@ export function MainFeed({ onOpenHighlights, user, submissions, singlePost, onLi
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState<any>(null);
+
+  // 1. New State for Infinite Scroll
+  const [displayCount, setDisplayCount] = useState(INITIAL_POST_COUNT);
+
+  // 2. Sentinel Ref for Intersection Observer
+  const loaderRef = useRef(null);
+
   const [likedSubmissions, setLikedSubmissions] = useState<Set<string>>(() => {
     const liked = new Set<string>();
     submissions.forEach((submission) => {
@@ -59,6 +71,8 @@ export function MainFeed({ onOpenHighlights, user, submissions, singlePost, onLi
 
     setLikedSubmissions(newLiked);
     setSubmissionLikes(newLikesCount);
+    // Reset display count when submissions change (e.g., initial load or full refresh)
+    setDisplayCount(INITIAL_POST_COUNT);
   }, [submissions, user._id]);
 
   const categories = [
@@ -76,22 +90,84 @@ export function MainFeed({ onOpenHighlights, user, submissions, singlePost, onLi
   // If a singlePost is provided (direct link), show that post in the feed list
   const feedSource = singlePost ? [singlePost] : submissions;
 
-  const filteredSubmissions = (searchResults.length > 0 ? searchResults : feedSource)
-    .filter((submission) => {
-      if (submission.status !== "published") return false;
-      if (selectedCategory !== "all" && submission.category !== selectedCategory) return false;
-      return true;
-    })
-    .sort((a, b) => {
-      if (filter === "mostLoved") return (submissionLikes[b._id] || 0) - (submissionLikes[a._id] || 0);
-      if (filter === "new") {
-        if (a.timestamp === "Just now" && b.timestamp !== "Just now") return -1;
-        if (b.timestamp === "Just now" && a.timestamp !== "Just now") return 1;
-        if (a.timestamp === "Just now" && b.timestamp === "Just now") return b._id.localeCompare(a._id);
-        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+  // Memoize filtered submissions for better performance, recalculate only on dependency change
+  const allFilteredSubmissions = useMemo(() => {
+    return (searchResults.length > 0 ? searchResults : feedSource)
+      .filter((submission) => {
+        // When a single post is shown, we show it regardless of category/status (assuming direct link means it's valid)
+        if (singlePost && submission._id === singlePost._id) return true;
+
+        if (submission.status !== "published") return false;
+        if (selectedCategory !== "all" && submission.category !== selectedCategory) return false;
+        return true;
+      })
+      .sort((a, b) => {
+        if (filter === "mostLoved") return (submissionLikes[b._id] || 0) - (submissionLikes[a._id] || 0);
+        if (filter === "new") {
+          // Custom logic for "Just now" or by timestamp
+          const dateA = new Date(a.timestamp).getTime();
+          const dateB = new Date(b.timestamp).getTime();
+          return dateB - dateA;
+        }
+        return 0; // "all" or default sort (keep original order)
+      });
+  }, [searchResults, feedSource, singlePost, selectedCategory, filter, submissionLikes]);
+
+  // 3. Slice the array to only display the current portion
+  const displayedSubmissions = allFilteredSubmissions.slice(0, displayCount);
+
+  // 4. Load More function
+  const loadMore = useCallback(() => {
+    setDisplayCount((prevCount) => prevCount + POSTS_PER_LOAD);
+  }, []);
+
+  // 5. Intersection Observer Effect
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        // If the sentinel is visible AND there are more posts to load
+        if (target.isIntersecting && displayedSubmissions.length < allFilteredSubmissions.length) {
+          loadMore();
+        }
+      },
+      { threshold: 1.0 } // Trigger when the entire sentinel is visible
+    );
+
+    const currentLoader = loaderRef.current;
+
+    if (currentLoader) {
+      observer.observe(currentLoader);
+    }
+
+    return () => {
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
       }
-      return 0;
-    });
+    };
+  }, [displayedSubmissions.length, allFilteredSubmissions.length, loadMore, filter, selectedCategory, searchResults]); // Dependencies ensure re-creation when list changes
+
+  // Reset display count when filters or search results change
+  useEffect(() => {
+    setDisplayCount(INITIAL_POST_COUNT);
+  }, [filter, selectedCategory, searchResults]);
+
+  // const filteredSubmissions = (searchResults.length > 0 ? searchResults : feedSource)
+  //   .filter((submission) => {
+  //     if (submission.status !== "published") return false;
+  //     if (selectedCategory !== "all" && submission.category !== selectedCategory) return false;
+  //     return true;
+  //   })
+  //   .sort((a, b) => {
+  //     if (filter === "mostLoved") return (submissionLikes[b._id] || 0) - (submissionLikes[a._id] || 0);
+  //     if (filter === "new") {
+  //       if (a.timestamp === "Just now" && b.timestamp !== "Just now") return -1;
+  //       if (b.timestamp === "Just now" && a.timestamp !== "Just now") return 1;
+  //       if (a.timestamp === "Just now" && b.timestamp === "Just now") return b._id.localeCompare(a._id);
+  //       return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+  //     }
+  //     return 0;
+  //   });
 
   const handleOpenComments = (submission: any) => {
     setSelectedSubmission(submission);
@@ -205,7 +281,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, singlePost, onLi
 
         {/* Submissions */}
         <div className="space-y-6">
-          {filteredSubmissions.map((submission) => (
+          {displayedSubmissions.map((submission) => (
             <Card key={submission._id} className="overflow-hidden">
               <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
@@ -345,6 +421,26 @@ export function MainFeed({ onOpenHighlights, user, submissions, singlePost, onLi
               </CardContent>
             </Card>
           ))}
+
+          {/* 6. Infinite Scroll Sentinel Element */}
+          {displayedSubmissions.length < allFilteredSubmissions.length && (
+            <div ref={loaderRef} className="flex justify-center p-4">
+              <p className="text-gray-500 animate-pulse">Loading more posts...</p>
+            </div>
+          )}
+
+          {/* 7. No More Posts Message */}
+          {displayedSubmissions.length > 0 && displayedSubmissions.length === allFilteredSubmissions.length && (
+            <div className="text-center p-4 text-gray-500">You've reached the end of the current feed!</div>
+          )}
+
+          {/* 8. No Results Message */}
+          {allFilteredSubmissions.length === 0 && (
+            <div className="text-center p-8 border rounded-lg bg-white shadow-sm">
+              <p className="text-lg font-semibold text-gray-700">No submissions found.</p>
+              <p className="text-sm text-gray-500 mt-2">Try adjusting your filters or search terms.</p>
+            </div>
+          )}
         </div>
       </div>
 
