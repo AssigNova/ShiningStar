@@ -437,7 +437,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, singlePost, onLi
           {/* 8. No Results Message */}
           {allFilteredSubmissions.length === 0 && (
             <div className="text-center p-8 border rounded-lg bg-white shadow-sm">
-              <p className="text-lg font-semibold text-gray-700">No submissions found.</p>
+              <p className="text-lg font-semibold text-gray-700">Loading...</p>
               <p className="text-sm text-gray-500 mt-2">Try adjusting your filters or search terms.</p>
             </div>
           )}
