@@ -323,7 +323,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
                 <li>• Videos: MP4, AVI, MOV (Max 1GB)</li>
                 <li>• Recommended image size: 1920x1080px</li>
                 <li>• Video length: </li>
-                <li className="ml-4"> - Maximum 30 Seconds For Reels</li>
+                <li className="ml-4"> - Maximum 60 Seconds For Reels</li>
                 <li className="ml-4"> - 2 minutes for Normal Video</li>
               </ul>
             </CardContent>
