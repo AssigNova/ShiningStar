@@ -141,6 +141,8 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
 
   const categoryMaxVideoDuration: Record<string, number> = {
     "Reel Stars": 60, // 30 seconds
+    Harmony: 300,
+    "Generations in Harmony (Family Group Performances)": 300,
     // Example: set 2 minutes (120s) for other specific categories if needed
     // Otherwise, let default be 120
   };
