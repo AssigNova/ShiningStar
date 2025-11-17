@@ -143,6 +143,7 @@ export function UploadModal({ isOpen, onClose, user, onSubmit, uploading }: Uplo
     "Reel Stars": 60, // 30 seconds
     Harmony: 300,
     "Generations in Harmony (Family Group Performances)": 300,
+    "Teams in Unity (Group Performances by employees across departments or within departments)": 300,
     // Example: set 2 minutes (120s) for other specific categories if needed
     // Otherwise, let default be 120
   };
