@@ -15,7 +15,7 @@ interface ViewPostModalProps {
   user: any;
 }
 
-export function ViewPostModal({ isOpen, onClose, submission }: ViewPostModalProps) {
+export function ViewPostModal({ isOpen, onClose, submission, user }: ViewPostModalProps) {
   // Increment post views when modal opens and submission changes
   useEffect(() => {
     if (isOpen && submission && submission._id) {
@@ -270,6 +270,10 @@ export function ViewPostModal({ isOpen, onClose, submission }: ViewPostModalProp
                 <video
                   src={submission.content}
                   controls
+                  // Conditionally apply the attribute:
+                  // If the user is NOT an admin, include controlsList="nodownload"
+                  // If the user IS an admin, the attribute is omitted (null or undefined)
+                  controlsList={user.role == "admin" ? "nodownload" : undefined}
                   poster={submission.thumbnail || undefined}
                   className="w-full h-full object-contain bg-black"
                 />

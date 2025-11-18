@@ -511,7 +511,7 @@ export function MainFeed({ onOpenHighlights, user, submissions, singlePost, onLi
       <ShareModal isOpen={isShareModalOpen} onClose={() => setIsShareModalOpen(false)} submission={selectedSubmission} />
 
       {/* View Post Modal */}
-      <ViewPostModal isOpen={isViewModalOpen} onClose={() => setIsViewModalOpen(false)} submission={selectedSubmission} user={user} />
+      <ViewPostModal isOpen={isViewModalOpen} user={user} onClose={() => setIsViewModalOpen(false)} submission={selectedSubmission} />
     </div>
   );
 }
