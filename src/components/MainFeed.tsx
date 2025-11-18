@@ -327,7 +327,6 @@ export function MainFeed({ onOpenHighlights, user, submissions, singlePost, onLi
                       <div className="relative w-full h-full">
                         <video // IMPORTANT: Add 'controls' to allow playback in the feed
                           controls
-                          controlsList="nodownload"
                           src={submission.content}
                           poster={submission.thumbnail || undefined}
                           className="w-full h-full object-cover bg-black"
