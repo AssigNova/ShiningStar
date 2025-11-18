@@ -18,12 +18,11 @@ interface ViewPostModalProps {
 export function ViewPostModal({ isOpen, onClose, submission, user }: ViewPostModalProps) {
   // Increment post views when modal opens and submission changes
   useEffect(() => {
+    console.log(user);
     if (isOpen && submission && submission._id) {
       fetch(`/api/posts/${submission._id}/view`, { method: "POST" });
     }
   }, [isOpen, submission]);
-
-  console.log(user);
 
   const [isFullSizeOpen, setIsFullSizeOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
