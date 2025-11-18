@@ -274,7 +274,7 @@ export function ViewPostModal({ isOpen, onClose, submission, user }: ViewPostMod
                   // Conditionally apply the attribute:
                   // If the user is NOT an admin, include controlsList="nodownload"
                   // If the user IS an admin, the attribute is omitted (null or undefined)
-                  controlsList={user.role == "admin" ? "nodownload" : undefined}
+                  controlsList={user.role == "admin" ? undefined : "nodownload"}
                   poster={submission.thumbnail || undefined}
                   className="w-full h-full object-contain bg-black"
                 />
