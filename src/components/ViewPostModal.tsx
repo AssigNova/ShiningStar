@@ -270,7 +270,6 @@ export function ViewPostModal({ isOpen, onClose, submission }: ViewPostModalProp
                 <video
                   src={submission.content}
                   controls
-                  controlsList="nodownload"
                   poster={submission.thumbnail || undefined}
                   className="w-full h-full object-contain bg-black"
                 />
