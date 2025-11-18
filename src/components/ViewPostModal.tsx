@@ -23,6 +23,8 @@ export function ViewPostModal({ isOpen, onClose, submission, user }: ViewPostMod
     }
   }, [isOpen, submission]);
 
+  console.log(user);
+
   const [isFullSizeOpen, setIsFullSizeOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPlayingFullscreen, setIsPlayingFullscreen] = useState(false);
